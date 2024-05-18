@@ -11,7 +11,7 @@ $ cd .dotfiles
 $ make stow
 ```
 
-## Other Dotfiles
+## Other Repositories
 
 There are some other dotfiles repositories I cross-referenced when putting my system together, here is a list below:
 
