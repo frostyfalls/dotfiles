@@ -1,3 +1,12 @@
 [submodule ".local/share/themes/icecubes"]
 	path = .local/share/themes/icecubes
 	url = https://gitlab.com/frostalicious/icecubes
+[submodule ".local/share/zsh/plugins/zsh-autosuggestions"]
+	path = .local/share/zsh/plugins/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions
+[submodule ".local/share/zsh/plugins/zsh-completions"]
+	path = .local/share/zsh/plugins/zsh-completions
+	url = https://github.com/zsh-users/zsh-completions
+[submodule ".local/share/zsh-syntax-highlighting"]
+	path = .local/share/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting
