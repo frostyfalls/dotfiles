@@ -1,0 +1,3 @@
+[submodule ".local/share/themes/icecubes"]
+	path = .local/share/themes/icecubes
+	url = https://gitlab.com/frostalicious/icecubes
