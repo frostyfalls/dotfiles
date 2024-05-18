@@ -1,0 +1,23 @@
+#!/bin/sh
+
+alias sudo='doas'
+alias vim='nvim'
+alias code='codium'
+alias fetch='fastfetch'
+
+alias cp='cp -iv'
+alias mv='mv -iv'
+alias rm='rm -vI'
+alias mkdir='mkdir -pv'
+
+alias df='df -h'
+alias free='free -h'
+
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias cat='bat --style=plain'
+alias xdg-ninja='xdg-ninja --skip-unsupported'

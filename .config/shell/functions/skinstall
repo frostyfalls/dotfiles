@@ -1,0 +1,7 @@
+#!/bin/sh
+
+skinstall() {
+    rm config.h
+    make || return
+    doas make install
+}

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+read -r capacity < /sys/class/power_supply/BAT1/capacity
+
+printf '[BAT %s%%]\n' "$capacity"

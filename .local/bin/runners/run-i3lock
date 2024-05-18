@@ -1,0 +1,10 @@
+#!/bin/sh
+
+file_name=$(readlink -f "$XDG_DATA_HOME/wallpaper")
+file_name=${file_name##*/}
+
+destination=/tmp/lock_${file_name}
+
+[ -f "$destination" ] || convert -quality 80 -resize 1920x1080 "$XDG_DATA_HOME/wallpaper" "$destination"
+
+i3lock -i "$destination" -F

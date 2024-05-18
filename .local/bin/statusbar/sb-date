@@ -1,0 +1,5 @@
+#!/bin/sh
+
+_date=$(date '+%b %-d %Y %-I:%M %p')
+
+printf '[%s]\n' "$_date"

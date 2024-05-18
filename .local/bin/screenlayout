@@ -1,0 +1,6 @@
+#!/bin/sh
+
+choice="$HOME/.local/bin/screenlayouts/$(find "$HOME/.local/bin/screenlayouts" -type f -printf '%f\n' | sort | dmenu -p screenlayout)" || exit 0
+
+ln -sf "$choice" "$XDG_DATA_HOME/screenlayout"
+. "$XDG_DATA_HOME/screenlayout"

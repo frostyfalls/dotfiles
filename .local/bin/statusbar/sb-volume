@@ -1,0 +1,21 @@
+#!/bin/sh
+
+volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+volume=${volume##Volume: }
+volume=${volume%%.*}${volume##*.}
+
+case "$volume" in
+    *MUTED*)
+        muted=1
+        volume=${volume%% \[MUTED\]}
+        ;;
+esac
+
+volume=${volume#0}
+volume=${volume#0}
+
+if [ -z "$muted" ]; then
+    printf '[VOL %s%%]\n' "$volume"
+else
+    printf '[VOL %s%% M]\n' "$volume"
+fi

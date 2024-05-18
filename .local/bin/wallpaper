@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case "$1" in
+    view)
+        find "$HOME/pictures/wallpapers" -type f -name '*.jpg' -o -name '*.jpeg' -o -name '*.png' | shuf | nsxiv -it
+        ;;
+    write)
+        ln -sf "$2" "$XDG_DATA_HOME/wallpaper"
+        xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
+        ;;
+    restore)
+        xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
+        ;;
+esac

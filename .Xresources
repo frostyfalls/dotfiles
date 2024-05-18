@@ -1,0 +1,6 @@
+Nsxiv.window.background: #111111
+Nsxiv.window.foreground: #bbbbbb
+Nsxiv.mark.foreground: #bbbbbb
+Nsxiv.bar.background: #bbbbbb
+Nsxiv.bar.foreground: #111111
+Nsxiv.bar.font: monospace:pixelsize=12

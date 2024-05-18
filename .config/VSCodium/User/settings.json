@@ -1,0 +1,12 @@
+{
+    "workbench.sideBar.location": "right",
+    "workbench.activityBar.location": "top",
+    "workbench.layoutControl.enabled": false,
+    "window.commandCenter": false,
+    "window.menuBarVisibility": "toggle",
+    "workbench.startupEditor": "none",
+    "editor.minimap.enabled": false,
+    "workbench.editor.editorActionsLocation": "hidden",
+    "workbench.colorTheme": "Default Dark+",
+    "editor.fontSize": 13
+}
