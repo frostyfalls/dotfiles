@@ -1,4 +1,4 @@
-all:
-	stow --verbose --target=${HOME} --no-folding --restow .
+stow:
+	stow --verbose --target=${HOME} --restow .
 delete:
-	stow --verbose --target=${HOME} --no-folding --delete .
+	stow --verbose --target=${HOME} --delete .
