@@ -1,0 +1,21 @@
+super + {F1,F2,F3,F4}
+    {thunar,firefox,spotify,thunderbird}
+
+super + {F9,F10,F11,F12}
+    {pavucontrol,connman-gtk,wallpaper view,screenlayout}
+
+super + {_,shift +} p
+    {j4-dmenu-desktop --dmenu='dmenu -F -g 2 -c -l 8 -bw 1',dmenu_run -F -g 2 -c -l 8 -bw 1}
+
+super + Return
+    st
+
+super + control + F9
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+super + control + {F10,F11}
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; \
+    wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%{-,+}
+
+{_, shift +} Print
+    flameshot {gui,full}
