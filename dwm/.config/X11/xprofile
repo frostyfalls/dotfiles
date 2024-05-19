@@ -10,7 +10,5 @@ xrandr --dpi 96
 xinput set-prop "SOAI USB Gaming Mouse" "libinput Accel Profile Enabled" 0 1 0
 xinput set-prop "SOAI USB Gaming Mouse" "libinput Accel Speed" 0
 
-autostart="pipewire wireplumber pipewire-pulse udiskie dunst picom sxhkd dwmblocks"
-for program in $autostart; do
-    "$program" &
-done >/dev/null 2>&1
+dwmblocks &
+runsvdir "$HOME/.runit/runsvdir" &

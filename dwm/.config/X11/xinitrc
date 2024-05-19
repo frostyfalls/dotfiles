@@ -6,4 +6,4 @@ elif [ -f "$HOME/.xprofile" ]; then
     . "$HOME/.xprofile"
 fi
 
-exec dbus-launch dwm
+exec dbus-run-session dwm
