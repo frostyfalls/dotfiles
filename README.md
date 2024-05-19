@@ -19,7 +19,7 @@ $ cd .dotfiles
 $ stow --verbose --target=${HOME} --restow PACKAGES
 ```
 
-At the very least, no matter the environment, I would install the `bin`, `git`, `shell`, and either `bash` or `zsh`.
+At the very least, no matter the environment, I would install `bin`, `git`, `shell`, and either `bash` or `zsh`.
 
 ## Other Repositories
 
