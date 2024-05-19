@@ -1,5 +1,5 @@
 #!/bin/sh
 
-read -r capacity < /sys/class/power_supply/BAT1/capacity
+read -r value < /sys/class/power_supply/BAT1/capacity
 
-printf '[BAT %s%%]\n' "$capacity"
+printf '[BAT %s%%]\n' "$value"

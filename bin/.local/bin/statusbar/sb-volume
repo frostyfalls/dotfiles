@@ -1,21 +1,21 @@
 #!/bin/sh
 
-volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
-volume=${volume##Volume: }
-volume=${volume%%.*}${volume##*.}
+value=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+value=${value##Volume: }
+value=${value%%.*}${value##*.}
 
-case "$volume" in
+case "$value" in
     *MUTED*)
         muted=1
-        volume=${volume%% \[MUTED\]}
+        value=${value%% \[MUTED\]}
         ;;
 esac
 
-volume=${volume#0}
-volume=${volume#0}
+value=${value#0}
+value=${value#0}
 
 if [ -z "$muted" ]; then
-    printf '[VOL %s%%]\n' "$volume"
+    printf '[VOL %s%%]\n' "$value"
 else
-    printf '[VOL %s%% M]\n' "$volume"
+    printf '[VOL %s%% M]\n' "$value"
 fi
