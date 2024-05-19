@@ -1,6 +1,0 @@
-#!/bin/sh
-
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/X11/xprofile" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/X11/xprofile"
-[ -f "$HOME/.xprofile" ] && . "$HOME/.xprofile"
-
-exec dbus-launch dwm
