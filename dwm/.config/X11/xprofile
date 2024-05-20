@@ -2,7 +2,6 @@
 
 xrandr --dpi 96
 
-# shellcheck disable=SC1091
 [ -f "$XDG_DATA_HOME/screenlayout" ] && . "$XDG_DATA_HOME/screenlayout"
 [ -f "$XDG_DATA_HOME/wallpaper" ] && xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
 [ -f "$XDG_CONFIG_HOME/X11/xresources" ] && xrdb -merge "$XDG_CONFIG_HOME/X11/xresources"
