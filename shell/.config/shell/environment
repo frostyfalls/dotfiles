@@ -16,7 +16,7 @@
 export TERMINAL="${TERMINAL:-st}"
 export EDITOR="${EDITOR:-nvim}"
 export VISUAL="${VISUAL:-codium}"
-export BROWSER="${BROWSER:-firefox}"
+export BROWSER="${BROWSER:-qutebrowser}"
 
 # $HOME cleanup
 export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"

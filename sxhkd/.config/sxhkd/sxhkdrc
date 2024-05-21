@@ -1,5 +1,5 @@
 super + {F1,F2,F3,F4}
-    {thunar,firefox,spotify,thunderbird}
+    {thunar,qutebrowser,spotify,thunderbird}
 
 super + {F9,F10,F11,F12}
     {pavucontrol,connman-gtk,wallpaper view,screenlayout}
