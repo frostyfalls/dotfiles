@@ -16,3 +16,6 @@
 [submodule "emacs/.config/emacs/scripts/buffer-move"]
 	path = emacs/.config/emacs/scripts/buffer-move
 	url = https://github.com/lukhas/buffer-move
+[submodule "openbox/.local/share/themes/icecubes"]
+	path = openbox/.local/share/themes/icecubes
+	url = https://gitlab.com/frostalicious/icecubes

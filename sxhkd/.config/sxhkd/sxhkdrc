@@ -1,0 +1,21 @@
+super + {F1,F2,F3,F4}
+    {thunar,qutebrowser,thunderbird,spotify}
+
+super + control + F9
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+
+super + control + {F10,F11}
+    wpctl set-mute @DEFAULT_AUDIO_SINK@ 0; \
+    wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%{-,+}
+
+super + control + F12
+    run-i3lock
+
+super + p
+    dmenu_run
+
+super + Return
+    st
+
+{_, shift +} Print
+    flameshot {gui,full}

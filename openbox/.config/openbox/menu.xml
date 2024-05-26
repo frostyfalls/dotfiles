@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openbox_menu xmlns="http://openbox.org/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://openbox.org/ file:///usr/share/openbox/menu.xsd">
+
+<menu id="root-menu" label="Openbox 3">
+
+<item label="Terminal">
+  <action name="Execute">
+    <command>st</command>
+  </action>
+</item>
+<item label="File Manager">
+  <action name="Execute">
+    <command>thunar</command>
+  </action>
+</item>
+<item label="Web Browser">
+  <action name="Execute">
+    <command>firefox</command>
+  </action>
+</item>
+<item label="Text Editor">
+  <action name="Execute">
+    <command>codium</command>
+  </action>
+</item>
+
+<separator />
+
+<menu id="root-menu-1" label="Accessories">
+  <item label="Tint2">
+    <action name="Execute">
+      <command>sh -c 'killall tint2; tint2'</command>
+    </action>
+  </item>
+  <item label="GNU Image Manipulation Program">
+    <action name="Execute">
+      <command>gimp</command>
+    </action>
+  </item>
+</menu>
+
+<menu id="root-menu-21" label="Games">
+  <item label="Portal">
+    <action name="Execute">
+      <command>steam steam://run/400</command>
+    </action>
+  </item>
+  <item label="Fallout: New Vegas">
+    <action name="Execute">
+      <command>steam steam://run/22380</command>
+    </action>
+  </item>
+  <item label="Terraria">
+    <action name="Execute">
+      <command>steam steam://run/105600</command>
+    </action>
+  </item>
+  <item label="POSTAL 2">
+    <action name="Execute">
+      <command>steam steam://run/223470</command>
+    </action>
+  </item>
+  <item label="South Park: The Stick of Truth">
+    <action name="Execute">
+      <command>steam steam://run/213670</command>
+    </action>
+  </item>
+  <item label="Geometry Dash">
+    <action name="Execute">
+      <command>steam steam://run/322170</command>
+    </action>
+  </item>
+</menu>
+
+<menu id="root-menu-3" label="Internet">
+  <item label="Mozilla Firefox">
+    <action name="Execute">
+      <command>firefox</command>
+    </action>
+  </item>
+  <item label="Mozilla Thunderbird">
+    <action name="Execute">
+      <command>thunderbird</command>
+    </action>
+  </item>
+  <item label="Deluge">
+    <action name="Execute">
+      <command>deluge</command>
+    </action>
+  </item>
+  <item label="FileZilla">
+    <action name="Execute">
+      <command>filezilla</command>
+    </action>
+  </item>
+  <item label="Discord">
+    <action name="Execute">
+      <command>discord</command>
+    </action>
+  </item>
+</menu>
+
+<menu id="root-menu-4" label="Places">
+  <item label="Home">
+    <action name="Execute">
+      <command>thunar ~</command>
+    </action>
+  </item>
+  <item label="Documents">
+    <action name="Execute">
+      <command>thunar ~/documents</command>
+    </action>
+  </item>
+  <item label="Downloads">
+    <action name="Execute">
+      <command>thunar ~downloads</command>
+    </action>
+  </item>
+  <item label="Music">
+    <action name="Execute">
+      <command>thunar ~/music</command>
+    </action>
+  </item>
+  <item label="Pictures">
+    <action name="Execute">
+      <command>thunar ~/pictures</command>
+    </action>
+  </item>
+  <item label="Videos">
+    <action name="Execute">
+      <command>thunar ~/videos</command>
+    </action>
+  </item>
+  <separator />
+  <item label="~/.config">
+    <action name="Execute">
+      <command>thunar ~/.config</command>
+    </action>
+  </item>
+  <item label="~/.local/share">
+    <action name="Execute">
+      <command>thunar ~/.local/share</command>
+    </action>
+  </item>
+  <item label="~/.local/bin">
+    <action name="Execute">
+      <command>thunar ~/.local/bin</command>
+    </action>
+  </item>
+</menu>
+
+<menu id="root-menu-2" label="System">
+  <item label="PulseAudio Volume Control">
+    <action name="Execute">
+      <command>pavucontrol</command>
+    </action>
+  </item>
+  <item label="ConnMan GTK">
+    <action name="Execute">
+      <command>connman-gtk</command>
+    </action>
+  </item>
+  <item label="LXAppearance">
+    <action name="Execute">
+      <command>lxappearance</command>
+    </action>
+  </item>
+  <menu id="screenlayout-2" label="Screen Layouts" execute="~/.config/openbox/scripts/screenlayout"/>
+  <item label="Wallpapers">
+    <action name="Execute">
+      <command>wallpaper view</command>
+    </action>
+  </item>
+</menu>
+
+<separator />
+
+<item label="Reconfigure Openbox">
+  <action name="Reconfigure"/>
+</item>
+<item label="Exit">
+  <action name="Exit"/>
+</item>
+
+</menu>
+
+</openbox_menu>

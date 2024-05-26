@@ -8,6 +8,8 @@ This is my collection of configuration and setup data for all of my Linux machin
 
 You'll probably want to take a look at my [dwm](https://gitlab.com/frostalicious/dwm), [dwmblocks](https://gitlab.com/frostalicious/dwmblocks), [dmenu](https://gitlab.com/frostalicious/dmenu), and [st](https://gitlab.com/frostalicious/st) repositories as well.
 
+I have multiple desktops configured, such as [dwm](https://dwm.suckless.org/), [Openbox](http://openbox.org/wiki/Main_Page), [awesome](https://awesomewm.org/), [xmonad](https://xmonad.org/), and [Qtile](https://qtile.org/). Some are more complete than others, but I consider **dwm** to be the most fleshed out.
+
 ## Installation
 
 ```
