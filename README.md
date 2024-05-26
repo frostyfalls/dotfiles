@@ -6,6 +6,8 @@ This is my collection of configuration and setup data for all of my Linux machin
 
 ![bstack layout](https://files.catbox.moe/dpya3x.png)
 
+You'll probably want to take a look at my [dwm](https://gitlab.com/frostalicious/dwm), [dmenu](https://gitlab.com/frostalicious/dmenu), and [st](https://gitlab.com/frostalicious/st) repositories as well.
+
 ## Installation
 
 ```
