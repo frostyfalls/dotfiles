@@ -2,14 +2,6 @@
 
 This is my collection of configuration and setup data for all of my Linux machines. The distributions I primarily use are Artix Linux and Debian.
 
-## What to Expect
-
-### Environments
-
-- [dwm](https://dwm.suckless.org/)
-- [Openbox](http://openbox.org/wiki/Main_Page)
-- shells ([Bash](https://www.gnu.org/software/bash/) and [Zsh](https://www.zsh.org/))
-
 ## Installation
 
 ```
