@@ -13,3 +13,6 @@
 [submodule "fastfetch/.config/fastfetch"]
 	path = fastfetch/.config/fastfetch
 	url = https://gitlab.com/frostalicious/tiny
+[submodule "emacs/.config/emacs/scripts/buffer-move"]
+	path = emacs/.config/emacs/scripts/buffer-move
+	url = https://github.com/lukhas/buffer-move
