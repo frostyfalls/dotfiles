@@ -11,6 +11,6 @@ cfa $XDG_CONFIG_HOME/shell/aliases
 cfe $XDG_CONFIG_HOME/shell/environment
 
 cfv $XDG_CONFIG_HOME/nvim/init.lua
-cfi $XDG_CONFIG_HOME/nsxiv/key-handler/exec
+cfi $XDG_CONFIG_HOME/nsxiv/exec/key-handler
 
 # vim: ft=sh
