@@ -10,8 +10,8 @@ This is my collection of configuration and setup data for all of my Linux machin
 
 ```
 $ cd ~
-$ git clone https://gitlab.com/frostalicious/dotfiles .dotfiles
-$ cd .dotfiles
+$ git clone https://gitlab.com/frostalicious/dotfiles
+$ cd dotfiles
 $ stow --verbose --target=${HOME} --restow PACKAGES
 ```
 
