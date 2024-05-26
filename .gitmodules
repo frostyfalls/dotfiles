@@ -10,6 +10,6 @@
 [submodule "zsh/.local/share/zsh/plugins/zsh-abbr"]
 	path = zsh/.local/share/zsh/plugins/zsh-abbr
 	url = https://github.com/olets/zsh-abbr
-[submodule "fastfetch.config/fastfetch"]
+[submodule "fastfetch/.config/fastfetch"]
 	path = fastfetch.config/fastfetch
 	url = https://gitlab.com/frostalicious/tiny
