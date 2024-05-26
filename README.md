@@ -2,6 +2,10 @@
 
 This is my collection of configuration and setup data for all of my Linux machines. The distributions I primarily use are Artix Linux and Debian.
 
+![desktop](https://files.catbox.moe/pq3gyr.png)
+
+![bstack layout](https://files.catbox.moe/dpya3x.png)
+
 ## Installation
 
 ```
