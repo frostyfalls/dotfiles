@@ -1,0 +1,17 @@
+[general]
+framerate = 60
+sensitivity = 40
+
+[input]
+method = pipewire
+source = auto
+
+[output]
+show_idle_bar_heads = 0
+
+[color]
+background = default
+foreground = default
+
+[smoothing]
+noise_reduction = 25
