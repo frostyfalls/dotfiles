@@ -6,7 +6,6 @@
     "window.menuBarVisibility": "toggle",
     "workbench.startupEditor": "none",
     "editor.minimap.enabled": false,
-    "workbench.editor.editorActionsLocation": "hidden",
     "editor.fontSize": 13,
     "security.workspace.trust.untrustedFiles": "open",
     "security.workspace.trust.enabled": false,
