@@ -1,0 +1,22 @@
+da  $XDG_DATA_HOME
+cf  $XDG_CONFIG_HOME
+ca  $XDG_CACHE_HOME
+
+h   $HOME
+D   $HOME/documents
+dw  $HOME/downloads
+P   $HOME/pictures
+m   $HOME/music
+V   $HOME/videos
+
+lb  $HOME/.local/bin
+lbs $HOME/.local/bin/statusbar
+lbr $HOME/.local/bin/runners
+lbl $HOME/.local/bin/screenlayouts
+
+cdd $HOME/documents/repos/dwm
+cds $HOME/documents/repos/st
+cdm $HOME/documents/repos/dmenu
+cdb $HOME/documents/repos/dwmblocks
+
+# vim: ft=sh

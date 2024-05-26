@@ -1,0 +1,16 @@
+bf  $XDG_CONFIG_HOME/bm-files
+bd  $XDG_CONFIG_HOME/bm-dirs
+
+cxr $HOME/.Xresources
+cxi $HOME/.xinitrc
+cxp $HOME/.xprofile
+cfz $HOME/.zshrc
+cfp $HOME/.zprofile
+
+cfa $XDG_CONFIG_HOME/shell/aliases
+cfe $XDG_CONFIG_HOME/shell/environment
+
+cfv $XDG_CONFIG_HOME/nvim/init.lua
+cfi $XDG_CONFIG_HOME/nsxiv/key-handler/exec
+
+# vim: ft=sh
