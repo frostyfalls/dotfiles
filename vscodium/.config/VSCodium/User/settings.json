@@ -7,6 +7,8 @@
     "workbench.startupEditor": "none",
     "editor.minimap.enabled": false,
     "workbench.editor.editorActionsLocation": "hidden",
-    "workbench.colorTheme": "Default Dark+",
-    "editor.fontSize": 13
+    "editor.fontSize": 13,
+    "security.workspace.trust.untrustedFiles": "open",
+    "security.workspace.trust.enabled": false,
+    "editor.fontLigatures": true
 }

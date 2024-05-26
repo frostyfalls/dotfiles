@@ -1,5 +1,6 @@
 #!/bin/sh
 
 value=$(date '+%b %-d %Y %-I:%M %p')
+icon=" "
 
-printf '[%s]\n' "$value"
+printf '%s %s\n' "$icon" "$value"

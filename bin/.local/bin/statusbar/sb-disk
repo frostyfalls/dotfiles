@@ -1,0 +1,21 @@
+#!/bin/sh
+
+DEFAULT_LOCATION="/"
+
+get_location_icon() {
+    case "$1" in
+    "/home"*) printf ' \n' ;;
+    "/mnt"*) printf ' \n' ;;
+    "/") printf ' \n' ;;
+    *) printf ' \n' ;;
+    esac
+}
+
+location=${1:-$DEFAULT_LOCATION}
+
+[ -d "$location" ] || exit 1
+
+value=$(df -h "$location" | awk ' /[0-9]/ {print $3"/"$2}')
+icon=$(get_location_icon "$location")
+
+printf "%s %s\n" "$icon" "$value"

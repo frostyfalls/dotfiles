@@ -1,21 +1,31 @@
 #!/bin/sh
 
-value=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+AUDIO_SINK="@DEFAULT_AUDIO_SINK@"
+
+get_volume_icon() {
+    case "$1" in
+    [6-9][0-9] | 100) printf ' \n' ;;
+    [3-5][0-9]) printf ' \n' ;;
+    [0-2][0-9]) printf ' \n' ;;
+    *) exit 1 ;;
+    esac
+}
+
+value=$(wpctl get-volume "$AUDIO_SINK")
 value=${value##Volume: }
 value=${value%%.*}${value##*.}
 
 case "$value" in
-    *MUTED*)
-        muted=1
-        value=${value%% \[MUTED\]}
-        ;;
+*MUTED*)
+    icon=" "
+    value=${value%% \[MUTED\]}
+    ;;
 esac
 
 value=${value#0}
 value=${value#0}
+value=$((value))
 
-if [ -z "$muted" ]; then
-    printf '[VOL %s%%]\n' "$value"
-else
-    printf '[VOL %s%% M]\n' "$value"
-fi
+[ -z "$icon" ] && icon=$(get_volume_icon "$value")
+
+printf '%s %s%%\n' "$icon" "$value"

@@ -4,7 +4,7 @@ xrandr --dpi 96
 
 [ -f "$XDG_DATA_HOME/screenlayout" ] && . "$XDG_DATA_HOME/screenlayout"
 [ -f "$XDG_DATA_HOME/wallpaper" ] && xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
-[ -f "$XDG_CONFIG_HOME/X11/xresources" ] && xrdb -merge "$XDG_CONFIG_HOME/X11/xresources"
+[ -f "$HOME/.Xresources" ] && xrdb -merge "$HOME/.Xresources"
 
 if xinput | grep "SOAI USB GAMING Mouse" >/dev/null 2>&1; then
     xinput set-prop "SOAI USB Gaming Mouse" "libinput Accel Profile Enabled" 0 1 0
@@ -12,8 +12,15 @@ if xinput | grep "SOAI USB GAMING Mouse" >/dev/null 2>&1; then
 fi
 if xinput | grep " USB OPTICAL MOUSE" >/dev/null 2>&1; then
     xinput set-prop " USB OPTICAL MOUSE" "libinput Accel Profile Enabled" 0 1 0
-    xinput set-prop " USB OPTICAL MOUSE" "libinput Accel Speed" 0
+    xinput set-prop " USB OPTICAL MOUSE" "libinput Accel Speed" 0.3
 fi
 
+pipewire &
+wireplumber &
+pipewire-pulse &
+picom &
+dunst &
+udiskie &
 dwmblocks &
-runsvdir "$HOME/.runit/runsvdir" &
+
+exec dbus-launch --exit-with-session dwm

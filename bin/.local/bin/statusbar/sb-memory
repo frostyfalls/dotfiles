@@ -1,5 +1,6 @@
 #!/bin/sh
 
-value=$(free -h | awk '/Mem/ {printf "%s/%s\n", $3, $2}' | sed 's/Gi/G/g; s/Mi/M/g')
+value=$(free -h | awk '/Mem/ {gsub(/Gi/, "G", $3); gsub(/Mi/, "M", $3); print $3"/"$2}')
+icon=" "
 
-printf '[MEM %s]\n' "$value"
+printf ' %s %s\n' "$icon" "$value"

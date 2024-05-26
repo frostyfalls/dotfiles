@@ -1,0 +1,6 @@
+#!/bin/sh
+
+value=$(top -b -n 1 | awk '/%Cpu\(s\)/{print int($2)}')
+icon=" "
+
+printf '%s %s%%\n' "$icon" "$value"

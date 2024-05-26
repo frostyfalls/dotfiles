@@ -3,6 +3,9 @@ local servers = {
   lua_ls = {
     settings = {
       Lua = {
+        diagnostics = {
+          globals = { 'vim' }
+        },
         format = {
           defaultConfig = {
             quote_style = 'single'
@@ -17,7 +20,7 @@ local servers = {
 
   -- Shell
   bashls = {
-    filetypes = { 'sh', 'zsh', }
+    filetypes = { 'sh', 'zsh' }
   },
 
   -- Go

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+value=$(whoami)
+icon=" "
+
+printf '%s %s\n' "$icon" "$value"

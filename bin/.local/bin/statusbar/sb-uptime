@@ -1,5 +1,6 @@
 #!/bin/sh
 
 value=$(uptime -p | sed 's/ day[s]*\b/d/g; s/ hour[s]*\b/h/g; s/ minute[s]*\b/m/g; s/up //; s/,//g')
+icon=" "
 
-printf '[%s]\n' "$value"
+printf '%s %s\n' "$icon" "$value"
