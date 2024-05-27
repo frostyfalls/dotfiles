@@ -3,3 +3,4 @@
 cava/.config/cava/shaders/
 gtk/.config/gtk-2.0/gtkfilechooser.ini
 gtk/.config/gtk-3.0/bookmarks
+__pycache__/
