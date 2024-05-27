@@ -1,0 +1,43 @@
+#!/bin/sh
+
+# shellcheck disable=SC2034
+
+f0='\033[30m'  # Black
+f1='\033[31m'  # Red
+f2='\033[32m'  # Green
+f3='\033[33m'  # Yellow
+f4='\033[34m'  # Blue
+f5='\033[35m'  # Magenta
+f6='\033[36m'  # Cyan
+f7='\033[37m'  # White
+
+b0='\033[40m'  # Black background
+b1='\033[41m'  # Red background
+b2='\033[42m'  # Green background
+b3='\033[43m'  # Yellow background
+b4='\033[44m'  # Blue background
+b5='\033[45m'  # Magenta background
+b6='\033[46m'  # Cyan background
+b7='\033[47m'  # White background
+
+fbright0='\033[90m'  # Bright black (gray)
+fbright1='\033[91m'  # Bright red
+fbright2='\033[92m'  # Bright green
+fbright3='\033[93m'  # Bright yellow
+fbright4='\033[94m'  # Bright blue
+fbright5='\033[95m'  # Bright magenta
+fbright6='\033[96m'  # Bright cyan
+fbright7='\033[97m'  # Bright white
+
+bld='\033[1m'  # Bold
+rst='\033[0m'  # Reset
+inv='\033[7m'  # Inverse
+
+cat << EOF
+    $f3  ▄███████▄                $f1  ▄██████▄    $f2  ▄██████▄    $f4  ▄██████▄    $f5  ▄██████▄    $f6  ▄██████▄    
+    $f3▄█████████▀▀               $f1▄$f7█▀█$f1██$f7█▀█$f1██▄  $f2▄█$f7███$f2██$f7███$f2█▄  $f4▄█$f7███$f4██$f7███$f4█▄  $f5▄█$f7███$f5██$f7███$f5█▄  $f6▄██$f7█▀█$f6██$f7█▀█$f6▄
+    $f3███████▀      $f7▄▄  ▄▄  ▄▄   $f1█$f7▄▄█$f1██$f7▄▄█$f1███  $f2██$f7█ █$f2██$f7█ █$f2██  $f4██$f7█ █$f4██$f7█ █$f4██  $f5██$f7█ █$f5██$f7█ █$f5██  $f6███$f7█▄▄$f6██$f7█▄▄$f6█
+    $f3███████▄      $f7▀▀  ▀▀  ▀▀   $f1████████████  $f2████████████  $f4████████████  $f5████████████  $f6████████████  
+    $f3▀█████████▄▄               $f1██▀██▀▀██▀██  $f2██▀██▀▀██▀██  $f4██▀██▀▀██▀██  $f5██▀██▀▀██▀██  $f6██▀██▀▀██▀██
+    $f3  ▀███████▀                $f1▀   ▀  ▀   ▀  $f2▀   ▀  ▀   ▀  $f4▀   ▀  ▀   ▀  $f5▀   ▀  ▀   ▀  $f6▀   ▀  ▀   ▀ 
+EOF

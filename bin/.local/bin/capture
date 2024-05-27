@@ -19,7 +19,7 @@ done
 
 shift $((OPTIND - 1))
 
-[ -z "$GIF" ] && OUTPUT="$OUTPUT.gif" || OUTPUT="$OUTPUT.mkv"
+[ -n "$GIF" ] && OUTPUT="$OUTPUT.gif" || OUTPUT="$OUTPUT.mkv"
 
 coords=$(mktemp)
 if [ -n "$SELECTION" ]; then
