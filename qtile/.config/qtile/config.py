@@ -53,6 +53,12 @@ layout_defaults = {
     "ratio": 0.50,
 }
 
+class MyMonadTall(layout.MonadTall):
+    def add_client(self, client):
+        self.clients.add_client(client, client_position=self.new_client_position)
+        self.do_normalize = True
+
+
 layouts = [
     # layout.Columns(border_focus_stack=["#d75f5f", "#8f3d3d"], border_width=4),
     # layout.Max(),
@@ -60,7 +66,7 @@ layouts = [
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
     # layout.Matrix(),
-    layout.MonadTall(
+    MyMonadTall(
         **layout_defaults,
     ),
     # layout.MonadWide(),
