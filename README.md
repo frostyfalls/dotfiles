@@ -12,7 +12,7 @@ I have multiple desktops configured, such as [dwm](https://dwm.suckless.org/), [
 
 ## Installation
 
-```
+```sh
 $ cd ~
 $ git clone https://gitlab.com/frostalicious/dotfiles
 $ cd dotfiles
