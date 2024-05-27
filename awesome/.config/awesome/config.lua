@@ -1,5 +1,7 @@
 local awful = require("awful")
 
+local floating = require("floating")
+
 local config = {}
 
 -- Default programs
@@ -15,7 +17,7 @@ config.theme_name = "default"
 config.layouts = {
   awful.layout.suit.tile,
   awful.layout.suit.max,
-  awful.layout.suit.floating,
+  floating,
 }
 config.default_layout = 1 -- Index of layout (1-indexed)
 

@@ -1,3 +1,4 @@
+local gears = require("gears")
 local awful = require("awful")
 local beautiful = require("beautiful")
 
@@ -10,13 +11,19 @@ screen.connect_signal("property::geometry", function(s)
   end
 end)
 
--- Ensure client is on screen
+-- Attach client to top of the slaves and ensure client is on screen
 client.connect_signal("manage", function(c)
+  if not awesome.startup then utils.attach_top(c) end
+
   if awesome.startup
     and not c.size_hints.user_position
     and not c.size_hints.program_position
   then
     awful.placement.no_offscreen(c)
+  end
+
+  if c.floating then
+    c.ontop = true
   end
 end)
 
@@ -26,24 +33,7 @@ client.connect_signal("mouse::enter", function(c)
 end)
 
 -- Set border color based on focus status
-client.connect_signal("focus", function(c)
-  if tag_only_has_floating() then
-    awful.client.focus.byidx(1)
-  else
-    t = 0
-    repeat
-      awful.client.focus.byidx(-1)
-      t = t + 1
-    until not client.focus.floating or t > 5
-  end
-  c.border_color = beautiful.border_focus
-end)
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 
-client.connect_signal("unminimize", function(c) c.unminize() end)
-
-client.connect_signal("manage", function (c)
-  if c.floating then
-    c.ontop = true
-  end
-end)
+client.connect_signal("minimize", function(c) c.unminize() end)

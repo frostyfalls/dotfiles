@@ -1,12 +1,16 @@
 local awful = require("awful")
 
-function tag_only_has_floating()
-  local tag = awful.screen.focused().selected_tag
-  local clients = tag:clients()
-  for _, c in ipairs(clients) do
-    if not c.floating then
-      return false
-    end
-  end
-  return true
+local utils = {}
+
+function utils.attach_top(c)
+  local t = awful.tag.selected(c.screen)
+
+  local clients = t:clients()
+  local layout = awful.tag.getproperty(t, "layout")
+  local nmaster = layout.master_count or 1
+
+  local index = math.min(#clients, nmaster)
+  c:swap(clients[index])
 end
+
+return utils
