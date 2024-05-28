@@ -33,4 +33,4 @@ export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
 [ ! -f "$XDG_CONFIG_HOME/shell/shortcutrc" ] && [ -x "$(command -v shortcuts)" ] && shortcuts
 
 # Automatically start X session inside tty1
-[ -z "$DISPLAY" ] && [ "$XDG_VTNR" -eq 1 ] && exec startx
+[ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
