@@ -1,59 +1,37 @@
-####################
-#     Options      #
-####################
+[ -z "$PS1" ] && return
 
 shopt -s autocd
 
-####################
-#     Sourcing     #
-####################
-
-# Shortcuts for directories and files
 [ -f "$XDG_CONFIG_HOME/shell/shortcuts" ] && . "$XDG_CONFIG_HOME/shell/shortcuts"
 
-####################
-#     Aliases      #
-####################
-
-# Program settings
 alias ls='ls --color=auto'
 alias grep='grep --color=auto'
 alias cat='bat --style=plain'
 alias xdg-ninja='xdg-ninja --skip-unsupported'
 
-# Fix mistakes
 alias sudo='doas'
 alias vim='nvim'
 alias code='codium'
 alias fetch='fastfetch'
 
-# Verbose options
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias rm='rm -vI'
 alias mkdir='mkdir -pv'
 
-# Human-readable output
 alias df='df -h'
 alias free='free -h'
 
-# ls shorthands
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-####################
-#    Functions     #
-####################
-
-# Installs suckless programs
 skinstall() {
     rm config.h
     make || return
     doas make install
 }
 
-# Extracts different archive types
 ex() {
     if [ -n "$1" ] && [ -f "$1" ]; then
         case $1 in
