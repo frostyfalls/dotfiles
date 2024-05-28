@@ -30,7 +30,7 @@ export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
 
 # Generate shortcuts if none exist and the script is in $PATH
-[ ! -f "$XDG_CONFIG_HOME/shell/shortcutrc" ] && [ -x "$(command -v shortcuts)" ] && shortcuts
+[ ! -f "$XDG_CONFIG_HOME/shell/shortcutrc" ] && shortcuts >/dev/null 2>&1
 
 # Automatically start X session inside tty1
 [ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
