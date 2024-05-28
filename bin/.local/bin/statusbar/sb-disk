@@ -2,6 +2,10 @@
 
 DEFAULT_LOCATION="/"
 
+case "$BLOCK_BUTTON" in
+    6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
 get_location_icon() {
     case "$1" in
     "/home"*) printf ' \n' ;;

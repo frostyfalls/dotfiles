@@ -2,6 +2,10 @@
 
 BATTERY="BAT1"
 
+case "$BLOCK_BUTTON" in
+    6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
 get_status_icon() {
     case "$1" in
     "Full" | "Charging") printf ' \n' ;;

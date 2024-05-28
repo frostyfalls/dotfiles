@@ -1,5 +1,9 @@
 #!/bin/sh
 
+case "$BLOCK_BUTTON" in
+    6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
 value=$(uptime -p | sed 's/ day[s]*\b/d/g; s/ hour[s]*\b/h/g; s/ minute[s]*\b/m/g; s/up //; s/,//g')
 icon=" "
 

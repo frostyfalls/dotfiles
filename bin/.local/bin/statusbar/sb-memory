@@ -1,6 +1,10 @@
 #!/bin/sh
 
-value=$(free -h | awk '/Mem/ {gsub(/Gi/, "G", $3); gsub(/Mi/, "M", $3); print $3"/"$2}')
+case "$BLOCK_BUTTON" in
+    6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
+
+value=$(free -h | awk '/Mem/ {print $3"/"$2}' | sed 's/Gi/G/g; s/Mi/M/g')
 icon=" "
 
 printf ' %s %s\n' "$icon" "$value"

@@ -1,6 +1,22 @@
 #!/bin/sh
 
 AUDIO_SINK="@DEFAULT_AUDIO_SINK@"
+AUDIO_LIMIT=1
+AUDIO_STEP=2
+
+case "$BLOCK_BUTTON" in
+    1) wpctl set-mute "$AUDIO_SINK" toggle ;;
+    3) setsid -f "$TERMINAL" -e pulsemixer ;;
+    4)
+        wpctl set-mute "$AUDIO_SINK" 0
+        wpctl set-volume -l "$AUDIO_LIMIT" "$AUDIO_SINK" "$AUDIO_STEP"%+
+        ;;
+    5)
+        wpctl set-mute "$AUDIO_SINK" 0
+        wpctl set-volume -l "$AUDIO_LIMIT" "$AUDIO_SINK" "$AUDIO_STEP"%-
+        ;;
+    6) setsid -f "$TERMINAL" -e "$EDITOR" "$0" ;;
+esac
 
 get_volume_icon() {
     case "$1" in
