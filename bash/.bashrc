@@ -20,11 +20,11 @@ git_branch() {
         else
             color="32"  # Green for a clean state
         fi
-        echo -e "\\e[0;${color}m${branch}\\e[0m"  
+        echo -e "\\e[0;${color}m${branch} "  
     fi
 }
 
-PS1="\[\e[1;32m\]\u@\h \[\e[1;34m\]\w \$(git_branch) \[\e[0m\]\$ "
+PS1="\[\e[1;32m\]\u@\h \[\e[1;34m\]\w \$(git_branch)\[\e[0m\]\$ "
 
 # shellcheck disable=SC1091
 [ -f "$XDG_CONFIG_HOME/shell/shortcuts" ] && . "$XDG_CONFIG_HOME/shell/shortcuts"
