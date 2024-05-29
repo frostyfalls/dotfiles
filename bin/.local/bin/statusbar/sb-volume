@@ -20,9 +20,9 @@ esac
 
 get_volume_icon() {
     case "$1" in
-    [6-9][0-9] | 100) printf ' \n' ;;
-    [3-5][0-9]) printf ' \n' ;;
-    [0-2][0-9]) printf ' \n' ;;
+    [6-9][0-9] | 100) printf '\n' ;;
+    [3-5][0-9]) printf '\n' ;;
+    [0-2][0-9]) printf '\n' ;;
     *) exit 1 ;;
     esac
 }
@@ -33,7 +33,7 @@ value=${value%%.*}${value##*.}
 
 case "$value" in
 *MUTED*)
-    icon=" "
+    icon=""
     value=${value%% \[MUTED\]}
     ;;
 esac

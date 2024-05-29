@@ -17,6 +17,6 @@ get_local_ip() {
 }
 
 value=$(get_local_ip)
-icon=" "
+icon=""
 
 printf '%s %s\n' "$icon" "$value"

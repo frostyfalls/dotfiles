@@ -6,6 +6,6 @@ case "$BLOCK_BUTTON" in
 esac
 
 value=$(date '+%b %-d %Y %-I:%M %p')
-icon=" "
+icon=""
 
 printf '%s %s\n' "$icon" "$value"

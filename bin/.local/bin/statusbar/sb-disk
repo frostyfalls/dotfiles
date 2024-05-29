@@ -8,10 +8,10 @@ esac
 
 get_location_icon() {
     case "$1" in
-    "/home"*) printf ' \n' ;;
-    "/mnt"*) printf ' \n' ;;
-    "/") printf ' \n' ;;
-    *) printf ' \n' ;;
+    "/home"*) printf '\n' ;;
+    "/mnt"*) printf '\n' ;;
+    "/") printf '\n' ;;
+    *) printf '\n' ;;
     esac
 }
 

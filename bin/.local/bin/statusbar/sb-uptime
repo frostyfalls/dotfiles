@@ -5,6 +5,6 @@ case "$BLOCK_BUTTON" in
 esac
 
 value=$(uptime -p | sed 's/ day[s]*\b/d/g; s/ hour[s]*\b/h/g; s/ minute[s]*\b/m/g; s/up //; s/,//g')
-icon=" "
+icon=""
 
 printf '%s %s\n' "$icon" "$value"
