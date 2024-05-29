@@ -10,21 +10,23 @@ HISTFILESIZE=100000
 export HISTCONTROL="ignoredups"
 
 git_branch() {
-  branch=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
-  if [ ! -z "$branch" ]; then
-    if [ -n "$(git status --porcelain)" ]; then
-      color="31"  # Red for changes
-    elif [ "$(git stash list)" ]; then
-      color="33"  # Yellow for stashed changes
-    else
-      color="32"  # Green for a clean state
+    # shellcheck disable=SC2063
+    branch=$(git branch 2>/dev/null | grep '^*' | colrm 1 2)
+    if [ -n "$branch" ]; then
+        if [ -n "$(git status --porcelain)" ]; then
+            color="31"  # Red for changes
+        elif [ "$(git stash list)" ]; then
+            color="33"  # Yellow for stashed changes
+        else
+            color="32"  # Green for a clean state
+        fi
+        echo -e "\\e[0;${color}m${branch}\\e[0m"  
     fi
-    echo -e "\\e[0;${color}m${branch}\\e[0m"  
-  fi
 }
 
-PS1='\[\e[1;32m\]\u@\h \[\e[1;34m\]\w \[\e[1;33m\]\$(git_branch) \[\e[0m\]\$ '
+PS1="\[\e[1;32m\]\u@\h \[\e[1;34m\]\w \$(git_branch) \[\e[0m\]\$ "
 
+# shellcheck disable=SC1091
 [ -f "$XDG_CONFIG_HOME/shell/shortcuts" ] && . "$XDG_CONFIG_HOME/shell/shortcuts"
 
 alias ls='ls --color=auto'
@@ -49,7 +51,7 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 
-skinstall() {
+skli() {
     rm config.h
     make || return
     doas make install
