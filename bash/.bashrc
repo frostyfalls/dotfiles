@@ -2,6 +2,8 @@
 
 shopt -s autocd
 
+PS1='\u@\h \w \$ '
+
 [ -f "$XDG_CONFIG_HOME/shell/shortcuts" ] && . "$XDG_CONFIG_HOME/shell/shortcuts"
 
 alias ls='ls --color=auto'
