@@ -2,9 +2,9 @@
 
 shopt -s autocd
 shopt -s checkwinsize
-shopt -s noclobber
 shopt -s histappend
 shopt -s cmdhist
+set -o noclobber
 
 HISTFILESIZE=100000
 export HISTCONTROL="ignoredups"
@@ -23,7 +23,7 @@ git_branch() {
   fi
 }
 
-PS1='\[\e[1;32m\]\u@\h \[\e[1;34m\]\w \$(git_branch) \[\e[0m\]\$ '
+PS1='\[\e[1;32m\]\u@\h \[\e[1;34m\]\w \[\e[1;33m\]\$(git_branch) \[\e[0m\]\$ '
 
 [ -f "$XDG_CONFIG_HOME/shell/shortcuts" ] && . "$XDG_CONFIG_HOME/shell/shortcuts"
 
