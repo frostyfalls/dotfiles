@@ -1,5 +1,0 @@
-#!/bin/sh
-
-sv check "$HOME/.runit/sv/wireplumber" >/dev/null || exit 1
-
-exec pipewire-pulse 2>&1

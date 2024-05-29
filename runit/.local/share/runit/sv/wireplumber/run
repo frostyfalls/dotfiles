@@ -1,5 +1,0 @@
-#!/bin/sh
-
-sv check "$HOME/.runit/sv/pipewire" >/dev/null || exit 1
-
-exec wireplumber 2>&1
