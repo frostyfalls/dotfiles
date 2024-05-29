@@ -35,9 +35,7 @@ alias bat='bat --style=plain'
 alias xdg-ninja='xdg-ninja --skip-unsupported'
 
 alias sudo='doas'
-alias vim='nvim'
 alias code='codium'
-alias fetch='fastfetch'
 
 alias cp='cp -iv'
 alias mv='mv -iv'
