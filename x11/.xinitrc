@@ -15,12 +15,4 @@ if xinput | grep " USB OPTICAL MOUSE" >/dev/null 2>&1; then
     xinput set-prop " USB OPTICAL MOUSE" "libinput Accel Speed" 0.3
 fi
 
-pipewire &
-wireplumber &
-pipewire-pulse &
-picom &
-dunst &
-udiskie &
-dwmblocks &
-
-exec dbus-launch --exit-with-session dwm
+exec dwm
