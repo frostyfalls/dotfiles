@@ -1,0 +1,15 @@
+Config
+    { font     = "Terminus 8"
+    , bgColor  = "#1d2021"
+    , fgColor  = "#ebdbb2"
+    , position = TopH 16
+    , template = " %XMonadLog% }{ CPU [%cpu%] <fc=#7c6f64>|</fc> RAM [%memory%] <fc=#7c6f64>|</fc> %date% "
+    , commands =
+        [ Run XMonadLog
+        , Run Com "genbar" ["memmon", "10", "1"] "memory" 30
+        , Run Com "genbar" ["cpumon", "10", "1"] "cpu" 30
+        , Run Date "%-I:%M:%S %p" "date" 10
+        ]
+    }
+
+-- vim:ft=haskell

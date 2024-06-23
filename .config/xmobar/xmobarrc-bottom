@@ -1,0 +1,14 @@
+Config
+    { font     = "Terminus 8"
+    , bgColor  = "#1d2021"
+    , fgColor  = "#ebdbb2"
+    , position = BottomH 16
+    , template = " <fc=#83a598>~</fc> %disk-home% <fc=#7c6f64>|</fc> <fc=#83a598>/</fc> %disk-root% <fc=#7c6f64>|</fc> <fc=#d3869b>%uptime%</fc> }{ %nowplaying% <fc=#7c6f64>|</fc> VOL [%volume%] "
+    , commands =
+        [ Run Com "diskusage" ["/home"] "disk-home" 36000
+        , Run Com "diskusage" ["/"] "disk-root" 36000
+        , Run Com "uppretty" [] "uptime" 600
+        , Run PipeReader "/tmp/pipe-volume" "volume"
+        , Run PipeReader "/tmp/pipe-nowplaying" "nowplaying"
+        ]
+    }

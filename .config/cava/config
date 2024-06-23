@@ -1,0 +1,17 @@
+[general]
+sensitivity = 55
+
+[input]
+method = pipewire
+source = auto
+
+[output]
+channels = mono
+show_idle_bar_heads = 0
+
+[color]
+background = default
+foreground = default
+
+[smoothing]
+noise_reduction = 15
