@@ -1,5 +1,5 @@
 Terminal,xfce4-terminal
-Text Editor,xfce4-terminal -e nvim
+Text Editor,xfce4-terminal -e vim
 Web Browser,firefox
 File Manager,thunar
 ^sep()
