@@ -27,7 +27,7 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
 
 # Other program settings
-export SVDIR="$XDG_DATA_HOME/service"
+export SVDIR="$XDG_CONFIG_HOME/service"
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
 
 # Automatic graphical start on tty1
