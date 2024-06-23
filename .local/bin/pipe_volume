@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PIPE_FILE="/tmp/pipe-volume"
+[ -p "$PIPE_FILE" ] || mkfifo "$PIPE_FILE"
+
+volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '/Volume/ { print int($NF * 100) }')
+genbar "$volume" 10 1 >"$PIPE_FILE"

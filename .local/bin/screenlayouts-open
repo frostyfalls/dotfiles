@@ -1,0 +1,3 @@
+#!/bin/sh
+
+find "$HOME/.local/bin/screenlayouts" -type f | rofi -dmenu -p screenlayout | screenlayout -

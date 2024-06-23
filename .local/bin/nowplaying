@@ -1,0 +1,3 @@
+#!/bin/sh
+
+playerctl metadata | sed -nE 's/^.*xesam:albumArtist +([^ ]+.*)$/\1/p; s/^.*xesam:title +([^ ].*)$/ - \1/p' | tr -d '\n'

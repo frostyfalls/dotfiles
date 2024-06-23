@@ -1,0 +1,14 @@
+#!/bin/sh
+
+initial_values=$(awk '/cpu /{print $2+$4,$2+$4+$5}' /proc/stat)
+sleep 2
+current_values=$(awk '/cpu /{print $2+$4,$2+$4+$5}' /proc/stat)
+
+set -- $initial_values
+initial_user_sys=$1
+initial_total=$2
+set -- $current_values
+current_user_sys=$1
+current_total=$2
+
+awk "BEGIN {print ($current_user_sys - $initial_user_sys) / ($current_total - $initial_total) * 100}"

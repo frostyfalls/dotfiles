@@ -1,0 +1,89 @@
+#!/bin/sh
+
+err() {
+	echo "$1" >&2
+}
+
+die() {
+	err "${0##*/}: $1"
+
+	exit 1
+}
+
+usage() {
+	if [ -n "$1" ]; then
+		err "${0##*/}: $1"
+		err
+	fi
+
+	err "usage: ${0##*/} [-hqrde] SCRIPT"
+	err
+	err " -h	show this message and exit"
+	err " -q	suppress output and notifications"
+	err " -r	restore the previous script as your screen layout"
+	err " -d	reset screen layout to X default"
+	err " -e	edit previous screen layout script in your EDITOR"
+
+	exit 0
+}
+
+restore() {
+	[ -f "$XDG_DATA_HOME/screenlayout" ] || die "previous script not found"
+
+	. "$XDG_DATA_HOME/screenlayout"
+
+	exit 0
+}
+
+default() {
+	xrandr --auto
+
+	[ -z "$QUIET" ] && notify-send -u low "System" "Screen layout set to default."
+
+	exit 0
+}
+
+edit() {
+	[ -z "$EDITOR" ] && die "\$EDITOR is not set"
+	[ -f "$XDG_DATA_HOME/screenlayout" ] || die "previous script not found"
+
+	$EDITOR "$XDG_DATA_HOME/screenlayout"
+	
+	exit 0
+}
+
+while getopts ":hqrde" opt; do
+	case $opt in
+		h) usage ;;
+		q) QUIET=1 ;;
+		r) restore ;;
+		d) default ;;
+		e) edit ;;
+		\?) usage "invalid option -- '$OPTARG'" ;;
+		:) usage "option requires an argument -- '$OPTARG'" ;;
+	esac
+done
+
+shift $((OPTIND - 1))
+
+if [ "$1" = "-" ]; then
+	while IFS= read -r line; do
+		script="$line"
+	done
+else
+	script="$1"
+fi
+
+[ -n "$script" ] || usage "SCRIPT was not provided"
+[ -d "$script" ] && die "$script: is a directory"
+[ -f "$script" ] || die "$script: no such file"
+
+case "$(file -b --mime-type "$script")" in
+	text/x-shellscript) ;;
+	*) die "$script: unsupported file type" ;;
+esac
+
+ln -sf "$script" "$XDG_DATA_HOME/screenlayout"
+. "$XDG_DATA_HOME/screenlayout"
+
+[ -z "$QUIET" ] && notify-send -u low "System" "Screen layout set to <b>${script##*/}</b>."

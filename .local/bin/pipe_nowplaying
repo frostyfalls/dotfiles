@@ -1,0 +1,8 @@
+#!/bin/sh
+
+TEXT_COLOR="#fe8019"
+
+PIPE_FILE="/tmp/pipe-nowplaying"
+[ -p "$PIPE_FILE" ] || mkfifo "$PIPE_FILE"
+
+playerctl metadata --format "<fc=$TEXT_COLOR>{{artist}} - {{title}}</fc>" >"$PIPE_FILE"
