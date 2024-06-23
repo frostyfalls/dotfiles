@@ -1,3 +1,2 @@
 #!/bin/sh
-
 [ -n "$DISPLAY" ] && exec redshift
