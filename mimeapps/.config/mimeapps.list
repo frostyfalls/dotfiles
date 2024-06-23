@@ -1,5 +1,0 @@
-[Default Applications]
-x-scheme-handler/nxm=nxm-handler.desktop
-image/jpeg=nsxiv.desktop
-
-# vim: ft=dosini

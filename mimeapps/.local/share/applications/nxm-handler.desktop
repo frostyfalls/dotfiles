@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=NXM Scheme Handler
-Exec=proton-nv wine /mnt/storage/Software/ModOrganizer2/nxmhandler.exe %u
-StartupNotify=false
-MimeType=x-scheme-handler/nxm
