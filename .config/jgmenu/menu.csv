@@ -1,0 +1,7 @@
+Terminal,xfce4-terminal
+Text Editor,xfce4-terminal -e nvim
+Web Browser,firefox
+File Manager,thunar
+^sep()
+Reconfigure,openbox --reconfigure
+Log Out,openbox --exit
