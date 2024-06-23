@@ -12,3 +12,5 @@ Config
         , Run PipeReader "/tmp/pipe-nowplaying" "nowplaying"
         ]
     }
+
+-- vim:ft=haskell
