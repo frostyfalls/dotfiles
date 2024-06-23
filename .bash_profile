@@ -25,7 +25,7 @@ export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
-export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
+export XINITRC="$XDG_CONFIG_HOME/x11/xinitrc"
 
 # Other program settings
 export SVDIR="$XDG_CONFIG_HOME/service"
