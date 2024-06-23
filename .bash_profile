@@ -5,7 +5,7 @@ export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
 # $PATH additions
-export PATH="$PATH:$(find "$HOME/.local/bin" -type d | paste -sd ':' -)"
+export PATH="$PATH:$(find "$HOME/.local/bin/" -type d | paste -sd ':' -)"
 
 # Default programs
 export TERMINAL="${TERMINAL:-xfce4-terminal}"
