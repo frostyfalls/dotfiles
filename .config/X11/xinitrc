@@ -2,7 +2,7 @@
 
 . "$XDG_DATA_HOME/screenlayout" &
 xwallpaper --zoom "$XDG_DATA_HOME/wallpaper" &
-xrdb "$HOME/.Xresources" &
+xrdb "$XDG_CONFIG_HOME/X11/xresources" &
 runsvdir "$SVDIR" &
 
 xinput set-prop "SOAI USB Gaming Mouse" "libinput Accel Profile Enabled" 0 1 0 &
