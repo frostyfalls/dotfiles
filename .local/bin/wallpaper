@@ -39,8 +39,8 @@ restore() {
 
 	previous="$(readlink -f "$XDG_DATA_HOME/wallpaper")"
 	case "${previous##*.}" in
-		png|jpg|jpeg) ;;
-		*) die "$previous: unsupported file type" ;;
+	png | jpg | jpeg) ;;
+	*) die "$previous: unsupported file type" ;;
 	esac
 
 	cmp -s "$previous" "$XDG_CACHE_HOME/lock.png" || convert_lock "$previous" &
@@ -51,24 +51,24 @@ restore() {
 
 while getopts ":hqre:u:" opt; do
 	case $opt in
-		h) usage ;;
-		q) QUIET=1 ;;
-		r) restore ;;
-		e) LOCK_RESOLUTION="$OPTARG" ;;
-		u) LOCK_QUALITY="$OPTARG" ;;
-		\?) usage "invalid option -- '$OPTARG'" ;;
-		:) usage "option requires an argument -- '$OPTARG'" ;;
+	h) usage ;;
+	q) QUIET=1 ;;
+	r) restore ;;
+	e) LOCK_RESOLUTION=$OPTARG ;;
+	u) LOCK_QUALITY=$OPTARG ;;
+	\?) usage "invalid option -- '$OPTARG'" ;;
+	:) usage "option requires an argument -- '$OPTARG'" ;;
 	esac
 done
 
 shift $((OPTIND - 1))
 
 if [ "$1" = "-" ]; then
-        while IFS= read -r line; do
-                image="$line"
-        done
+	while read -r line; do
+		image=$line
+	done
 else
-        image="$1"
+	image=$1
 fi
 
 [ -n "$image" ] || usage "IMAGE was not provided"
@@ -76,8 +76,8 @@ fi
 [ -f "$image" ] || die "$image: no such file"
 
 case "${image##*.}" in
-	png|jpg|jpeg) ;;
-	*) die "$image: unsupported file type" ;;
+png | jpg | jpeg) ;;
+*) die "$image: unsupported file type" ;;
 esac
 
 cmp -s "$image" "$XDG_CACHE_HOME/lock.png" || convert_lock "$image" &

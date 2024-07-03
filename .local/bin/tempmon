@@ -1,0 +1,15 @@
+#!/bin/sh
+
+while read -r line; do
+	case $line in
+	*Package\ id\ 0:*) temp=$line ;;
+	esac
+done <<EOF
+$(sensors)
+EOF
+
+temp=${temp#Package id 0:*+}
+temp=${temp%%°*}
+temp=${temp%.*}
+
+printf '%s°C\n' "$temp"

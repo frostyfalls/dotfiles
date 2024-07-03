@@ -74,14 +74,20 @@ version() {
 }
 
 while getopts :hVqcos opt; do
-	case "$opt" in
-		h) usage; exit 0 ;;
-		V) version; exit 0 ;;
-		q) QUIET=1 ;;
-		c) COPY=1 ;;
-		o) OVERLAY=1 ;;
-		s) SAVE=1 ;;
-		*) die "invalid option: -$OPTARG" ;;
+	case $opt in
+	h)
+		usage
+		exit 0
+		;;
+	V)
+		version
+		exit 0
+		;;
+	q) QUIET=1 ;;
+	c) COPY=1 ;;
+	o) OVERLAY=1 ;;
+	s) SAVE=1 ;;
+	*) die "invalid option: -$OPTARG" ;;
 	esac
 done
 
@@ -91,8 +97,11 @@ SCREENSHOT_TYPE=${1:-select}
 FILE_PATH=${2:-}
 
 case "$SCREENSHOT_TYPE" in
-	select|full) ;;
-	*) usage; exit 1 ;;
+select | full) ;;
+*)
+	usage
+	exit 1
+	;;
 esac
 
 if [ -n "$SAVE" ]; then

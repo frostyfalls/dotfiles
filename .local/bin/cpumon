@@ -1,14 +1,29 @@
 #!/bin/sh
 
-initial_values=$(awk '/cpu /{print $2+$4,$2+$4+$5}' /proc/stat)
-sleep 2
-current_values=$(awk '/cpu /{print $2+$4,$2+$4+$5}' /proc/stat)
+while read -r _ user _ system idle _; do
+	initial_user_sys=$((user + system))
+	initial_total=$((user + system + idle))
+	break
+done </proc/stat
 
-set -- $initial_values
-initial_user_sys=$1
-initial_total=$2
-set -- $current_values
-current_user_sys=$1
-current_total=$2
+sleep 1
 
-awk "BEGIN {print ($current_user_sys - $initial_user_sys) / ($current_total - $initial_total) * 100}"
+while read -r _ user _ system idle _; do
+	current_user_sys=$((user + system))
+	current_total=$((user + system + idle))
+	break
+done </proc/stat
+
+while read -r line; do
+	case $line in
+	*Package\ id\ 0:*) temp=$line ;;
+	esac
+done <<EOF
+$(sensors)
+EOF
+
+temp=${temp#Package id 0:*+}
+temp=${temp%%°*}
+temp=${temp%.*}
+
+printf '%s°C (%.*f%%)\n' "$temp" 0 $(((current_user_sys - initial_user_sys) * 100 / (current_total - initial_total)))

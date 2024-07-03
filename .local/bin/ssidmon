@@ -1,0 +1,17 @@
+#!/bin/sh
+
+ADAPTER="wlan0"
+
+ssid=
+while read -r line; do
+	case $line in
+	*Connected\ network*)
+		ssid=${line##*Connected network}
+		ssid="${ssid#"${ssid%%[![:space:]]*}"}"
+		;;
+	esac
+done <<EOF
+$(iwctl station "$ADAPTER" show)
+EOF
+
+printf '%s\n' "$ssid"
