@@ -1,9 +1,0 @@
-#!/bin/sh
-
-volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
-volume=${volume% \[MUTED\]}
-volume=${volume#Volume: }
-volume=${volume%.*}${volume#*.}
-volume=${volume#0}
-
-printf '%s%%\n' "$volume"

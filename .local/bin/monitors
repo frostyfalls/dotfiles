@@ -1,0 +1,116 @@
+#!/bin/sh
+
+BATTERY_FULL_THRESHOLD=80
+BATTERY_FULL_COLOR="#31f53e"
+
+WIFI_ADAPTER="wlan0"
+
+readable_kib() {
+	if [ "$1" -lt 1024 ]; then
+		printf "%.1fK\n" "$1"
+	elif [ "$1" -lt 1048576 ]; then
+		printf "%.1fM\n" $(($1 / 1024))
+	else
+		printf "%.1fG\n" $(($1 / 1048576))
+	fi
+}
+
+monitor_battery() {
+	read -r capacity </sys/class/power_supply/BAT1/capacity
+	read -r status </sys/class/power_supply/BAT1/status
+
+	if [ "$capacity" -ge "$BATTERY_FULL_THRESHOLD" ] && [ "$status" = "Not charging" ]; then
+		status="Full"
+	fi
+	if [ "$status" = "Full" ]; then
+		printf '<fc=%s>%s%%</fc> (%s)\n' "$BATTERY_FULL_COLOR" "$capacity" "$status"
+	else
+		printf '%s%% (%s)\n' "$capacity" "$status"
+	fi
+}
+
+monitor_cpu() {
+	while read -r _ user _ system idle _; do
+		initial_user_sys=$((user + system))
+		initial_total=$((user + system + idle))
+		break
+	done </proc/stat
+
+	sleep 1
+
+	while read -r _ user _ system idle _; do
+		current_user_sys=$((user + system))
+		current_total=$((user + system + idle))
+		break
+	done </proc/stat
+
+	while read -r line; do
+		case $line in
+		*Package\ id\ 0:*) temp=$line ;;
+		esac
+	done <<EOF
+$(sensors)
+EOF
+
+	temp=${temp#Package id 0:*+}
+	temp=${temp%%°*}
+	temp=${temp%.*}
+
+	printf '%s°C (%.*f%%)\n' "$temp" 0 $(((current_user_sys - initial_user_sys) * 100 / (current_total - initial_total)))
+}
+
+monitor_load() {
+	while read -r one five fifteen _; do
+		load_one=$one
+		load_five=$five
+		load_fifteen=$fifteen
+	done </proc/loadavg
+
+	printf '%s %s %s\n' "$load_one" "$load_five" "$load_fifteen"
+}
+
+monitor_memory() {
+	while read -r label size _; do
+		case $label in
+		MemTotal:) total_mem=$size ;;
+		MemAvailable:) free_mem=$size ;;
+		esac
+	done </proc/meminfo
+	used_mem=$((total_mem - free_mem))
+
+	printf '%s (%s%%)\n' "$(readable_kib "$used_mem")" $((used_mem * 100 / total_mem))
+}
+
+monitor_network() {
+	address=$(ip route get 1)
+	address=${address#* via * dev * src }
+	address=${address% uid *}
+
+	ssid=
+	while read -r line; do
+		case $line in
+		*Connected\ network*)
+			ssid=${line##*Connected network}
+			ssid="${ssid#"${ssid%%[![:space:]]*}"}"
+			;;
+		esac
+	done <<EOF
+$(iwctl station "$WIFI_ADAPTER" show)
+EOF
+
+	printf '<fc=#fc7932>%s</fc> @ %s\n' "$address" "$ssid"
+}
+
+monitor_volume() {
+	volume=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
+	volume=${volume% \[MUTED\]}
+	volume=${volume#Volume: }
+	volume=${volume%.*}${volume#*.}
+	volume=${volume#0}
+
+	printf '%s%%\n' "$volume"
+}
+
+if command -v monitor_"$1" >/dev/null 2>&1; then
+	monitor_"$1"
+fi

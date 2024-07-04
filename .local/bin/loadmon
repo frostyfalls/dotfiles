@@ -1,9 +1,0 @@
-#!/bin/sh
-
-while read -r one five fifteen _; do
-	load_one=$one
-	load_five=$five
-	load_fifteen=$fifteen
-done </proc/loadavg
-
-printf '%s %s %s\n' "$load_one" "$load_five" "$load_fifteen"

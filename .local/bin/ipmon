@@ -1,7 +1,0 @@
-#!/bin/sh
-
-address=$(ip route get 1)
-address=${address#* via * dev * src }
-address=${address% uid *}
-
-printf '%s\n' "$address"
