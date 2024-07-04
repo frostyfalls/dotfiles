@@ -1,24 +1,12 @@
--- Base
 import XMonad
-import Data.Monoid
-import System.Exit
-import Text.Printf
-import qualified Data.Map as M
-import qualified XMonad.StackSet as W
-
--- Layouts
 import XMonad.Layout.Grid
-
--- Layout Modifiers
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.NoBorders (noBorders, smartBorders)
 import XMonad.Layout.Renamed (named)
 import XMonad.Layout.Spacing
-
--- Actions
+import XMonad.Actions.CycleWS
+import XMonad.Actions.Submap
 import XMonad.Actions.ToggleFullFloat
-
--- Hooks
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.InsertPosition
@@ -26,10 +14,13 @@ import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
 import XMonad.Hooks.Place
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.WindowSwallowing
-
--- Utilities
-import XMonad.Util.EZConfig (additionalKeysP)
 import XMonad.Util.NamedScratchpad
+import Data.Monoid
+import Graphics.X11.ExtraTypes.XF86
+import System.Exit
+import Text.Printf
+import qualified XMonad.StackSet as W
+import qualified Data.Map as M
 
 -- MAIN OPTIONS --------------------------------------------------------
 
@@ -49,101 +40,100 @@ myFocusedBorderColor = "#80b7ff"
 
 -- KEY BINDS -----------------------------------------------------------
 
-myKeys :: [(String, X ())]
-myKeys =
+myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
+myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- Spawning programs
-    [ ("M-<Return>", spawn myTerminal)
-    , ("M-p", spawnDmenu "dmenu_run")
-    , ("M-w", spawn "firefox")
-    , ("M-C-q", spawn "qutebrowser")
-    , ("M-e", spawnTerminal myEditor)
-    , ("M-f", spawnTerminal "nnn")
-    , ("M-t", spawnTerminal "ncmpcpp")
-    , ("M-C-e", spawnTerminal "ncspot")
-    , ("M-v", spawnTerminal "pulsemixer")
-    , ("M-S-t", spawn "pavucontrol")
-    , ("M-S-;", spawn "simplescreenrecorder")
-    , ("M-S-'", spawn "obs")
-    , ("M-S-o", spawnTerminal "cava")
-    , ("M-C-l", spawn "run-i3lock")
-    , ("M-C-d", spawn "arandr")
-    , ("M-C-v", spawn "screenlayouts-open")
-    , ("M-C-w", spawn "wallpapers-open")
-    , ("M-C-[", spawn "find ~/pictures/screenshots -type f | nsxiv -ti")
+    [ ((modMask, xK_Return), spawn myTerminal)
+    , ((modMask, xK_p), spawnDmenu "dmenu_run")
+    , ((modMask, xK_w), spawn "firefox")
+    , ((modMask .|. controlMask, xK_q), spawn "qutebrowser")
+    , ((modMask, xK_e), spawnTerminal myEditor)
+    , ((modMask, xK_f), spawnTerminal "nnn")
+    , ((modMask, xK_t), spawnTerminal "ncmpcpp")
+    , ((modMask .|. controlMask, xK_e), spawnTerminal "ncspot")
+    , ((modMask, xK_v), spawnTerminal "pulsemixer")
+    , ((modMask .|. controlMask, xK_t), spawn "pavucontrol")
+    , ((modMask .|. controlMask, xK_semicolon), spawn "simplescreenrecorder")
+    , ((modMask .|. controlMask, xK_apostrophe), spawn "obs")
+    , ((modMask .|. controlMask, xK_o), spawnTerminal "cava")
+    , ((modMask .|. controlMask, xK_l), spawn "run-i3lock")
+    , ((modMask .|. controlMask, xK_d), spawn "arandr")
+    , ((modMask .|. controlMask, xK_v), spawn "screenlayouts-open")
+    , ((modMask .|. controlMask, xK_w), spawn "wallpapers-open")
+    , ((modMask .|. controlMask, xK_bracketright), spawn "find ~/pictures/screenshots -type f | nsxiv -ti")
 
     -- Screenshotting
-    , ("<Print>", spawn "epicshot -cs select")
-    , ("C-<Print>", spawn "epicshot -cs full")
-    , ("M-<Print>", spawn "epicshot -so select")
-    , ("M-C-r", spawn "epicshot -cs select")
-    , ("M-C-t", spawn "epicshot -cs full")
-    , ("M-C-g", spawn "epicshot -so select")
+    , ((0, xK_Print), spawn "epicshot -cs select")
+    , ((controlMask, xK_Print), spawn "epicshot -cs full")
+    , ((modMask, xK_Print), spawn "epicshot -so select")
+    , ((modMask .|. controlMask, xK_r), spawn "epicshot -cs select")
+    , ((modMask .|. controlMask, xK_t), spawn "epicshot -cs full")
+    , ((modMask .|. controlMask, xK_g), spawn "epicshot -so select")
 
     -- Custom function row
-    , ("M-C-<F5>", spawn "mpc prev")
-    , ("M-C-<F6>", spawn "mpc next")
-    , ("M-C-<F7>", spawn "mpc toggle")
-    , ("M-C-<F8>", spawn "mpc stop")
-    , ("M-C-<F9>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pipe_volume")
-    , ("M-C-<F10>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pipe_volume")
-    , ("M-C-<F11>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && pipe_volume")
-    , ("M-C-<F12>", spawn "run-i3lock")
+    , ((modMask .|. controlMask, xK_F5), spawn "mpc prev")
+    , ((modMask .|. controlMask, xK_F6), spawn "mpc next")
+    , ((modMask .|. controlMask, xK_F7), spawn "mpc toggle")
+    , ((modMask .|. controlMask, xK_F8), spawn "mpc stop")
+    , ((modMask .|. controlMask, xK_F9), spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pipe_volume")
+    , ((modMask .|. controlMask, xK_F10), spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pipe_volume")
+    , ((modMask .|. controlMask, xK_F11), spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && pipe_volume")
+    , ((modMask .|. controlMask, xK_F12), spawn "run-i3lock")
 
     -- XF86 keys
-    , ("<XF86Explorer>", spawnTerminal "nnn")
-    , ("<XF86Search>", spawnDmenu "dmenu_run")
-    , ("<XF86Calculator>", spawnTerminal "bc -i")
-    , ("<XF86Tools>", spawnTerminal "ncmpcpp")
-    , ("<XF86AudioPrev>", spawn "mpc prev")
-    , ("<XF86AudioNext>", spawn "mpc next")
-    , ("<XF86AudioPlay>", spawn "mpc toggle")
-    , ("<XF86AudioStop>", spawn "mpc stop")
-    , ("<XF86AudioMute>", spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pipe_volume")
-    , ("<XF86AudioLowerVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pipe_volume")
-    , ("<XF86AudioRaiseVolume>", spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && pipe_volume")
+    , ((0, xF86XK_Explorer), spawnTerminal "nnn")
+    , ((0, xF86XK_Search), spawnDmenu "dmenu_run")
+    , ((0, xF86XK_Calculator), spawnTerminal "bc -i")
+    , ((0, xF86XK_Tools), spawnTerminal "ncmpcpp")
+    , ((0, xF86XK_AudioPrev), spawn "mpc prev")
+    , ((0, xF86XK_AudioNext), spawn "mpc next")
+    , ((0, xF86XK_AudioPlay), spawn "mpc toggle")
+    , ((0, xF86XK_AudioStop), spawn "mpc stop")
+    , ((0, xF86XK_AudioMute), spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pipe_volume")
+    , ((0, xF86XK_AudioLowerVolume), spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ 5%- && pipe_volume")
+    , ((0, xF86XK_AudioRaiseVolume), spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ 5%+ && pipe_volume")
 
     -- Layouts
-    , ("M-a M-t", sendMessage $ JumpToLayout "tall")
-    , ("M-a M-y", sendMessage $ JumpToLayout "wide")
-    , ("M-a M-g", sendMessage $ JumpToLayout "grid")
-    , ("M-a M-a", sendMessage NextLayout)
+    , ((modMask, xK_a), submap . M.fromList $
+          [ ((0, xK_t), sendMessage $ JumpToLayout "tall")
+          , ((0, xK_y), sendMessage $ JumpToLayout "wide")
+          , ((0, xK_g), sendMessage $ JumpToLayout "grid")
+          , ((0, xK_a), sendMessage $ NextLayout)
+          ]
+      )
 
     -- Window focus/swap
-    , ("M-j", windows W.focusDown)
-    , ("M-k", windows W.focusUp)
-    , ("M-S-j", windows W.swapDown)
-    , ("M-S-k", windows W.swapUp)
+    , ((modMask, xK_j), windows W.focusDown)
+    , ((modMask, xK_k), windows W.focusUp)
+    , ((modMask .|. shiftMask, xK_j), windows W.swapDown)
+    , ((modMask .|. shiftMask, xK_k), windows W.swapUp)
 
     -- Master control
-    , ("M-h", sendMessage Shrink)
-    , ("M-l", sendMessage Expand)
-    , ("M-i", sendMessage $ IncMasterN 1)
-    , ("M-d", sendMessage $ IncMasterN $ -1)
-    , ("M-s", windows W.focusMaster)
-    , ("M-S-s", windows W.swapMaster)
+    , ((modMask, xK_h), sendMessage Shrink)
+    , ((modMask, xK_l), sendMessage Expand)
+    , ((modMask, xK_i), sendMessage $ IncMasterN 1)
+    , ((modMask, xK_d), sendMessage $ IncMasterN $ -1)
+    , ((modMask, xK_s), windows W.focusMaster)
+    , ((modMask .|. shiftMask, xK_s), windows W.swapMaster)
 
     -- Window actions
-    , ("M-S-c", kill)
-    , ("M-S-f", withFocused toggleFullFloat)
-    , ("M-S-<Space>", withFocused toggleFloat)
+    , ((modMask .|. shiftMask, xK_c), kill)
+    , ((modMask .|. shiftMask, xK_f), withFocused toggleFullFloat)
+    , ((modMask .|. shiftMask, xK_space), withFocused toggleFloat)
 
     -- Scratchpads
-    , ("M-C-<Return>", namedScratchpadAction myScratchPads "terminal")
-    , ("M-C-c", namedScratchpadAction myScratchPads "ncmpcpp")
+    , ((modMask .|. controlMask, xK_Return), namedScratchpadAction myScratchPads "terminal")
+    , ((modMask .|. controlMask, xK_c), namedScratchpadAction myScratchPads "ncmpcpp")
 
     -- Session
-    , ("M-C-<Delete>", io $ exitWith ExitSuccess)
-    , ("M-C-s", spawn "xmonad --recompile && xmonad --restart")
+    , ((modMask .|. controlMask, xK_Delete), io $ exitWith ExitSuccess)
+    , ((modMask .|. controlMask, xK_s), spawn "xmonad --recompile && xmonad --restart")
     ] ++
 
-    -- View workspace N
-    [ ("M-" ++ show i, windows $ W.greedyView $ myWorkspaces !! (i-1))
-    | i <- [1..9]
-    ] ++
-
-    -- Shift window to workspace N
-    [ ("M-S-" ++ show i, windows $ W.shift $ myWorkspaces !! (i-1))
-    | i <- [1..9]
+    -- View and send windows to workspaces 1-9
+    [ ((modMask .|. m, k), windows $ f i)
+    | (k, i) <- zip [xK_1 .. xK_9] (XMonad.workspaces conf)
+    , (m, f) <- [(0, W.view), (shiftMask, W.shift)]
     ]
   where
     toggleFloat :: Window -> X ()
@@ -167,10 +157,22 @@ myKeys =
 
 -- MOUSE BINDS ---------------------------------------------------------
 
-myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
-    [ ((modm, button1), (\w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster))
-    , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
-    , ((modm, button3), (\w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster))
+myMouseBindings :: XConfig Layout -> M.Map (KeyMask, Button) (Window -> X ())
+myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
+    -- Set the window to floating mode and move by dragging
+    [ ((modMask, button1), (\w -> focus w >> mouseMoveWindow w))
+    -- Raise the window to the top of the stack
+    , ((modMask, button2), (\w -> focus w >> windows W.shiftMaster))
+    -- Set the window to floating mode and resize by dragging
+    , ((modMask, button3), (\w -> focus w >> mouseResizeWindow w)) 
+    -- Switch to previous workspace
+    , ((modMask, button4), (\_ -> prevWS))                                        
+    -- Switch to next workspace
+    , ((modMask, button5), (\_ -> nextWS))                                     
+    -- Send client to previous workspace
+    , (((modMask .|. shiftMask), button4), (\_ -> shiftToPrev >> prevWS))                 
+    -- Send client to next workspace
+    , (((modMask .|. shiftMask), button5), (\_ -> shiftToNext >> nextWS))
     ]
 
 -- LAYOUTS -------------------------------------------------------------
@@ -219,8 +221,7 @@ myManageHook = composeAll
 
 myEventHook :: Event -> X All
 myEventHook =
-    swallowEventHook (foldr1 (<||>)
-    $ map (\c -> className =? c) swallowClasses) (return True)
+    swallowEventHook (foldr1 (<||>) $ map (\c -> className =? c) swallowClasses) (return True)
   where
     swallowClasses = ["St", "XTerm"]
 
@@ -268,5 +269,5 @@ myConfig = def
     , clickJustFocuses   = False
     , modMask            = mod4Mask
     , mouseBindings      = myMouseBindings
+    , keys               = myKeys
     }
-  `additionalKeysP` myKeys
