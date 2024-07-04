@@ -1,2 +1,2 @@
-/.config/vim/plugged
 /.config/service/*/supervise
+/.config/nvim/lazy-lock.json
