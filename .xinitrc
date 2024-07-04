@@ -3,8 +3,8 @@
 # shellcheck disable=SC1091
 
 # Startup services and programs
-. "$XDG_DATA_HOME/screenlayout"
-xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
+[ -f "$XDG_DATA_HOME/screenlayout" ] && . "$XDG_DATA_HOME/screenlayout"
+[ -f "$XDG_DATA_HOME/wallpaper" ] && xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
 xrdb "$HOME/.Xresources"
 runsvdir "$SVDIR" &
 
