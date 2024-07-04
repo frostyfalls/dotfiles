@@ -8,9 +8,8 @@ export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 export PATH="$PATH:$(find "$HOME/.local/bin/" -type d | paste -sd ':' -)"
 
 # Default programs
-export TERMINAL="${TERMINAL:-xfce4-terminal}"
+export TERMINAL="${TERMINAL:-st}"
 export EDITOR="${EDITOR:-nvim}"
-export VISUAL="${VISUAL:-$TERMINAL -e $EDITOR}"
 export BROWSER="${BROWSER:-firefox}"
 
 # $HOME cleanup
