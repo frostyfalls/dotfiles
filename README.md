@@ -1,11 +1,11 @@
 # dotfiles
 
-Setup data and configurations for my Linux machines.
+This repository includes the setup data and configurations for my Linux machines, both desktop and server.
 
-I use multiple window managers, such as XMonad and Openbox. This repository contains all of my desktop configurations.
+My primary shell is Bash, and on the desktop I primarily use XMonad with XMobar. Most things are self-explanatory
 
 ## Installation
 
 ```
-$ stow -Rt $HOME .
+$ stow -Rt ~ .
 ```
