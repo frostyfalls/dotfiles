@@ -6,3 +6,5 @@ config.bind('xx', 'config-cycle tabs.show always never ;; config-cycle statusbar
 
 c.fonts.default_family = 'Terminus'
 c.fonts.default_size = '12px'
+
+c.scrolling.bar = 'never'
