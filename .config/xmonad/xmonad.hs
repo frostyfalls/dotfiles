@@ -3,18 +3,19 @@ import XMonad.Layout.Grid
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.NoBorders (noBorders, smartBorders)
 import XMonad.Layout.Renamed (named)
+import XMonad.Layout.ShowWName
 import XMonad.Layout.Spacing
-import XMonad.Actions.CycleWS
-import XMonad.Actions.Submap
-import XMonad.Actions.ToggleFullFloat
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.InsertPosition
-import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks)
+import XMonad.Hooks.ManageDocks (avoidStruts, manageDocks, ToggleStruts(..))
 import XMonad.Hooks.Place
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.WindowSwallowing
 import XMonad.Util.NamedScratchpad
+import XMonad.Actions.CycleWS
+import XMonad.Actions.Submap
+import XMonad.Actions.ToggleFullFloat
 import Data.Monoid
 import Graphics.X11.ExtraTypes.XF86
 import System.Exit
@@ -37,6 +38,10 @@ myBorderWidth = 1
 myNormalBorderColor, myFocusedBorderColor :: String
 myNormalBorderColor  = "#222222"
 myFocusedBorderColor = "#80b7ff"
+
+floatClasses, swallowClasses :: [String]
+floatClasses = ["Arandr", "Nsxiv"]
+swallowClasses = ["St", "XTerm"]
 
 -- KEY BINDS -----------------------------------------------------------
 
@@ -110,6 +115,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- Master control
     , ((modMask, xK_h), sendMessage Shrink)
+    , ((modMask, xK_b), sendMessage ToggleStruts)
     , ((modMask, xK_l), sendMessage Expand)
     , ((modMask, xK_i), sendMessage $ IncMasterN 1)
     , ((modMask, xK_d), sendMessage $ IncMasterN $ -1)
@@ -170,9 +176,9 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- Switch to next workspace
     , ((modMask, button5), (\_ -> nextWS))                                     
     -- Send client to previous workspace
-    , (((modMask .|. shiftMask), button4), (\_ -> shiftToPrev >> prevWS))                 
+    , ((modMask .|. shiftMask, button4), (\_ -> shiftToPrev >> prevWS))                 
     -- Send client to next workspace
-    , (((modMask .|. shiftMask), button5), (\_ -> shiftToNext >> nextWS))
+    , ((modMask .|. shiftMask, button5), (\_ -> shiftToNext >> nextWS))
     ]
 
 -- LAYOUTS -------------------------------------------------------------
@@ -181,12 +187,20 @@ myLayoutHook =
     avoidStruts
     $ tall ||| wide ||| grid
   where
-    tall = named "tall"
+    tall = named "Tall"
         $ Tall 1 (3/100) (1/2)
-    wide = named "wide"
+    wide = named "Wide"
         $ Mirror tall
-    grid = named "grid"
+    grid = named "Grid"
         $ Grid
+
+    mySWNConfig :: SWNConfig
+    mySWNConfig = def
+        { swn_font    = "Fira Mono 24"
+        , swn_fade    = 1.0
+        , swn_bgcolor = "#121212"
+        , swn_color   = "#cccccc"
+        }
 
 -- SCRATCHPADS ---------------------------------------------------------
 
@@ -216,14 +230,10 @@ myManageHook = composeAll
     , manageDocks
     , composeAll [ className =? c --> doFloat | c <- floatClasses ]
     ]
-  where
-    floatClasses = ["Arandr", "Nsxiv"]
 
 myEventHook :: Event -> X All
 myEventHook =
     swallowEventHook (foldr1 (<||>) $ map (\c -> className =? c) swallowClasses) (return True)
-  where
-    swallowClasses = ["St", "XTerm"]
 
 myStartupHook :: X ()
 myStartupHook = do
