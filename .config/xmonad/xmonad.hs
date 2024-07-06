@@ -1,4 +1,5 @@
 import XMonad
+import XMonad.Layout.Circle
 import XMonad.Layout.Grid
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.NoBorders (noBorders, smartBorders)
@@ -57,7 +58,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask, xK_t), spawnTerminal "ncmpcpp")
     , ((modMask .|. controlMask, xK_e), spawnTerminal "ncspot")
     , ((modMask, xK_v), spawnTerminal "pulsemixer")
-    , ((modMask .|. controlMask, xK_t), spawn "pavucontrol")
+    , ((modMask .|. controlMask, xK_y), spawn "pavucontrol")
     , ((modMask .|. controlMask, xK_semicolon), spawn "simplescreenrecorder")
     , ((modMask .|. controlMask, xK_apostrophe), spawn "obs")
     , ((modMask .|. controlMask, xK_o), spawnTerminal "cava")
@@ -100,12 +101,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- Layouts
     , ((modMask, xK_a), submap . M.fromList $
-          [ ((0, xK_t), sendMessage $ JumpToLayout "tall")
-          , ((0, xK_y), sendMessage $ JumpToLayout "wide")
-          , ((0, xK_g), sendMessage $ JumpToLayout "grid")
-          , ((0, xK_a), sendMessage $ NextLayout)
+          [ ((modMask, xK_t), sendMessage $ JumpToLayout "Tall")
+          , ((modMask, xK_y), sendMessage $ JumpToLayout "Wide")
+          , ((modMask, xK_g), sendMessage $ JumpToLayout "Grid")
+          , ((modMask, xK_c), sendMessage $ JumpToLayout "Circle")
+          , ((modMask, xK_a), sendMessage $ NextLayout)
           ]
       )
+    , ((modMask, xK_b), sendMessage ToggleStruts)
 
     -- Window focus/swap
     , ((modMask, xK_j), windows W.focusDown)
@@ -115,7 +118,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
 
     -- Master control
     , ((modMask, xK_h), sendMessage Shrink)
-    , ((modMask, xK_b), sendMessage ToggleStruts)
     , ((modMask, xK_l), sendMessage Expand)
     , ((modMask, xK_i), sendMessage $ IncMasterN 1)
     , ((modMask, xK_d), sendMessage $ IncMasterN $ -1)
@@ -185,7 +187,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 myLayoutHook =
     avoidStruts
-    $ tall ||| wide ||| grid
+    $ tall ||| wide ||| grid ||| circle
   where
     tall = named "Tall"
         $ Tall 1 (3/100) (1/2)
@@ -193,6 +195,8 @@ myLayoutHook =
         $ Mirror tall
     grid = named "Grid"
         $ Grid
+    circle = named "Circle"
+        $ Circle
 
     mySWNConfig :: SWNConfig
     mySWNConfig = def
@@ -243,7 +247,7 @@ myStartupHook = do
 
 myPP :: PP
 myPP = def
-    { ppSep             = sep " : "
+    { ppSep             = sep " | "
     , ppCurrent         = current . wrap "" "*"
     , ppHidden          = noScratchPad
     , ppHiddenNoWindows = \_ -> ""
