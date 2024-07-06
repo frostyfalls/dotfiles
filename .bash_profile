@@ -6,9 +6,6 @@ export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
 export XDG_STATE_HOME="${XDG_STATE_HOME:-$HOME/.local/state}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
 
-# $PATH additions
-export PATH="$PATH:$(find "$HOME/.local/bin/" -type d | paste -sd ':' -)"
-
 # Default programs
 export TERMINAL="${TERMINAL:-st}"
 export EDITOR="${EDITOR:-nvim}"
@@ -30,6 +27,10 @@ export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
 # Other program settings
 export SVDIR="$XDG_CONFIG_HOME/service"
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
+
+# $PATH additions
+export PATH="$PATH:$(find "$HOME/.local/bin/" -type d | paste -sd ':' -)"
+export PATH="$PATH:$GOPATH/bin"
 
 # Automatic graphical start on tty1
 [ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
