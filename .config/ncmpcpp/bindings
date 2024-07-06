@@ -15,3 +15,6 @@ def_key "ctrl-d"
 
 def_key "ctrl-u"
     page_up
+
+def_key "L"
+    show_lyrics
