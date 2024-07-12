@@ -1,2 +1,2 @@
 #!/bin/sh
-[ -n "$DISPLAY" ] && exec redshift-gtk
+[ -n "$DISPLAY" ] && exec redshift
