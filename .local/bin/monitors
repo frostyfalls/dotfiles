@@ -111,6 +111,20 @@ monitor_volume() {
 	printf '%s%%\n' "$volume"
 }
 
+monitor_uptime() {
+	up=$(uptime -p)
+	up=${up#up }
+	up=${up//,}
+	up=${up// day/d}
+	up=${up// days/d}
+	up=${up// minutes/m}
+	up=${up// minute/m}
+	up=${up// hours/h}
+	up=${up// hour/h}
+
+	printf '%s\n' "$up"
+}
+
 if command -v monitor_"$1" >/dev/null 2>&1; then
 	monitor_"$1"
 fi
