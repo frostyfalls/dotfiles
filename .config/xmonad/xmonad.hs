@@ -1,5 +1,5 @@
 import XMonad
-import XMonad.Layout.Circle
+import XMonad.Layout.CircleEx
 import XMonad.Layout.Grid
 import XMonad.Layout.LayoutModifier
 import XMonad.Layout.NoBorders (noBorders, smartBorders)
@@ -54,7 +54,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask, xK_w), spawn "firefox")
     , ((modMask .|. controlMask, xK_q), spawn "qutebrowser")
     , ((modMask, xK_e), spawnTerminal myEditor)
-    , ((modMask, xK_f), spawnTerminal "nnn")
+    , ((modMask, xK_f), spawnTerminal "lf")
     , ((modMask, xK_t), spawnTerminal "ncmpcpp")
     , ((modMask .|. controlMask, xK_e), spawnTerminal "ncspot")
     , ((modMask, xK_v), spawnTerminal "pulsemixer")
@@ -104,7 +104,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
           [ ((modMask, xK_t), sendMessage $ JumpToLayout "Tall")
           , ((modMask, xK_y), sendMessage $ JumpToLayout "Wide")
           , ((modMask, xK_g), sendMessage $ JumpToLayout "Grid")
-          , ((modMask, xK_c), sendMessage $ JumpToLayout "Circle")
           , ((modMask, xK_a), sendMessage $ NextLayout)
           ]
       )
@@ -187,7 +186,7 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 
 myLayoutHook =
     avoidStruts
-    $ tall ||| wide ||| grid ||| circle
+    $ tall ||| wide ||| grid
   where
     tall = named "Tall"
         $ Tall 1 (3/100) (1/2)
@@ -195,8 +194,6 @@ myLayoutHook =
         $ Mirror tall
     grid = named "Grid"
         $ Grid
-    circle = named "Circle"
-        $ Circle
 
     mySWNConfig :: SWNConfig
     mySWNConfig = def
