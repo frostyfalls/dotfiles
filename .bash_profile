@@ -1,5 +1,7 @@
 # shellcheck disable=SC2155
 
+[ -f "$HOME/.bashrc" ] && . "$HOME/.bashrc"
+
 # XDG base directories
 export XDG_DATA_HOME="${XDG_DATA_HOME:-$HOME/.local/share}"
 export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
@@ -14,7 +16,6 @@ export BROWSER="${BROWSER:-firefox}"
 # $HOME cleanup
 export HISTFILE="$XDG_STATE_HOME/bash_history"
 export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
-export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
 export XCURSOR_PATH="/usr/share/icons:$XDG_DATA_HOME/icons"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export GOPATH="$XDG_DATA_HOME/go"
@@ -26,11 +27,14 @@ export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
 
 # Other program settings
 export SVDIR="$XDG_CONFIG_HOME/service"
+export PIPX_BIN_DIR="$XDG_DATA_HOME/pipx/bin"
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
 
 # $PATH additions
 export PATH="$PATH:$(find "$HOME/.local/bin/" -type d | paste -sd ':' -)"
 export PATH="$PATH:$GOPATH/bin"
+export PATH="$PATH:$XDG_DATA_HOME/pipx/bin"
+export PATH="$PATH:$HOME/.cabal/bin"
 
 # Automatic graphical start on tty1
 [ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
