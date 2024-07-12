@@ -1,0 +1,4 @@
+#!/bin/sh
+
+cd "$XDG_CONFIG_HOME/xmonad" || exit
+cabal install --overwrite-policy=always
