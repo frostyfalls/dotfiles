@@ -19,7 +19,7 @@ progressbar_elapsed_color = "blue"
 visualizer_data_source = "/tmp/mpd_visualizer.fifo"
 visualizer_output_name = "Visualizer"
 visualizer_type = "wave_filled"
-visualizer_fps = 120
+visualizer_fps = 75
 
 ## Disabling UI ##
 header_visibility = "no"
