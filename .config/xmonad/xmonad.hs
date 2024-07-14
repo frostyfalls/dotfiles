@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
+
 import Data.Map qualified as M
 import Data.Monoid
 import Graphics.X11.ExtraTypes.XF86
@@ -14,17 +16,10 @@ import XMonad.Hooks.ManageDocks (ToggleStruts (..), avoidStruts, manageDocks)
 import XMonad.Hooks.Place
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.WindowSwallowing
-import XMonad.Layout.CircleEx
 import XMonad.Layout.Grid
-import XMonad.Layout.LayoutModifier
-import XMonad.Layout.NoBorders (noBorders, smartBorders)
 import XMonad.Layout.Renamed (named)
-import XMonad.Layout.ShowWName
-import XMonad.Layout.Spacing
 import XMonad.StackSet qualified as W
 import XMonad.Util.NamedScratchpad
-
--- MAIN OPTIONS --------------------------------------------------------
 
 myTerminal, myEditor :: String
 myTerminal = "st"
@@ -44,13 +39,11 @@ floatClasses, swallowClasses :: [String]
 floatClasses = ["Arandr", "Nsxiv"]
 swallowClasses = ["St", "XTerm"]
 
--- KEY BINDS -----------------------------------------------------------
-
 myKeys :: XConfig Layout -> M.Map (KeyMask, KeySym) (X ())
-myKeys conf@(XConfig {XMonad.modMask = modMask}) =
+myKeys (XConfig {XMonad.modMask = modMask, XMonad.workspaces = workspaces}) =
   M.fromList $
-    -- Spawning programs
-    [ ((modMask, xK_Return), spawn myTerminal),
+    [ -- Common programs
+      ((modMask, xK_Return), spawn myTerminal),
       ((modMask, xK_p), spawnDmenu "dmenu_run"),
       ((modMask, xK_w), spawn "firefox"),
       ((modMask .|. controlMask, xK_q), spawn "qutebrowser"),
@@ -75,7 +68,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
       ((modMask .|. controlMask, xK_r), spawn "epicshot -cs select"),
       ((modMask .|. controlMask, xK_t), spawn "epicshot -cs full"),
       ((modMask .|. controlMask, xK_g), spawn "epicshot -so select"),
-      -- Custom function row
+      -- Faux function row
       ((modMask .|. controlMask, xK_F5), spawn "mpc prev"),
       ((modMask .|. controlMask, xK_F6), spawn "mpc next"),
       ((modMask .|. controlMask, xK_F7), spawn "mpc toggle"),
@@ -84,7 +77,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
       ((modMask .|. controlMask, xK_F10), spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pipe_volume"),
       ((modMask .|. controlMask, xK_F11), spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ && pipe_volume"),
       ((modMask .|. controlMask, xK_F12), spawn "run-i3lock"),
-      -- XF86 keys
+      -- Special keys
       ((0, xF86XK_Explorer), spawnTerminal "nnn"),
       ((0, xF86XK_Search), spawnDmenu "dmenu_run"),
       ((0, xF86XK_Calculator), spawnTerminal "bc -i"),
@@ -96,17 +89,18 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
       ((0, xF86XK_AudioMute), spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pipe_volume"),
       ((0, xF86XK_AudioLowerVolume), spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ 5%- && pipe_volume"),
       ((0, xF86XK_AudioRaiseVolume), spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ 5%+ && pipe_volume"),
-      -- Layouts
+      -- Layout switching
       ( (modMask, xK_a),
         submap . M.fromList $
           [ ((modMask, xK_t), sendMessage $ JumpToLayout "Tall"),
             ((modMask, xK_y), sendMessage $ JumpToLayout "Wide"),
             ((modMask, xK_g), sendMessage $ JumpToLayout "Grid"),
+            ((modMask, xK_f), sendMessage $ JumpToLayout "Full"),
             ((modMask, xK_a), sendMessage NextLayout)
           ]
       ),
       ((modMask, xK_b), sendMessage ToggleStruts),
-      -- Window focus/swap
+      -- Basic window management
       ((modMask, xK_j), windows W.focusDown),
       ((modMask, xK_k), windows W.focusUp),
       ((modMask .|. shiftMask, xK_j), windows W.swapDown),
@@ -126,15 +120,14 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
       ((modMask .|. controlMask, xK_Return), namedScratchpadAction myScratchPads "terminal"),
       ((modMask .|. controlMask, xK_c), namedScratchpadAction myScratchPads "ncmpcpp"),
       -- Session
-      ((modMask .|. controlMask, xK_Delete), io $ exitWith ExitSuccess),
-      ((modMask .|. controlMask, xK_s), spawn "xmonad --recompile && xmonad --restart && notify-send 'xmonad' 'Successfully rebuilt and restarted.'")
+      ((modMask .|. controlMask, xK_Delete), io exitSuccess),
+      ((modMask .|. controlMask, xK_s), spawn "xmonad --restart && notify-send 'xmonad' 'Successfully recompiled and restarted.'")
     ]
-      ++
-      -- View and send windows to workspaces 1-9
-      [ ((modMask .|. m, k), windows $ f i)
-        | (k, i) <- zip [xK_1 .. xK_9] (XMonad.workspaces conf),
-          (m, f) <- [(0, W.view), (shiftMask, W.shift)]
-      ]
+      -- Workspace viewing and shifting
+      ++ [ ((modMask .|. m, k), windows $ f i)
+           | (k, i) <- zip [xK_1 .. xK_9] workspaces,
+             (m, f) <- [(0, W.view), (shiftMask, W.shift)]
+         ]
   where
     toggleFloat :: Window -> X ()
     toggleFloat w = do
@@ -147,40 +140,32 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) =
     spawnTerminal x = do
       spawn $ printf "%s -e %s" myTerminal x
 
-    spawnEditor :: String -> X ()
-    spawnEditor x = do
-      spawnTerminal $ printf "%s %s" myEditor x
-
     spawnDmenu :: String -> X ()
     spawnDmenu x = do
       spawn $ printf "%s -h %s -fn %s -nb '%s' -nf '%s' -sb '%s' -sf '%s'" x "17" "Terminus-8" "#1d2021" "#ebdbb2" "#fabd2f" "#282828"
 
--- MOUSE BINDS ---------------------------------------------------------
-
 myMouseBindings :: XConfig Layout -> M.Map (KeyMask, Button) (Window -> X ())
 myMouseBindings (XConfig {XMonad.modMask = modMask}) =
-  M.fromList $
-    -- Set the window to floating mode and move by dragging
-    [ ((modMask, button1), (\w -> focus w >> mouseMoveWindow w)),
-      -- Raise the window to the top of the stack
-      ((modMask, button2), (\w -> focus w >> windows W.shiftMaster)),
-      -- Set the window to floating mode and resize by dragging
-      ((modMask, button3), (\w -> focus w >> mouseResizeWindow w)),
-      -- Switch to previous workspace
-      ((modMask, button4), (\_ -> prevWS)),
-      -- Switch to next workspace
-      ((modMask, button5), (\_ -> nextWS)),
-      -- Send client to previous workspace
-      ((modMask .|. shiftMask, button4), (\_ -> shiftToPrev >> prevWS)),
-      -- Send client to next workspace
-      ((modMask .|. shiftMask, button5), (\_ -> shiftToNext >> nextWS))
+  M.fromList
+    [ -- Float and move window
+      ((modMask, button1), \w -> focus w >> mouseMoveWindow w),
+      -- Shift window to master
+      ((modMask, button2), \w -> focus w >> windows W.shiftMaster),
+      -- Float and resize window
+      ((modMask, button3), \w -> focus w >> mouseResizeWindow w),
+      -- Go to previous workspace
+      ((modMask, button4), const prevWS),
+      -- Go to next workspace
+      ((modMask, button5), const nextWS),
+      -- Shift window to previous workspace
+      ((modMask .|. shiftMask, button4), \_ -> shiftToPrev >> prevWS),
+      -- Shift window to next workspace
+      ((modMask .|. shiftMask, button5), \_ -> shiftToNext >> nextWS)
     ]
-
--- LAYOUTS -------------------------------------------------------------
 
 myLayoutHook =
   avoidStruts $
-    tall ||| wide ||| grid
+    tall ||| wide ||| grid ||| full
   where
     tall =
       named "Tall" $
@@ -189,17 +174,13 @@ myLayoutHook =
       named "Wide" $
         Mirror tall
     grid =
-      named "Grid" $
+      named
+        "Grid"
         Grid
-
-    mySWNConfig :: SWNConfig
-    mySWNConfig =
-      def
-        { swn_font = "Fira Mono 24",
-          swn_fade = 1.0,
-          swn_bgcolor = "#121212",
-          swn_color = "#cccccc"
-        }
+    full =
+      named
+        "Full"
+        Full
 
 -- SCRATCHPADS ---------------------------------------------------------
 
@@ -225,20 +206,20 @@ myScratchPads =
 myManageHook :: ManageHook
 myManageHook =
   composeAll
-    [ placeHook $ smart (0.5, 0.5),
+    [ placeHook simpleSmart,
+      manageDocks,
       namedScratchpadManageHook myScratchPads,
       insertPosition End Newer,
-      manageDocks,
       composeAll [className =? c --> doFloat | c <- floatClasses]
     ]
 
 myEventHook :: Event -> X All
 myEventHook =
-  swallowEventHook (foldr1 (<||>) $ map (\c -> className =? c) swallowClasses) (return True)
+  swallowEventHook (foldr1 (<||>) $ map (className =?) swallowClasses) (return True)
 
 myStartupHook :: X ()
 myStartupHook = do
-  spawn "sleep 0.5 && initialize_pipes"
+  spawn "initialize_pipes"
 
 -- XMOBAR --------------------------------------------------------------
 
@@ -248,7 +229,7 @@ myPP =
     { ppSep = sep " | ",
       ppCurrent = current . wrap "" "*",
       ppHidden = noScratchPad,
-      ppHiddenNoWindows = \_ -> ""
+      ppHiddenNoWindows = const ""
     }
   where
     noScratchPad :: String -> String
@@ -263,7 +244,8 @@ myPP =
 main :: IO ()
 main =
   xmonad
-    . withSB (statusBarProp "xmobar" $ pure myPP)
+    . withSB (statusBarProp "xmobar-top" $ pure myPP)
+    . withSB (statusBarProp "xmobar-bottom" $ pure myPP)
     . toggleFullFloatEwmhFullscreen
     . ewmhFullscreen
     . ewmh
@@ -276,9 +258,9 @@ main =
         manageHook = myManageHook,
         handleEventHook = myEventHook,
         startupHook = myStartupHook,
+        mouseBindings = myMouseBindings,
+        keys = myKeys,
         focusFollowsMouse = True,
         clickJustFocuses = False,
-        modMask = mod4Mask,
-        mouseBindings = myMouseBindings,
-        keys = myKeys
+        modMask = mod4Mask
       }
