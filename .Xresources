@@ -19,7 +19,7 @@ st.font: DejaVu Sans Mono:size=9
 ! st.color13: #d3869b
 ! st.color14: #8ec07c
 ! st.color15: #ebdbb2
-st.alpha: 0.95
+st.alpha: 0.90
 
 !! dmenu
 dmenu.font: Terminus:size=12
