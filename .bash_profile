@@ -35,6 +35,7 @@ export PATH="$PATH:$(find "$HOME/.local/bin/" -type d | paste -sd ':' -)"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:$XDG_DATA_HOME/pipx/bin"
 export PATH="$PATH:$HOME/.cabal/bin"
+export PATH="$PATH:$XDG_DATA_HOME/npm/bin"
 
 # Automatic graphical start on tty1
 [ "$(tty)" = "/dev/tty1" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx
