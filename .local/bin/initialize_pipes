@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PIPES="volume"
+PIPES="volume now-playing"
 
 for pipe in $PIPES; do
 	echo "" >"/tmp/pipe-$pipe"
