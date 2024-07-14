@@ -32,5 +32,8 @@ centered_cursor = "yes"
 media_library_primary_tag = "album_artist"
 screen_switcher_mode = "playlist, media_library, visualizer"
 lyrics_directory = ""
+execute_on_song_change = "pipe_now-playing"
+execute_on_player_state_change = "pipe_now-playing"
+
 
 # vim:ft=conf
