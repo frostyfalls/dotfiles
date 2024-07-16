@@ -7,3 +7,6 @@
 [submodule ".local/share/zsh/plugins/zsh-fzf-history-search"]
 	path = .local/share/zsh/plugins/zsh-fzf-history-search
 	url = https://github.com/joshskidmore/zsh-fzf-history-search.git
+[submodule ".config/nvim"]
+	path = .config/nvim
+	url = git@codeberg.org:frosty/init.lua.git
