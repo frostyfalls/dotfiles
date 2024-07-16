@@ -5,6 +5,7 @@ STATUS_OK_COLOR="#f58c31"
 STATUS_UNWELL_COLOR="#f53131"
 
 BATTERY_NAME="BAT1"
+BATTERY_EMPTY_THRESHOLD=20
 BATTERY_FULL_THRESHOLD=80
 
 WIFI_ADAPTER="wlan0"
@@ -13,6 +14,8 @@ DISK_ICON_COLOR="#48a3e8"
 
 NOW_PLAYING_COLOR="#e647a1"
 NOW_PLAYING_STATE_COLOR="#ccca4e"
+
+DEFAULT_COLOR="#cccccc"
 
 readable_kib() {
 	data="${1:-}"
@@ -64,17 +67,25 @@ monitor_battery() {
 
 	# TODO(frosty): Add more icons based on other statuses.
 	case $status in
-	"Full" | "Charging") icon="" ;;
-	"Not charging") icon="" ;;
-	*) icon="" ;;
+	"Full" | "Charging")
+		icon=""
+		color="$STATUS_WELL_COLOR"
+		;;
+	"Not charging")
+		icon=""
+		color="$STATUS_OK_COLOR"
+		;;
+	*)
+		icon=""
+		color="$DEFAULT_COLOR"
+		;;
 	esac
 
-	# TODO(frosty): Check for other statuses, and print a different color.
-	if [ "$status" = "Full" ]; then
-		printf '%s  <fc=%s>%s%%</fc> (%s)\n' "$icon" "$STATUS_WELL_COLOR" "$capacity" "$status"
-	else
-		printf '%s  %s%% (%s)\n' "$icon" "$capacity" "$status"
+	if [ "$capacity" -le "$BATTERY_EMPTY_THRESHOLD" ] && [ "$status" != "Charging" ]; then
+		color="$STATUS_UNWELL_COLOR"
 	fi
+
+	printf '%s  <fc=%s>%s%%</fc> (%s)\n' "$icon" "$color" "$capacity" "$status"
 }
 
 monitor_cpu() {
@@ -107,7 +118,7 @@ EOF
 
 	usage_percent="$(printf '%i\n' $(((current_user_sys - initial_user_sys) * 100 / (current_total - initial_total))))"
 	case "$usage_percent" in
-	[0-9] | [0-3][0-9]) color="$STATUS_WELL_COLOR" ;;
+	[0-9] | [0-3][0-9]) color="$DEFAULT_COLOR" ;;
 	[4-5][0-9]) color="$STATUS_OK_COLOR" ;;
 	*) color="$STATUS_UNWELL_COLOR" ;;
 	esac
@@ -149,14 +160,15 @@ monitor_memory() {
 		esac
 	done </proc/meminfo
 	used_mem="$((total_mem - free_mem))"
-	usage_percent="$((used_mem * 100 / total_mem))"
 
-	# TODO(frosty): Add other colors for usage percentages.
-	if [ "$usage_percent" -lt 50 ]; then
-		printf '%s (<fc=%s>%s%%</fc>)\n' "$(readable_kib "$used_mem" 1)" "$STATUS_WELL_COLOR" "$usage_percent"
-	else
-		printf '%s (%s%%)\n' "$(readable_kib "$used_mem" 1)" "$usage_percent"
-	fi
+	usage_percent="$((used_mem * 100 / total_mem))"
+	case "$usage_percent" in
+	[0-9] | [1-3][0-9]) color="$DEFAULT_COLOR" ;;
+	[4-6][0-9]) color="$STATUS_OK_COLOR" ;;
+	*) color="$STATUS_UNWELL_COLOR" ;;
+	esac
+
+	printf '%s (<fc=%s>%s%%</fc>)\n' "$(readable_kib "$used_mem" 1)" "$color" "$usage_percent"
 }
 
 monitor_ssid() {
