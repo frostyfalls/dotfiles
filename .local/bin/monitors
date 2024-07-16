@@ -1,5 +1,6 @@
 #!/bin/sh
 
+DEFAULT_COLOR="#cccccc"
 STATUS_WELL_COLOR="#31f53e"
 STATUS_OK_COLOR="#f58c31"
 STATUS_UNWELL_COLOR="#f53131"
@@ -14,8 +15,6 @@ DISK_ICON_COLOR="#48a3e8"
 
 NOW_PLAYING_COLOR="#e647a1"
 NOW_PLAYING_STATE_COLOR="#ccca4e"
-
-DEFAULT_COLOR="#cccccc"
 
 readable_kib() {
 	data="${1:-}"
