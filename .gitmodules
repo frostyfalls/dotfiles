@@ -10,3 +10,6 @@
 [submodule ".config/nvim"]
 	path = .config/nvim
 	url = git@codeberg.org:frosty/init.lua.git
+[submodule ".config/emacs"]
+	path = .config/emacs
+	url = git@codeberg.org:frosty/init.el.git
