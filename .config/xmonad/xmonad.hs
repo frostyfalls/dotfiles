@@ -17,7 +17,9 @@ import XMonad.Hooks.Place
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.WindowSwallowing
 import XMonad.Layout.Grid
+import XMonad.Layout.NoBorders
 import XMonad.Layout.Renamed (named)
+import XMonad.Layout.Spacing
 import XMonad.StackSet qualified as W
 import XMonad.Util.NamedScratchpad
 
@@ -26,7 +28,7 @@ myTerminal = "st"
 myEditor = "nvim"
 
 myWorkspaces :: [String]
-myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+myWorkspaces = ["1:term", "2:www", "3:mus", "4:chat", "5:file", "6:dev", "7:vol", "8:sys", "9"]
 
 myBorderWidth :: Dimension
 myBorderWidth = 1
@@ -56,11 +58,10 @@ myKeys (XConfig {XMonad.modMask = modMask, XMonad.workspaces = workspaces}) =
       ((modMask .|. controlMask, xK_semicolon), spawn "simplescreenrecorder"),
       ((modMask .|. controlMask, xK_apostrophe), spawn "obs"),
       ((modMask .|. controlMask, xK_o), spawnTerminal "cava"),
-      ((modMask .|. controlMask, xK_l), spawn "run-i3lock"),
       ((modMask .|. controlMask, xK_d), spawn "arandr"),
       ((modMask .|. controlMask, xK_v), spawn "screenlayouts-open"),
       ((modMask .|. controlMask, xK_w), spawn "wallpapers-open"),
-      ((modMask .|. controlMask, xK_bracketright), spawn "find ~/pictures/screenshots -type f | nsxiv -ti"),
+      ((modMask .|. controlMask, xK_bracketright), spawn "find ~/pictures/screenshots -type f | sort -r | nsxiv -ti"),
       -- Screenshotting
       ((0, xK_Print), spawn "epicshot -cs select"),
       ((controlMask, xK_Print), spawn "epicshot -cs full"),
@@ -96,6 +97,7 @@ myKeys (XConfig {XMonad.modMask = modMask, XMonad.workspaces = workspaces}) =
             ((modMask, xK_y), sendMessage $ JumpToLayout "Wide"),
             ((modMask, xK_g), sendMessage $ JumpToLayout "Grid"),
             ((modMask, xK_f), sendMessage $ JumpToLayout "Full"),
+            ((modMask, xK_s), sendMessage $ JumpToLayout "Spiral"),
             ((modMask, xK_a), sendMessage NextLayout)
           ]
       ),
@@ -120,8 +122,9 @@ myKeys (XConfig {XMonad.modMask = modMask, XMonad.workspaces = workspaces}) =
       ((modMask .|. controlMask, xK_Return), namedScratchpadAction myScratchPads "terminal"),
       ((modMask .|. controlMask, xK_c), namedScratchpadAction myScratchPads "ncmpcpp"),
       -- Session
-      ((modMask .|. controlMask, xK_Delete), io exitSuccess),
-      ((modMask .|. controlMask, xK_s), spawn "xmonad --restart && notify-send 'xmonad' 'Successfully recompiled and restarted.'")
+      ((modMask .|. controlMask, xK_l), spawn "xscreensaver-command -lock"),
+      ((modMask .|. controlMask, xK_s), spawn "xmonad --restart && notify-send 'xmonad' 'Successfully recompiled and restarted.'"),
+      ((modMask .|. controlMask, xK_Delete), io exitSuccess)
     ]
       -- Workspace viewing and shifting
       ++ [ ((modMask .|. m, k), windows $ f i)
@@ -148,11 +151,11 @@ myMouseBindings :: XConfig Layout -> M.Map (KeyMask, Button) (Window -> X ())
 myMouseBindings (XConfig {XMonad.modMask = modMask}) =
   M.fromList
     [ -- Float and move window
-      ((modMask, button1), \w -> focus w >> mouseMoveWindow w),
+      ((modMask, button1), \w -> focus w >> mouseMoveWindow w >> windows W.shiftMaster),
       -- Shift window to master
       ((modMask, button2), \w -> focus w >> windows W.shiftMaster),
       -- Float and resize window
-      ((modMask, button3), \w -> focus w >> mouseResizeWindow w),
+      ((modMask, button3), \w -> focus w >> mouseResizeWindow w >> windows W.shiftMaster),
       -- Go to previous workspace
       ((modMask, button4), const prevWS),
       -- Go to next workspace
@@ -164,8 +167,10 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) =
     ]
 
 myLayoutHook =
-  avoidStruts $
-    tall ||| wide ||| grid ||| full
+  lessBorders OnlyScreenFloat $
+    spacing 8 $
+      avoidStruts $
+        tall ||| wide ||| grid ||| full
   where
     tall =
       named "Tall" $
