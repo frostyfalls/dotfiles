@@ -4,3 +4,6 @@
 [submodule ".local/share/zsh/plugins/zsh-autosuggestions"]
 	path = .local/share/zsh/plugins/zsh-autosuggestions
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule ".local/share/zsh/plugins/zsh-fzf-history-search"]
+	path = .local/share/zsh/plugins/zsh-fzf-history-search
+	url = https://github.com/joshskidmore/zsh-fzf-history-search.git
