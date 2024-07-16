@@ -12,7 +12,7 @@ config =
       commands =
         [ Run XMonadLog,
           Run $ PipeReader "/tmp/pipe-volume" "volume",
-          Run $ Com "monitors" ["battery"] "battery" 3600,
+          Run $ Com "monitors" ["battery"] "battery" 600,
           Run $ Com "monitors" ["cpu"] "cpu" 50,
           Run $ Com "monitors" ["memory"] "memory" 50,
           Run $ Com "monitors" ["load"] "load" 100,
