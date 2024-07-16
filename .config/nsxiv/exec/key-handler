@@ -1,7 +1,28 @@
 #!/bin/sh
 
+copy() {
+	file="$1"
+
+	file_ext="${file##*.}"
+	case "$file_ext" in
+		"png")
+			copy_path="$file"
+			;;
+		*)
+			file_name="${file##*/}"
+			file_base="${file_base%%.*}"
+			copy_path="/tmp/copy_$file_base.png"
+			;;
+	esac
+
+	xclip -sel clip -t image/png "$file"
+	notify-send "nsxiv" "Copied <b>$copy_path</b> to the clipboard."
+}
+
 while read -r file; do
-	case $1 in
+	case "$1" in
 	w) wallpaper "$file" ;;
+	e) gimp "$file" ;;
+	y) copy "$file" ;;
 	esac
 done
