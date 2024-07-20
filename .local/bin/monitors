@@ -16,6 +16,8 @@ DISK_ICON_COLOR="#48a3e8"
 NOW_PLAYING_COLOR="#e647a1"
 NOW_PLAYING_STATE_COLOR="#ccca4e"
 
+SSID_HIDE_FILE="/tmp/monitors_no-ssid"
+
 readable_kib() {
 	data="${1:-}"
 	decimals="${2:-}"
@@ -33,27 +35,6 @@ readable_kib() {
 	fi
 
 	printf "%.*f%s\n" "$decimals" "$amt" "$letter"
-}
-
-replace_substring() {
-	original="${1:-}"
-	pattern="${2:-}"
-	replacement="${3:-}"
-	[ -z "$original" ] || [ -z "$pattern" ] && exit
-
-	new="$original"
-	while :; do
-		case "$original" in
-		*"$pattern"*)
-			before_pattern="${original%%"$pattern"*}"
-			after_pattern="${original#*"$pattern"}"
-			new="$before_pattern$replacement$after_pattern"
-			;;
-		*) break ;;
-		esac
-	done
-
-	printf '%s\n' "$new"
 }
 
 monitor_battery() {
@@ -88,34 +69,31 @@ monitor_battery() {
 }
 
 monitor_cpu() {
+	sleep_time="${2:-1}"
+
 	while read -r _ user _ system idle _; do
 		initial_user_sys="$((user + system))"
 		initial_total="$((user + system + idle))"
 		break
 	done </proc/stat
-	# TODO(frosty): Allow the user to specify how long to wait via an argument.
-	sleep 1
+	sleep "$sleep_time"
 	while read -r _ user _ system idle _; do
 		current_user_sys="$((user + system))"
 		current_total="$((user + system + idle))"
 		break
 	done </proc/stat
 
-	while read -r line; do
-		case "$line" in
-		*"Package id 0:"*) temp="$line" ;;
-		esac
-	done <<EOF
+	if command -v sensors >/dev/null 2>&1; then
+		while read -r line; do
+			case "$line" in
+			*"Package id 0:"*) temp="$line" ;;
+			esac
+		done <<EOF
 $(sensors)
 EOF
-
-	if [ -n "$temp" ]; then
-		temp="${temp#Package id 0:*+}"
-		temp="${temp%%°*}"
-		temp="${temp%.*}"
 	fi
 
-	usage_percent="$(printf '%i\n' $(((current_user_sys - initial_user_sys) * 100 / (current_total - initial_total))))"
+	usage_percent="$(((current_user_sys - initial_user_sys) * 100 / (current_total - initial_total)))"
 	case "$usage_percent" in
 	[0-9] | [0-3][0-9]) color="$DEFAULT_COLOR" ;;
 	[4-5][0-9]) color="$STATUS_OK_COLOR" ;;
@@ -123,6 +101,10 @@ EOF
 	esac
 
 	if [ -n "$temp" ]; then
+		temp="${temp#Package id 0:*+}"
+		temp="${temp%%°*}"
+		temp="${temp%.*}"
+
 		printf '%s°C (<fc=%s>%i%%</fc>)\n' "$temp" "$color" "$usage_percent"
 	else
 		printf '<fc=%s>%i%%</fc>\n' "$color" "$usage_percent"
@@ -136,13 +118,12 @@ monitor_load() {
 		load_fifteen="$fifteen"
 	done </proc/loadavg
 
-	# TODO(frosty): Find a less cursed way to achieve this.
 	load_one_color=
 	load_five_color=
 	load_fifteen_color=
 	for load in load_one load_five load_fifteen; do
-		case "$(eval 'printf "%i\n" "\$$load"')" in
-		[0-3]) eval "${load}_color=#cccccc" ;;
+		case "$(eval "printf '%.0f\n' \$$load")" in
+		[0-3]) eval "${load}_color=$DEFAULT_COLOR" ;;
 		[4-7]) eval "${load}_color=$STATUS_OK_COLOR" ;;
 		*) eval "${load}_color=$STATUS_UNWELL_COLOR" ;;
 		esac
@@ -171,28 +152,39 @@ monitor_memory() {
 }
 
 monitor_ssid() {
-	while read -r line; do
-		case $line in
-		*"Connected network"*) ssid="$line" ;;
+	if [ -f "$SSID_HIDE_FILE" ]; then
+		while IFS= read -r line; do
+			hidden_ssid="$line"
+		done <"$SSID_HIDE_FILE"
+	fi
+	while IFS= read -r line; do
+		case "$line" in
+		*"Connected network"*) [ ! -f "$SSID_HIDE_FILE" ] && ssid="$line" || ssid="$hidden_ssid" ;;
 		esac
 	done <<EOF
 $(iwctl station "$WIFI_ADAPTER" show)
 EOF
-	[ -z "$ssid" ] && exit
-	ssid="${ssid##*Connected network}"
-	ssid="${ssid#"${ssid%%[![:space:]]*}"}"
 
-	# TODO(frosty): Add other icons based on the connection status.
-	icon=""
+	if [ -n "$ssid" ]; then
+		ssid="${ssid##*Connected network}"
+		ssid="${ssid#"${ssid%%[![:space:]]*}"}"
+		ssid="${ssid%"${ssid##*[![:space:]]}"}"
+		icon=""
+	else
+		ssid="Offline"
+		icon=""
+	fi
 
 	printf '%s %s\n' "$icon" "$ssid"
 }
 
 monitor_local_ip() {
-	# TODO(frosty): Add a fallback value when offline.
-	address="$(ip route get 1)"
-	address="${address#* via * dev * src }"
-	address="${address% uid *}"
+	if address="$(ip route get 1 2>/dev/null)"; then
+		address="${address#* via * dev * src }"
+		address="${address% uid *}"
+	else
+		address="0.0.0.0"
+	fi
 
 	printf '%s\n' "$address"
 }
@@ -211,16 +203,25 @@ monitor_volume() {
 }
 
 monitor_uptime() {
-	# TODO(frosty): Find the uptime without calling another command.
 	up="$(uptime -p)"
-	up="$(replace_substring "$up" 'up ' '')"
-	up="$(replace_substring "$up" ',' '')"
-	up="$(replace_substring "$up" ' days' 'd')"
-	up="$(replace_substring "$up" ' day' 'd')"
-	up="$(replace_substring "$up" ' hours' 'h')"
-	up="$(replace_substring "$up" ' hour' 'h')"
-	up="$(replace_substring "$up" ' minutes' 'm')"
-	up="$(replace_substring "$up" ' minute' 'm')"
+	up="${up#up }"
+	while :; do
+		case "$up" in
+		*","*) up="${up%%,*}${up#*,}" ;;
+		*) break ;;
+		esac
+	done
+	while :; do
+		case "$up" in
+		*" days"*) up="${up%% days*}d${up#* days}" ;;
+		*" day"*) up="${up%% day*}d${up#* day}" ;;
+		*" hours"*) up="${up%% hours*}h${up#* hours}" ;;
+		*" hour"*) up="${up%% hour*}h${up#* hour}" ;;
+		*" minutes"*) up="${up%% minutes*}m${up#* minutes}" ;;
+		*" minute"*) up="${up%% minute*}h${up#* minute}" ;;
+		*) break ;;
+		esac
+	done
 
 	printf '%s\n' "$up"
 }
@@ -234,7 +235,6 @@ monitor_disk() {
 	use_icon="${3:-0}"
 	[ -z "$disk" ] || [ ! -d "$disk" ] && exit 1
 
-	# TODO(frosty): Allow more icons to be added using an rc file.
 	if [ "$use_icon" -eq 1 ]; then
 		case "$disk" in
 		"/") icon="" ;;
@@ -309,7 +309,7 @@ EOF
 }
 
 if command -v monitor_"$1" >/dev/null 2>&1; then
-	"monitor_$1" "$@"
+	monitor_"$1" "$@"
 else
 	exit 1
 fi
