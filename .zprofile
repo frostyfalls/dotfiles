@@ -1,4 +1,4 @@
-# shellcheck disable=SC2155
+# shellcheck shell=sh disable=SC1091
 
 [ -f "$HOME/.zshrc" ] && . "$HOME/.zshrc"
 
@@ -29,12 +29,16 @@ export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
 export SVDIR="$XDG_CONFIG_HOME/service"
 export PIPX_BIN_DIR="$XDG_DATA_HOME/pipx/bin"
 export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
+export XIDLEHOOK_SOCK="$XDG_STATE_HOME/xidlehook.sock"
 
 # $PATH additions
-export PATH="$PATH:$(find "$HOME/.local/bin/" -type d | paste -sd ':' -)"
-export PATH="$PATH:$GOPATH/bin"
-export PATH="$PATH:$XDG_DATA_HOME/pipx/bin"
+export PATH="$PATH:$HOME/.local/bin"
+export PATH="$PATH:$HOME/.local/bin/screenlayouts"
+export PATH="$PATH:$HOME/.ghcup/bin"
 export PATH="$PATH:$HOME/.cabal/bin"
+export PATH="$PATH:$PIPX_BIN_DIR"
+export PATH="$PATH:$GOPATH/bin"
+export PATH="$PATH:$CARGO_HOME/bin"
 export PATH="$PATH:$XDG_DATA_HOME/npm/bin"
 
 # Automatic graphical start on tty1
