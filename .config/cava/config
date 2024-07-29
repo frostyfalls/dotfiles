@@ -2,8 +2,8 @@
 sensitivity = 60
 
 [input]
-method = pipewire
-source = auto
+method = fifo
+source = /tmp/mpd_visualizer.fifo
 
 [output]
 channels = mono
