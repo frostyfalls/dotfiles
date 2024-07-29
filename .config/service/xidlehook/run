@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# shellcheck disable=SC2016
+
+while IFS= read -r line; do
+    case "$line" in
+    *primary*)
+        export PRIMARY_DISPLAY="${line%% *}"
+        break
+        ;;
+    esac
+done <<EOF
+$(xrandr)
+EOF
+
+exec xidlehook \
+    --not-when-fullscreen \
+    --socket "$XIDLEHOOK_SOCK" \
+    --timer 600 \
+    'xrandr --output "$PRIMARY_DISPLAY" --brightness .1' \
+    'xrandr --output "$PRIMARY_DISPLAY" --brightness 1' \
+    --timer 10 \
+    '(
+if [ -f "$XDG_CACHE_HOME/lock.png" ]; then
+    i3lock -i "$XDG_CACHE_HOME/lock.png"
+else
+    i3lock
+fi
+); xrandr --output "$PRIMARY_DISPLAY" --brightness 1' \
+    '' \
+    --timer 3600 \
+    'loginctl suspend' \
+    ''
