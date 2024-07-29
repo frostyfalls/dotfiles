@@ -2,4 +2,3 @@
 Type=Application
 Name=Video Player
 Exec=mpv %u
-Icon=mpv

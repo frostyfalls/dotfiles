@@ -2,4 +2,3 @@
 Type=Application
 Name=Audio Player
 Exec=mpv %u
-Icon=mpv

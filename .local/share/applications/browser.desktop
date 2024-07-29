@@ -2,4 +2,3 @@
 Type=Application
 Name=Web Browser
 Exec=firefox %u
-Icon=firefox

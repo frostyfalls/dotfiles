@@ -2,4 +2,3 @@
 Type=Application
 Name=Terminal Emulator
 Exec=st %u
-Icon=utilities-terminal
