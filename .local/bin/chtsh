@@ -1,0 +1,40 @@
+#!/bin/sh
+
+languages="go
+rust"
+coreutils="awk
+sed"
+
+while IFS= read -r line; do
+    case "$languages" in
+    *$line*)
+        tool="language"
+        selected="$line"
+        break
+        ;;
+    esac
+    case "$coreutils" in
+    *$line*)
+        tool="coreutil"
+        selected="$line"
+        break
+        ;;
+    esac
+done <<EOF
+$(printf '%s\n%s' "$languages" "$coreutils" | shuf | fzf)
+EOF
+[ -z "$selected" ] && exit 1
+
+printf "enter a query: " >&2
+read -r query
+
+if [ -n "$query" ]; then
+    case "$tool" in
+    language) url="$selected/$query" ;;
+    coreutil) url="$selected~$query" ;;
+    esac
+else
+    url="$selected"
+fi
+
+curl -s "https://cht.sh/$url"
