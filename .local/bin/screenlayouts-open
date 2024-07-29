@@ -1,3 +1,4 @@
 #!/bin/sh
 
-find "$HOME/.local/bin/screenlayouts" -type f | rofi -dmenu -p screenlayout | screenlayout -
+selected=$(find "$HOME/.local/bin/screenlayouts" -type f | dmenu -p "screenlayout")
+printf '%s\n' "$selected" | screenlayout-set -
