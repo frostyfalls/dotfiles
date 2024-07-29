@@ -13,303 +13,251 @@ WIFI_ADAPTER="wlan0"
 
 DISK_ICON_COLOR="#48a3e8"
 
-NOW_PLAYING_COLOR="#e647a1"
-NOW_PLAYING_STATE_COLOR="#ccca4e"
-
 SSID_HIDE_FILE="/tmp/monitors_no-ssid"
 
 readable_kib() {
-	data="${1:-}"
-	decimals="${2:-}"
-	[ -z "$data" ] || [ -z "$decimals" ] && exit
+    data="$1"
+    decimals="$2"
 
-	if [ "$data" -lt 1024 ]; then
-		amt="$1"
-		letter="K"
-	elif [ "$data" -lt 1048576 ]; then
-		amt="$(($1 / 1024))"
-		letter="M"
-	else
-		amt="$(($1 / 1048576))"
-		letter="G"
-	fi
+    if [ "$data" -lt 1024 ]; then
+        amt="$1"
+        letter="K"
+    elif [ "$data" -lt 1048576 ]; then
+        amt="$(($1 / 1024))"
+        letter="M"
+    else
+        amt="$(($1 / 1048576))"
+        letter="G"
+    fi
 
-	printf "%.*f%s\n" "$decimals" "$amt" "$letter"
+    printf "%.*f%s\n" "$decimals" "$amt" "$letter"
 }
 
 monitor_battery() {
-	read -r capacity </sys/class/power_supply/$BATTERY_NAME/capacity
-	read -r status </sys/class/power_supply/$BATTERY_NAME/status
+    read -r capacity </sys/class/power_supply/$BATTERY_NAME/capacity
+    read -r status </sys/class/power_supply/$BATTERY_NAME/status
 
-	if [ "$capacity" -ge "$BATTERY_FULL_THRESHOLD" ] && [ "$status" = "Not charging" ]; then
-		status="Full"
-	fi
+    if [ "$capacity" -ge "$BATTERY_FULL_THRESHOLD" ] && [ "$status" = "Not charging" ]; then
+        status="Full"
+    fi
 
-	# TODO(frosty): Add more icons based on other statuses.
-	case $status in
-	"Full" | "Charging")
-		icon=""
-		color="$STATUS_WELL_COLOR"
-		;;
-	"Not charging")
-		icon=""
-		color="$STATUS_OK_COLOR"
-		;;
-	*)
-		icon=""
-		color="$DEFAULT_COLOR"
-		;;
-	esac
+    # TODO(frosty): Add more icons based on other statuses.
+    case $status in
+    "Full" | "Charging")
+        icon=""
+        color="$STATUS_WELL_COLOR"
+        ;;
+    "Not charging")
+        icon=""
+        color="$STATUS_OK_COLOR"
+        ;;
+    *)
+        icon=""
+        color="$DEFAULT_COLOR"
+        ;;
+    esac
 
-	if [ "$capacity" -le "$BATTERY_EMPTY_THRESHOLD" ] && [ "$status" != "Charging" ]; then
-		color="$STATUS_UNWELL_COLOR"
-	fi
+    if [ "$capacity" -le "$BATTERY_EMPTY_THRESHOLD" ] && [ "$status" != "Charging" ]; then
+        color="$STATUS_UNWELL_COLOR"
+    fi
 
-	printf '%s  <fc=%s>%s%%</fc> (%s)\n' "$icon" "$color" "$capacity" "$status"
+    printf '%s  <fc=%s>%s%%</fc> (%s)\n' "$icon" "$color" "$capacity" "$status"
 }
 
 monitor_cpu() {
-	sleep_time="${2:-1}"
-
-	while read -r _ user _ system idle _; do
-		initial_user_sys="$((user + system))"
-		initial_total="$((user + system + idle))"
-		break
-	done </proc/stat
-	sleep "$sleep_time"
-	while read -r _ user _ system idle _; do
-		current_user_sys="$((user + system))"
-		current_total="$((user + system + idle))"
-		break
-	done </proc/stat
-
-	if command -v sensors >/dev/null 2>&1; then
-		while read -r line; do
-			case "$line" in
-			*"Package id 0:"*) temp="$line" ;;
-			esac
-		done <<EOF
+    while read -r line; do
+        case "$line" in
+        *"Package id 0:"*)
+            temp="${line#Package id 0:*+}"
+            temp="${temp%%°*}"
+            temp="${temp%.*}"
+            break
+            ;;
+        esac
+    done <<EOF
 $(sensors)
 EOF
-	fi
 
-	usage_percent="$(((current_user_sys - initial_user_sys) * 100 / (current_total - initial_total)))"
-	case "$usage_percent" in
-	[0-9] | [0-3][0-9]) color="$DEFAULT_COLOR" ;;
-	[4-5][0-9]) color="$STATUS_OK_COLOR" ;;
-	*) color="$STATUS_UNWELL_COLOR" ;;
-	esac
-
-	if [ -n "$temp" ]; then
-		temp="${temp#Package id 0:*+}"
-		temp="${temp%%°*}"
-		temp="${temp%.*}"
-
-		printf '%s°C (<fc=%s>%i%%</fc>)\n' "$temp" "$color" "$usage_percent"
-	else
-		printf '<fc=%s>%i%%</fc>\n' "$color" "$usage_percent"
-	fi
+    printf '%s°C\n' "$temp"
 }
 
 monitor_load() {
-	while read -r one five fifteen _; do
-		load_one="$one"
-		load_five="$five"
-		load_fifteen="$fifteen"
-	done </proc/loadavg
+    while read -r one five fifteen _; do
+        i=0
+        for load in "$one" "$five" "$fifteen"; do
+            case "$(printf '%.0f' "$load")" in
+            [0-3]) color="$DEFAULT_COLOR" ;;
+            [4-7]) color="$STATUS_OK_COLOR" ;;
+            *) color="$STATUS_UNWELL_COLOR" ;;
+            esac
 
-	load_one_color=
-	load_five_color=
-	load_fifteen_color=
-	for load in load_one load_five load_fifteen; do
-		case "$(eval "printf '%.0f\n' \$$load")" in
-		[0-3]) eval "${load}_color=$DEFAULT_COLOR" ;;
-		[4-7]) eval "${load}_color=$STATUS_OK_COLOR" ;;
-		*) eval "${load}_color=$STATUS_UNWELL_COLOR" ;;
-		esac
-	done
+            printf '<fc=%s>%s</fc>' "$color" "$load"
+            [ "$i" -ne 2 ] && printf ' '
 
-	printf '<fc=%s>%s</fc> <fc=%s>%s</fc> <fc=%s>%s</fc>\n' "$load_one_color" "$load_one" "$load_five_color" "$load_five" "$load_fifteen_color" "$load_fifteen"
+            i=$((i + 1))
+        done
+        printf '\n'
+    done </proc/loadavg
 }
 
 monitor_memory() {
-	while read -r label size _; do
-		case "$label" in
-		"MemTotal:") total_mem="$size" ;;
-		"MemAvailable:") free_mem="$size" ;;
-		esac
-	done </proc/meminfo
-	used_mem="$((total_mem - free_mem))"
+    while read -r label size _; do
+        case "$label" in
+        "MemTotal:") total_mem="$size" ;;
+        "MemAvailable:") free_mem="$size" ;;
+        esac
+    done </proc/meminfo
+    used_mem=$((total_mem - free_mem))
+    usage_percent=$((used_mem * 100 / total_mem))
+    case "$usage_percent" in
+    [0-9] | [1-3][0-9]) color="$DEFAULT_COLOR" ;;
+    [4-6][0-9]) color="$STATUS_OK_COLOR" ;;
+    *) color="$STATUS_UNWELL_COLOR" ;;
+    esac
 
-	usage_percent="$((used_mem * 100 / total_mem))"
-	case "$usage_percent" in
-	[0-9] | [1-3][0-9]) color="$DEFAULT_COLOR" ;;
-	[4-6][0-9]) color="$STATUS_OK_COLOR" ;;
-	*) color="$STATUS_UNWELL_COLOR" ;;
-	esac
-
-	printf '%s (<fc=%s>%s%%</fc>)\n' "$(readable_kib "$used_mem" 1)" "$color" "$usage_percent"
+    printf '%s (<fc=%s>%s%%</fc>)\n' "$(readable_kib "$used_mem" 1)" "$color" "$usage_percent"
 }
 
 monitor_ssid() {
-	if [ -f "$SSID_HIDE_FILE" ]; then
-		while IFS= read -r line; do
-			hidden_ssid="$line"
-		done <"$SSID_HIDE_FILE"
-	fi
-	while IFS= read -r line; do
-		case "$line" in
-		*"Connected network"*) [ ! -f "$SSID_HIDE_FILE" ] && ssid="$line" || ssid="$hidden_ssid" ;;
-		esac
-	done <<EOF
-$(iwctl station "$WIFI_ADAPTER" show)
+    if [ -f "$SSID_HIDE_FILE" ]; then
+        while IFS= read -r line; do
+            hidden_ssid="$line"
+        done <"$SSID_HIDE_FILE"
+    fi
+    while IFS= read -r line; do
+        case "$line" in
+        *"Connected network"*) [ ! -f "$SSID_HIDE_FILE" ] && ssid="$line" || ssid="$hidden_ssid" ;;
+        esac
+    done <<EOF
+	$(iwctl station "$WIFI_ADAPTER" show)
 EOF
 
-	if [ -n "$ssid" ]; then
-		ssid="${ssid##*Connected network}"
-		ssid="${ssid#"${ssid%%[![:space:]]*}"}"
-		ssid="${ssid%"${ssid##*[![:space:]]}"}"
-		icon=""
-	else
-		ssid="Offline"
-		icon=""
-	fi
+    if [ -n "$ssid" ]; then
+        ssid="${ssid##*Connected network}"
+        ssid="${ssid#"${ssid%%[![:space:]]*}"}"
+        ssid="${ssid%"${ssid##*[![:space:]]}"}"
+        icon=""
+    else
+        ssid="Offline"
+        icon=""
+    fi
 
-	printf '%s %s\n' "$icon" "$ssid"
+    printf '%s %s\n' "$icon" "$ssid"
 }
 
 monitor_local_ip() {
-	if address="$(ip route get 1 2>/dev/null)"; then
-		address="${address#* via * dev * src }"
-		address="${address% uid *}"
-	else
-		address="0.0.0.0"
-	fi
+    if address="$(ip route get 1 2>/dev/null)"; then
+        address="${address#* via * dev * src }"
+        address="${address% uid *}"
+    else
+        address="0.0.0.0"
+    fi
 
-	printf '%s\n' "$address"
+    printf '%s\n' "$address"
 }
 
 monitor_volume() {
-	volume="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
-	volume="${volume% \[MUTED\]}"
-	volume="${volume#Volume: }"
-	volume="${volume%.*}${volume#*.}"
-	volume="${volume#0}"
+    volume="$(wpctl get-volume @DEFAULT_AUDIO_SINK@)"
+    volume="${volume% \[MUTED\]}"
+    volume="${volume#Volume: }"
+    volume="${volume%.*}${volume#*.}"
+    volume="${volume#0}"
 
-	# TODO(frosty): Add other icons based on the current device (headphones, speakers, etc.).
-	icon=""
+    case "$volume" in
+    [0-9] | [1-5][0-9] | 60) color="$DEFAULT_COLOR" ;;
+    6[1-9] | 7[0-5]) color="$STATUS_OK_COLOR" ;;
+    7[6-9] | [8-9][0-9] | 100) color="$STATUS_UNWELL_COLOR" ;;
+    esac
 
-	printf '%s %s%%\n' "$icon" "$volume"
+    # TODO(frosty): Add other icons based on the current device (headphones, speakers, etc.).
+    icon=""
+
+    printf '%s  <fc=%s>%s%%</fc>\n' "$icon" "$color" "$volume"
 }
 
 monitor_uptime() {
-	up="$(uptime -p)"
-	up="${up#up }"
-	while :; do
-		case "$up" in
-		*","*) up="${up%%,*}${up#*,}" ;;
-		*) break ;;
-		esac
-	done
-	while :; do
-		case "$up" in
-		*" days"*) up="${up%% days*}d${up#* days}" ;;
-		*" day"*) up="${up%% day*}d${up#* day}" ;;
-		*" hours"*) up="${up%% hours*}h${up#* hours}" ;;
-		*" hour"*) up="${up%% hour*}h${up#* hour}" ;;
-		*" minutes"*) up="${up%% minutes*}m${up#* minutes}" ;;
-		*" minute"*) up="${up%% minute*}h${up#* minute}" ;;
-		*) break ;;
-		esac
-	done
+    up="$(uptime -p)"
+    up="${up#up }"
+    while :; do
+        case "$up" in
+        *","*) up="${up%%,*}${up#*,}" ;;
+        *) break ;;
+        esac
+    done
+    while :; do
+        case "$up" in
+        *\ days*) up="${up%% days*}d${up#* days}" ;;
+        *\ day*) up="${up%% day*}d${up#* day}" ;;
+        *\ hours*) up="${up%% hours*}h${up#* hours}" ;;
+        *\ hour*) up="${up%% hour*}h${up#* hour}" ;;
+        *\ minutes*) up="${up%% minutes*}m${up#* minutes}" ;;
+        *\ minute*) up="${up%% minute*}h${up#* minute}" ;;
+        *) break ;;
+        esac
+    done
 
-	printf '%s\n' "$up"
-}
-
-monitor_date() {
-	date '+%-I:%M:%S %p'
+    printf '%s\n' "$up"
 }
 
 monitor_disk() {
-	disk="${2:-}"
-	use_icon="${3:-0}"
-	[ -z "$disk" ] || [ ! -d "$disk" ] && exit 1
+    disk="${2:-}"
+    use_icon="${3:-}"
+    [ -z "$disk" ] || [ ! -d "$disk" ] && exit 1
 
-	if [ "$use_icon" -eq 1 ]; then
-		case "$disk" in
-		"/") icon="" ;;
-		"/home") icon="" ;;
-		*) icon="" ;;
-		esac
-	else
-		case "$disk" in
-		"/home") icon="~" ;;
-		*) icon="$disk" ;;
-		esac
-	fi
+    if [ -n "$use_icon" ]; then
+        case "$disk" in
+        /) icon="" ;;
+        /home) icon="" ;;
+        *) icon="" ;;
+        esac
+    else
+        case "$disk" in
+        /home) icon="~" ;;
+        *) icon="$disk" ;;
+        esac
+    fi
 
-	i=0
-	while read -r _ size used _; do
-		case "$i" in
-		0) ;;
-		1)
-			size_amt="$size"
-			used_amt="$used"
-			;;
-		*) break ;;
-		esac
-		i="$((i + 1))"
-	done <<EOF
-$(df "$disk")
+    i=0
+    while read -r _ size used _; do
+        case "$i" in
+        0) ;;
+        1)
+            size_amt="$size"
+            used_amt="$used"
+            ;;
+        *)
+            break
+            ;;
+        esac
+        i=$((i + 1))
+    done <<EOF
+	$(df "$disk")
 EOF
-	[ -z "$size_amt" ] || [ -z "$used_amt" ] && exit 1
+    [ -z "$size_amt" ] || [ -z "$used_amt" ] && exit 1
 
-	printf '<fc=%s>%s</fc> %s/%s (<fc=%s>%s%%</fc>)\n' "$DISK_ICON_COLOR" "$icon" "$(readable_kib "$used_amt" 0)" "$(readable_kib "$size_amt" 0)" "$STATUS_WELL_COLOR" "$((used_amt * 100 / size_amt))"
+    printf '<fc=%s>%s</fc> %s/%s (<fc=%s>%s%%</fc>)\n' "$DISK_ICON_COLOR" "$icon" "$(readable_kib "$used_amt" 0)" "$(readable_kib "$size_amt" 0)" "$STATUS_WELL_COLOR" "$((used_amt * 100 / size_amt))"
 }
 
-monitor_now_playing() {
-	mpc_output="$(mpc)"
+monitor_service() {
+    service="$2"
 
-	while read -r line; do
-		now_playing="$line"
-		break
-	done <<EOF
-$mpc_output
-EOF
-
-	i=0
-	while read -r state _; do
-		case "$i" in
-		0) ;;
-		1)
-			case "$state" in
-			\[*\]) play_state="$state" ;;
-			esac
-			;;
-		*) break ;;
-		esac
-		i="$((i + 1))"
-	done <<EOF
-$mpc_output
-EOF
-
-	if [ -z "$now_playing" ] || [ -z "$play_state" ]; then
-		printf 'N/A\n'
-		exit
-	fi
-	play_state="${play_state#\[}"
-	play_state="${play_state%\]}"
-
-	# TODO(frosty): Split the artist and track names, and truncate each one separately.
-	if [ "${#now_playing}" -gt 47 ]; then
-		now_playing="${now_playing%"${now_playing#??????????????????????????????????????????????}"}..."
-	fi
-
-	printf '<fc=%s>%s</fc> <fc=%s>[%s]</fc>\n' "$NOW_PLAYING_COLOR" "$now_playing" "$NOW_PLAYING_STATE_COLOR" "$play_state"
+    status="$(sv status "$service")" || exit 1
+    status="${status%:*:*}"
+    case "$status" in
+    run)
+        icon=""
+        color="$STATUS_WELL_COLOR"
+        ;;
+    down)
+        icon=""
+        color="$STATUS_UNWELL_COLOR"
+        ;;
+    esac
+    printf '<fc=%s>%s %s</fc>\n' "$color" "$icon" "$service"
 }
 
 if command -v monitor_"$1" >/dev/null 2>&1; then
-	monitor_"$1" "$@"
+    monitor_"$1" "$@"
 else
-	exit 1
+    exit 1
 fi
