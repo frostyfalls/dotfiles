@@ -1,9 +1,0 @@
-#!/bin/sh
-
-die() {
-        echo "${0##*/}: $1" >&2
-        exit 1
-}
-
-[ -f "$XDG_CACHE_HOME/lock.png" ] || die "file not found"
-i3lock -i "$XDG_CACHE_HOME/lock.png"

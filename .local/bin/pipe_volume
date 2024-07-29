@@ -1,6 +1,0 @@
-#!/bin/sh
-
-PIPE_FILE="/tmp/pipe-volume"
-[ -p "$PIPE_FILE" ] || mkfifo "$PIPE_FILE"
-
-monitors volume >"$PIPE_FILE"
