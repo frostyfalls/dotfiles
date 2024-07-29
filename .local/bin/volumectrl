@@ -1,0 +1,39 @@
+#!/bin/sh
+
+SINK="@DEFAULT_AUDIO_SINK@"
+NOTIFY_ID=9990
+NOTIFY_URGENCY="low"
+
+action="${1:-}"
+[ -z "$action" ] && exit 1
+
+if [ "$action" = "toggle" ]; then
+    wpctl set-mute "$SINK" "$action" || exit 1
+else
+    wpctl set-volume "$SINK" "$action" || exit 1
+fi
+
+volume="$(wpctl get-volume "$SINK")"
+case "$volume" in
+*\[MUTED\]*) muted=1 ;;
+*) muted=0 ;;
+esac
+volume="${volume% \[MUTED\]}"
+volume="${volume#Volume: }"
+volume="${volume%.*}${volume#*.}"
+volume="${volume#0}"
+
+if [ "$muted" -eq 1 ]; then
+    icon="audio-volume-muted-symbolic"
+    title="Volume Muted"
+else
+    case "$volume" in
+    [0-9] | [1-2][0-9] | 3[0-3]) icon="audio-volume-low-symbolic" ;;
+    3[4-9] | [4-5][0-9] | 6[0-6]) icon="audio-volume-medium-symbolic" ;;
+    6[7-9] | [7-9][0-9] | 100) icon="audio-volume-high-symbolic" ;;
+    esac
+    title="Volume"
+fi
+
+notify-send -r "$NOTIFY_ID" -u "$NOTIFY_URGENCY" -h int:value:"$volume" -i "$icon" "$title"
+update-pipe volume 'monitors volume'
