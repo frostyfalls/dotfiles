@@ -9,10 +9,10 @@
 	url = https://github.com/joshskidmore/zsh-fzf-history-search.git
 [submodule ".config/nvim"]
 	path = .config/nvim
-	url = git@codeberg.org:frosty/init.lua.git
+	url = https://codeberg.org/frosty/init.lua.git
 [submodule ".config/emacs"]
 	path = .config/emacs
-	url = git@codeberg.org:frosty/init.el.git
+	url = https://codeberg.org/frosty/init.el.git
 [submodule ".config/xmonad"]
 	path = .config/xmonad
-	url = git@codeberg.org:frosty/xmonad.hs.git
+	url = https://codeberg.org/frosty/xmonad.hs.git
