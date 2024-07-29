@@ -56,6 +56,6 @@ fi
 
 screenshot_"$SCREENSHOT_TYPE" "$FILE_PATH" || exit 0
 
-[ -z "$QUIET" ] && notify "Screenshot taken."
+[ -z "$QUIET" ] && notify -i "$FILE_PATH" "Screenshot taken."
 [ -n "$COPY" ] && xclip -sel clip -t image/png "$FILE_PATH"
 [ -z "$SAVE" ] && rm "$FILE_PATH"
