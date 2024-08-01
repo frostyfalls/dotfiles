@@ -1,0 +1,12 @@
+#!/bin/sh
+
+exec 2>/dev/null
+
+file_name="${4##*/}"
+while IFS="$(printf '\t')" read -r size _; do
+    file_size="$size"
+done <<EOF
+$(du -Hh "$4")
+EOF
+
+printf '%s | %s' "$file_name" "$file_size"
