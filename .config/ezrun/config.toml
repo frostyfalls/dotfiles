@@ -1,0 +1,77 @@
+choice_command = "dmenu -h 18 -l 4 -g 8"
+
+[[programs]]
+name = "st"
+command = "st"
+
+[[programs]]
+name = "nvim"
+command = "st -e nvim"
+
+[[programs]]
+name = "pulsemixer"
+command = "st -e pulsemixer"
+
+[[programs]]
+name = "ncmpcpp"
+command = "st -e ncmpcpp"
+
+[[programs]]
+name = "lf"
+command = "st -e lf"
+
+[[programs]]
+name = "tmux"
+command = "st -e tmux"
+
+[[programs]]
+name = "wallpapers"
+command = "wallpapers-open"
+
+[[programs]]
+name = "firefox"
+command = "firefox"
+
+[[programs]]
+name = "qutebrowser"
+command = "qutebrowser"
+
+[[programs]]
+name = "vesktop"
+command = "vesktop-bin"
+
+[[programs]]
+name = "signal"
+command = "signal-desktop"
+
+[[programs]]
+name = "steam"
+command = "flatpak run com.valvesoftware.Steam"
+[programs.env]
+__NV_PRIME_RENDER_OFFLOAD = "1"
+__VK_LAYER_NV_optimus = "NVIDIA_only"
+__GLX_VENDOR_LIBRARY_NAME = "nvidia"
+
+[[programs]]
+name = "xonotic"
+command = "xonotic-glx"
+[programs.env]
+__NV_PRIME_RENDER_OFFLOAD = "1"
+__VK_LAYER_NV_optimus = "NVIDIA_only"
+__GLX_VENDOR_LIBRARY_NAME = "nvidia"
+
+[[programs]]
+name = "flycast"
+command = "flatpak run org.flycast.Flycast"
+[programs.env]
+__NV_PRIME_RENDER_OFFLOAD = "1"
+__VK_LAYER_NV_optimus = "NVIDIA_only"
+__GLX_VENDOR_LIBRARY_NAME = "nvidia"
+
+[[programs]]
+name = "dolphin-emu"
+command = "flatpak run org.DolphinEmu.dolphin-emu"
+[programs.env]
+__NV_PRIME_RENDER_OFFLOAD = "1"
+__VK_LAYER_NV_optimus = "NVIDIA_only"
+__GLX_VENDOR_LIBRARY_NAME = "nvidia"
