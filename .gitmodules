@@ -1,0 +1,3 @@
+[submodule ".local/share/bash/iceline"]
+	path = .local/share/bash/iceline
+	url = git@codeberg.org:frosty/iceline.git

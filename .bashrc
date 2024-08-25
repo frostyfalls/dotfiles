@@ -47,4 +47,4 @@ alias gd='git diff'
 alias gp='git push'
 alias gl='git pull'
 
-. ~/docs/repos/iceline/iceline.sh
+[ -d "$XDG_DATA_HOME/bash/iceline" ] &&  . "$XDG_DATA_HOME/bash/iceline/iceline.sh"
