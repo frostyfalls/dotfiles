@@ -5,7 +5,7 @@ set -eu
 # shellcheck disable=SC1091
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
 OUTPUT_DIRECTORY="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}"
-FILENAME_BASE="screenshot"
+FILENAME_BASE=
 FILENAME_DATE_FORMAT="%Y-%m-%d_%H-%M-%S"
 
 QUIET=
@@ -49,13 +49,13 @@ select | full) ;;
 esac
 
 if [ -n "$SAVE" ]; then
-    FILE_PATH="${FILE_PATH:-$OUTPUT_DIRECTORY/$FILENAME_BASE-$(date "+$FILENAME_DATE_FORMAT").png}"
+    FILE_PATH="${FILE_PATH:-$OUTPUT_DIRECTORY/$FILENAME_BASE$(date "+$FILENAME_DATE_FORMAT").png}"
 else
     FILE_PATH="/tmp/${0##*/}-$(date '+%s').png"
 fi
 
 screenshot_"$SCREENSHOT_TYPE" "$FILE_PATH" || exit 0
 
-[ -z "$QUIET" ] && notify -i "$FILE_PATH" "Screenshot taken."
+[ -z "$QUIET" ] && notify -i "$FILE_PATH" "Screenshot saved to <b>${FILE_PATH##*/}</b>."
 [ -n "$COPY" ] && xclip -sel clip -t image/png "$FILE_PATH"
 [ -z "$SAVE" ] && rm "$FILE_PATH"
