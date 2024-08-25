@@ -4,18 +4,13 @@ LOCK_RESOLUTION="1920x1080"
 LOCK_QUALITY=70
 
 die() {
-    printf '%s: %s\n' "${0##*/}" "$1" >&2
-
+    printf '%s' "\
+${0##*/}: $1
+" >&2
     exit 1
 }
 
-if [ "$1" = "-" ]; then
-    while IFS= read -r line; do
-        input="$line"
-    done
-else
-    input="$1"
-fi
+input="$1"
 
 [ -f "$input" ] || die "$input: no such file"
 case "$input" in
@@ -27,8 +22,6 @@ png | jpg | jpeg) ;;
 *) die "$input: unsupported file type" ;;
 esac
 
-magick "$1" -resize "$LOCK_RESOLUTION"^ -gravity center -extent "$LOCK_RESOLUTION" -quality "$LOCK_QUALITY" "$XDG_CACHE_HOME/lock.png" &
+magick "$input" -resize "$LOCK_RESOLUTION"^ -gravity center -extent "$LOCK_RESOLUTION" -quality "$LOCK_QUALITY" "$XDG_CACHE_HOME/lock.png" &
 ln -sf "$input" "$XDG_DATA_HOME/wallpaper"
 xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
-
-notify-send "${0##*/}" "Set wallpaper to <b>${input##*/}</b>."
