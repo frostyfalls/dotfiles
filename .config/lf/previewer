@@ -1,0 +1,85 @@
+#!/bin/sh
+
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+
+true_input_path="$(readlink -f "$1")"
+
+image() {
+    file_path="$1"
+    mw="$(($2 - 1))"
+    mh="$3"
+    x="$4"
+    y="$5"
+
+    ueberzugpp cmd -s "$UB_SOCKET" -a add -i PREVIEW -x "$x" -y "$y" --max-width "$mw" --max-height "$mh" -f "$file_path"
+
+    exit 1
+}
+
+plaintext() {
+    if command -v bat >/dev/null 2>&1; then
+        bat --color=never --style=numbers --pager=never "$@"
+    else
+        cat "$@"
+    fi
+}
+
+generate_cache_path() {
+    while IFS=' ' read -r thumbnail _; do
+        printf '%s' "$thumbnail"
+    done <<EOF
+$XDG_CACHE_HOME/lf/thumbnail.$(stat --printf '%n\0%i\0%F\0%s\0%W\0%Y' "$true_input_path" | sha256sum).jpg
+EOF
+}
+
+case "$(printf '%s' "$true_input_path" | tr '[:upper:]' '[:lower:]')" in
+*.tgz | *.tar.gz)
+    tar tzf "$1"
+    ;;
+*.tar.bz2 | *.tbz2)
+    tar tjf "$1"
+    ;;
+*.tar.txz | *.txz)
+    xz -l "$1"
+    ;;
+*.tar)
+    tar tf "$1"
+    ;;
+*.zip | *.jar)
+    unzip -l "$1"
+    ;;
+*.rar)
+    unrar l "$1"
+    ;;
+*.7z)
+    7z l "$1"
+    ;;
+*.iso)
+    iso-info --no-header -l "$1"
+    ;;
+*.wav | *.mp3 | *.flac | *.m4a | *.ogg | *.opus)
+    exiftool "$1"
+    ;;
+*.avi | *.mp4 | *.mkv | *.mov | *.webm | *.m4v)
+    shift
+    thumbnail="$(generate_cache_path)"
+    [ -f "$thumbnail" ] || ffmpegthumbnailer -i "$true_input_path" -o "$thumbnail" -s 0 -q 5
+    image "$thumbnail" "$@"
+    ;;
+*.bmp | *.jpg | *.jpeg | *.png | *.xpm | *.webp | *.gif)
+    shift
+    image "$true_input_path" "$@"
+    ;;
+*.svg)
+    shift
+    thumbnail="$(generate_cache_path)"
+    [ -f "$thumbnail" ] || convert "$true_input_path" "$thumbnail"
+    image "$thumbnail" "$@"
+    ;;
+*.[1-8])
+    man "$1" | col -b
+    ;;
+*)
+    plaintext "$@"
+    ;;
+esac

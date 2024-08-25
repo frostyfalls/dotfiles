@@ -1,0 +1,29 @@
+#!/bin/sh
+
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-$HOME/.cache}"
+UEBERZUG_TMP_DIR="${UEBERZUG_TMP_DIR:-/tmp}"
+
+UB_PID=
+UB_SOCKET=
+
+cleanup() {
+    exec 3>&-
+    ueberzugpp cmd -s "$UB_SOCKET" -a exit
+}
+
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    lf "$@"
+else
+    [ -d "$XDG_CACHE_HOME/lf" ] || mkdir -p "$XDG_CACHE_HOME/lf"
+
+    UB_PID_FILE="$UEBERZUG_TMP_DIR/.$(uuidgen)"
+    ueberzugpp layer --silent --no-stdin --use-escape-codes --pid-file "$UB_PID_FILE"
+    read -r UB_PID <"$UB_PID_FILE"
+    rm "$UB_PID_FILE"
+
+    UB_SOCKET="$UEBERZUG_TMP_DIR/ueberzugpp-$UB_PID.socket"
+    export UB_PID UB_SOCKET
+    trap cleanup HUP INT QUIT TERM EXIT
+
+    lf "$@" 3>&-
+fi
