@@ -1,0 +1,19 @@
+#!/bin/sh
+
+notify() {
+    notify-send -r 9991 "$@"
+}
+
+i=0
+while IFS= read -r line; do
+    case "$i" in
+    0) track_artist="$line" ;;
+    1) track_title="$line" ;;
+    *) break ;;
+    esac
+    i=$((i + 1))
+done <<EOF
+$(MPC_FORMAT="%artist%\n%title%" mpc)
+EOF
+
+notify "$track_title" "by $track_artist"
