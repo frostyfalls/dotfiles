@@ -1,9 +1,0 @@
-choice_command = "dmenu -h 18"
-
-[[programs]]
-name = "full"
-command = "screenshot -cs full"
-
-[[programs]]
-name = "select"
-command = "screenshot -cs select"
