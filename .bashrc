@@ -47,4 +47,7 @@ alias gd='git diff'
 alias gp='git push'
 alias gl='git pull'
 
-[ -d "$XDG_DATA_HOME/bash/iceline" ] &&  . "$XDG_DATA_HOME/bash/iceline/iceline.sh"
+if [ -d "$XDG_DATA_HOME/bash/iceline" ]; then
+    . "$XDG_DATA_HOME/bash/iceline/iceline.sh"
+    PROMPT_COMMAND='_prompt_command'
+fi
