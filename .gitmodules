@@ -1,6 +1,3 @@
 [submodule ".config/nvim"]
 	path = .config/nvim
 	url = https://codeberg.org/frosty/init.lua.git
-[submodule ".config/xmonad"]
-	path = .config/xmonad
-	url = https://codeberg.org/frosty/xmonad.hs.git
