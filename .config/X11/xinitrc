@@ -4,12 +4,17 @@
 
 [ -f "$XDG_DATA_HOME/screenlayout" ] && . "$XDG_DATA_HOME/screenlayout"
 [ -f "$XDG_DATA_HOME/wallpaper" ] && xwallpaper --zoom "$XDG_DATA_HOME/wallpaper"
-xrdb "$HOME/.Xresources"
+xrdb "$XDG_CONFIG_HOME/X11/xinitrc"
 runsvdir "$SVDIR" &
 
 xinput set-prop "SOAI USB Gaming Mouse" "libinput Accel Profile Enabled" 0 1 0
-xinput set-prop "SOAI USB Gaming Mouse" "libinput Accel Speed" 0.2
+xinput set-prop "SOAI USB Gaming Mouse" "libinput Accel Speed" 0.1
 setxkbmap -option caps:escape
 xsetroot -cursor_name left_ptr
 
-exec dbus-launch --sh-syntax --exit-with-session xmonad
+modbot -x &
+while :; do
+    dbus-launch --exit-with-session dwm || exit 1
+done
+
+# exec dbus-launch --exit-with-session startxfce4
