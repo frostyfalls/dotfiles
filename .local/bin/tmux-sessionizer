@@ -1,0 +1,17 @@
+#!/bin/sh
+
+SEARCH_DIRECTORIES="$HOME/documents/repos"
+
+# shellcheck disable=SC2086
+selected="$(find $SEARCH_DIRECTORIES -maxdepth 1 -type d | fzf)" || exit 0
+
+if [ -z "$TMUX" ] && [ -z "$(pidof -sx tmux)" ]; then
+    tmux new-session -s "${selected##*/}" -c "$selected"
+    exit 0
+fi
+
+if ! tmux has-session -t="${selected##*/}" 2>/dev/null; then
+    tmux new-session -ds "${selected##*/}" -c "$selected"
+fi
+
+tmux switch-client -t "${selected##*/}"
