@@ -1,6 +1,24 @@
 directory: ~/music
 library: ~/.local/share/beets/library.db
-plugins: deezer spotify importreplace edit missing mpdupdate the lyrics zero lastgenre
+plugins:
+  - deezer
+  - spotify
+  - importreplace
+  - edit
+  - missing
+  - mpdupdate
+  - the
+  - lyrics
+  - zero
+  - lastgenre
+
+import:
+  log: ~/.cache/beets/import.log
+  set_fields:
+    albumartists_sort: %the{$albumartist}
+    albumartists_sort: %the{$albumartists}
+    # artist_sort: %the{$artist}
+    # artists_sort: %the{$artists}
 
 match:
   preferred:
