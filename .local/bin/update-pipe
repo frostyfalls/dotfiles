@@ -1,8 +1,0 @@
-#!/bin/sh
-
-pipe="$1"
-update="$2"
-
-PIPE_FILE="/tmp/pipe-$pipe"
-[ -p "$PIPE_FILE" ] || mkfifo "$PIPE_FILE"
-$update >"$PIPE_FILE"

@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+if address="$(ip route get 1 2>/dev/null)"; then
+	address="${address#* via * dev * src }"
+	address="${address% uid *}"
+fi
+
+if [ -n "$address" ]; then
+	printf '%s' "$address"
+else
+	printf 'Offline'
+fi

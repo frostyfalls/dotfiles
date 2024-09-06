@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -eu
+
+SINK="@DEFAULT_AUDIO_SINK@"
+STATUSBAR="modbot"
+STATUSBAR_SIGNAL=1
+
+action=$1
+
+if [ "$action" = "toggle" ]; then
+	wpctl set-mute "$SINK" toggle
+else
+	wpctl set-mute "$SINK" 0
+	wpctl set-volume "$SINK" "$action"
+fi
+
+pkill -RTMIN+"$STATUSBAR_SIGNAL" "$STATUSBAR"

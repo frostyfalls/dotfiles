@@ -4,58 +4,28 @@ set -eu
 
 # shellcheck disable=SC1091
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
-OUTPUT_DIRECTORY="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}"
+OUTPUT_DIRECTORY=${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}
 FILENAME_BASE=
 FILENAME_DATE_FORMAT="%Y-%m-%d_%H-%M-%S"
 
-QUIET=
-COPY=
-SAVE=
+NOTIFY=1
+COPY=1
+SAVE=1
 
-die() {
-    printf '%s: %s\n' "${0##*/}" "$1"
-    exit 1
-}
+screenshot_type=$1
 
-notify() {
-    notify-send "${0##*/}" "$@"
-}
+if [ "$SAVE" ]; then
+    FILE_PATH=${FILE_PATH:-$OUTPUT_DIRECTORY/$FILENAME_BASE$(date "+$FILENAME_DATE_FORMAT").png}
+else
+    FILE_PATH="/tmp/${0##*/}-$!.png"
+fi
 
-screenshot_select() {
-    maim -qsu "$@"
-}
-
-screenshot_full() {
-    maim -qu "$@"
-}
-
-while getopts :hVqcos opt; do
-    case "$opt" in
-    q) QUIET=1 ;;
-    c) COPY=1 ;;
-    s) SAVE=1 ;;
-    *) die "invalid option: -$OPTARG" ;;
-    esac
-done
-
-shift "$((OPTIND - 1))"
-
-SCREENSHOT_TYPE="${1:-full}"
-FILE_PATH="${2:-}"
-
-case "$SCREENSHOT_TYPE" in
-select | full) ;;
+case $screenshot_type in
+select) maim -qug "$(slop || exit 0)" "$FILE_PATH" ;;
+full) maim -qu "$FILE_PATH" ;;
 *) exit 1 ;;
 esac
 
-if [ -n "$SAVE" ]; then
-    FILE_PATH="${FILE_PATH:-$OUTPUT_DIRECTORY/$FILENAME_BASE$(date "+$FILENAME_DATE_FORMAT").png}"
-else
-    FILE_PATH="/tmp/${0##*/}-$(date '+%s').png"
-fi
-
-screenshot_"$SCREENSHOT_TYPE" "$FILE_PATH" || exit 0
-
-[ -z "$QUIET" ] && notify -i "$FILE_PATH" "Screenshot saved to <b>${FILE_PATH##*/}</b>."
-[ -n "$COPY" ] && xclip -sel clip -t image/png "$FILE_PATH"
-[ -z "$SAVE" ] && rm "$FILE_PATH"
+[ "$NOTIFY" ] && notify-send "${0##*/}" "Screenshot taken"
+[ "$COPY" ] && xclip -sel clip -t image/png "$FILE_PATH"
+[ "$SAVE" ] || rm "$FILE_PATH"

@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -eu
+
+FULL_THRESHOLD=90
+
+for battery in /sys/class/power_supply/BAT*; do
+	if [ ! -f "$battery/capacity" ] || [ ! -f "$battery/status" ]; then
+		continue
+	fi
+
+	read -r capacity <"$battery/capacity"
+	read -r status <"$battery/status"
+
+	if [ "$status" = "Charging" ] || ([ "$capacity" -ge "$FULL_THRESHOLD" ] && [ "$status" = "Not charging" ]); then
+		prefix="AC"
+	else
+		prefix="BAT"
+	fi
+	printf '%s %s%%' "$prefix" "$capacity"
+
+	exit 0
+done
+
+exit 1

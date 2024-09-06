@@ -15,7 +15,7 @@ export BROWSER="${BROWSER:-firefox}"
 
 # $HOME cleanup
 export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
-export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
 export XCURSOR_PATH="/usr/share/icons:$XDG_DATA_HOME/icons"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
 export GOPATH="$XDG_DATA_HOME/go"
@@ -26,18 +26,14 @@ export NODE_REPL_HISTORY="$XDG_DATA_HOME/node_repl_history"
 export CUDA_CACHE_PATH="$XDG_CACHE_HOME/nv"
 
 # Other program settings
-export SVDIR="$XDG_CONFIG_HOME/service"
-export _JAVA_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
 export XIDLEHOOK_SOCK="$XDG_STATE_HOME/xidlehook.sock"
 
 # $PATH additions
 export PATH="$PATH:$HOME/.local/bin"
 export PATH="$PATH:$HOME/.local/bin/screenlayouts"
-export PATH="$PATH:$HOME/.ghcup/bin"
-export PATH="$PATH:$HOME/.cabal/bin"
 export PATH="$PATH:$GOPATH/bin"
 export PATH="$PATH:$CARGO_HOME/bin"
 export PATH="$PATH:$XDG_DATA_HOME/npm/bin"
 
-# Automatic graphical start on tty1
-[ "$(tty)" = "/dev/tty2" ] && ! pidof -s Xorg >/dev/null 2>&1 && exec startx >/dev/null 2>&1
+# Automatic graphical start
+[ "$(tty)" = "/dev/tty2" ] && exec startx
