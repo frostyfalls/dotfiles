@@ -15,9 +15,7 @@ alias mv='mv -iv'
 alias rm='rm -vI'
 alias mkdir='mkdir -pv'
 alias ls='ls --color=auto -AF'
-cd() {
-	builtin cd "$@" && ls
-}
+cd() { builtin cd "$@" && ls; }
 alias grep='grep --color=auto'
 alias wget='wget --no-hsts'
 alias vim='nvim'

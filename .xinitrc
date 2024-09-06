@@ -25,5 +25,9 @@ mpd --no-daemon &
 modbot -x &
 
 while :; do
-    dbus-launch --sh-syntax --exit-with-session dwm
+    if command -v dbus-launch >/dev/null; then
+        dbus-launch --sh-syntax --exit-with-session dwm
+    elif command -v dbus-run-session >/dev/null; then
+        dbus-run-session dwm
+    fi
 done
