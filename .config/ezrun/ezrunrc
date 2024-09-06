@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# shellcheck disable=SC2034
+
+CHOICE_COMMAND="dmenu -l 4 -g 8"
+REPLACEMENTS="_plus:+
+_:-
+0: "
+
+_st() {
+    command st -e "$@"
+}
+
+# General system utilities
+st() { command st; }
+xterm() { command xterm; }
+thunar() { command thunar; }
+nnn() { _st nnn; }
+lf() { _st lf; }
+xarchiver() { command xarchiver; }
+stalonetray() { command stalonetray; }
+flatseal() { flatpak run com.github.tchx84.Flatseal; }
+xkill() { command xkill; }
+xev() { _st sh -c "xev | grep XLookupString"; }
+lock() { i3lock; }
+
+# Settings
+pulsemixer() { _st pulsemixer; }
+pavucontrol() { command pavucontrol; }
+arandr() { command arandr; }
+iwctl() { _st iwctl; }
+lxappearance() { command lxappearance; }
+
+# Development
+nvim() { _st nvim; }
+emacs() { command emacs; }
+tmux_new() { _st tmux; }
+tmux_attach() { _st tmux attach; }
+
+# Internet
+firefox() { command firefox; }
+qutebrowser() { command qutebrowser; }
+signal() { signal-desktop; }
+gajim() { command gajim; }
+vesktop() { vesktop-bin; }
+deluge() { deluge-gtk; }
+nicotine_plus() { nicotine; }
+
+# Media
+ncmpcpp() { _st ncmpcpp; }
+ncspot() { _st ncspot; }
+newsraft() { _st newsraft; }
+
+# Etc.
+gimp() { command gimp; }
+obs_studio() { obs-studio; }
+darktable() { command darktable; }
+
+# Showcases/toys
+cowsay() {
+    text=$(printf '' | dmenu -p 'cowsay')
+    [ "$text" ] || return 1
+    _st "$SHELL" -c "cowsay $text && read -srn1"
+}
+fastfetch() { _st "$SHELL" -c "fastfetch && read -srn1"; }
+
+# Games
+steam() { flatpak run com.valvesoftware.Steam; }
+lutris() { flatpak run net.lutris.Lutris; }
+prism_launcher() { flatpak run org.prismlauncher.PrismLauncher; }
+flycast() { flatpak run org.flycast.Flycast; }
+dolphin_emu() { flatpak run org.DolphinEmu.dolphin-emu; }
+openrct2() { command openrct2; }
