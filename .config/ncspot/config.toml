@@ -1,4 +1,0 @@
-use_nerdfont = true
-library_tabs = ["playlists", "tracks", "albums", "artists"]
-hide_display_names = true
-notify = true

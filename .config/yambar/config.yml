@@ -1,0 +1,72 @@
+bar:
+  height: 14
+  location: top
+
+  font: Terminus:size=12
+
+  foreground: ebdbb2ff
+  background: 121212ff
+
+  left:
+    - label:
+        content: {string: {text: " "}}
+    - dwl:
+        anchors:
+          - default: &default {text: "{id}:{name} ", foreground: bdae93ff}
+          - urgent: &urgent {text: "{id}:{name}! ", foreground: fb4934ff}
+          - selected: &selected {text: "{id}:{name}* ", foreground: ebdbb2ff}
+        number-of-tags: 9
+        dwl-info-filename: "/home/frosty/.cache/dwl-info"
+        name-of-tags: [ term, www, mus, chat, rec, dev, vol, sys, file ]
+        content:
+          list:
+            items:
+              - map:
+                  conditions:
+                    id == 0:
+                      - string: {text: " ", foreground: 7c6f64ff}
+                      - string: {text: "{layout} "}
+                      - map:
+                          conditions:
+                            title != "":
+                              - string: {text: " ", foreground: 7c6f64ff}
+                              - string: {text: "{title}"}
+                    urgent: {string: {<<: *urgent}}
+                    selected: {string: {<<: *selected}}
+                    ~empty: {string: {<<: *default}}
+
+  right:
+    - pipewire:
+        anchors:
+          - volume: &volume
+              conditions:
+                muted: {string: {text: "VOL {cubic_volume}%", foreground: fb4934ff}}
+                ~muted: {string: {text: "VOL {cubic_volume}%"}}
+        content:
+          list:
+            items:
+              - map:
+                  conditions:
+                    type == "sink":
+                      map:
+                        <<: *volume
+    - label:
+        content: {string: {text: "  ", foreground: 7c6f64ff}}
+    - battery:
+        name: BAT1
+        poll-interval: 60000
+        content:
+          string: {text: "BAT {capacity}%"}
+    - label:
+        content: {string: {text: "  ", foreground: 7c6f64ff}}
+    - clock:
+        date-format: "%b %d %Y"
+        time-format: "%H:%M"
+        content: {string: {text: "{date} {time}"}}
+    - label:
+        content: {string: {text: "  ", foreground: 7c6f64ff}}
+    - script:
+        path: ~/.local/bin/mod-load
+        content: {string: {text: "{one}"}}
+    - label:
+        content: {string: {text: " "}}

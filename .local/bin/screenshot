@@ -21,11 +21,11 @@ else
 fi
 
 case $screenshot_type in
-select) maim -qug "$(slop || exit 0)" "$FILE_PATH" ;;
-full) maim -qu "$FILE_PATH" ;;
-*) exit 1 ;;
+    select) grim -qug "$(slurp || exit 1)" "$FILE_PATH" ;;
+    full) grim -qu "$FILE_PATH" ;;
+    *) exit 1 ;;
 esac
 
 [ "$NOTIFY" ] && notify-send "${0##*/}" "Screenshot taken"
-[ "$COPY" ] && xclip -sel clip -t image/png "$FILE_PATH"
+[ "$COPY" ] && wl-copy --type image/png "$FILE_PATH"
 [ "$SAVE" ] || rm "$FILE_PATH"

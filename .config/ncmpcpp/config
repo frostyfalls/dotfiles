@@ -16,8 +16,8 @@ progressbar_color = "white"
 progressbar_elapsed_color = "blue"
 
 ## Visualizer ##
-visualizer_data_source = "/tmp/mpd_visualizer.fifo"
-visualizer_output_name = "Visualizer"
+visualizer_data_source = "/tmp/mpd.fifo"
+visualizer_output_name = "FIFO"
 visualizer_type = "wave_filled"
 visualizer_fps = 75
 
@@ -32,6 +32,5 @@ centered_cursor = "yes"
 media_library_primary_tag = "album_artist"
 screen_switcher_mode = "playlist, media_library, visualizer"
 lyrics_directory = ""
-execute_on_song_change = "now-playing"
 
 # vim:ft=conf

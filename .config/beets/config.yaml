@@ -1,24 +1,17 @@
 directory: ~/music
-library: ~/.local/share/beets/library.db
-plugins:
-  - deezer
-  - spotify
-  - importreplace
-  - edit
-  - missing
-  - mpdupdate
-  - the
-  - lyrics
-  - zero
-  - lastgenre
+library: ~/music/library.db
+
+plugins: deezer spotify bandcamp edit missing mpdupdate the lyrics zero lastgenre
 
 import:
-  log: ~/.cache/beets/import.log
+  move: yes
+  languages: en
+  log: ~/.cache/beets.log
   set_fields:
+    artist_sort: %the{$artist}
+    artists_sort: %the{$artists}
     albumartists_sort: %the{$albumartist}
     albumartists_sort: %the{$albumartists}
-    # artist_sort: %the{$artist}
-    # artists_sort: %the{$artists}
 
 match:
   preferred:
@@ -36,23 +29,6 @@ paths:
 the:
   a: no
 
-importreplace:
-  replacements:
-    - item_fields: title artist artist_sort artist_credit
-      album_fields: album artist artist_sort artist_credit
-      replace:
-        '[\u2018-\u201B]': ''''
-        '[\u201C-\u201F]': '"'
-        '[\u2010-\u2015]': '-'
-        '[\u2026]': '...'
-    - item_fields: artist artist_sort artist_credit
-      album_fields: artist artist_sort artist_credit
-      replace:
-        '\bYe\b': 'Kanye West'
-        '\bZebrahead\b': 'zebrahead'
-        'featuring': 'feat.'
-        'Feat[.]': 'feat.'
-        'ft[.]': 'feat.'
-
 lyrics:
-  sources: lrclib
+  sources: genius tekstowo lrclib
+  synced: yes

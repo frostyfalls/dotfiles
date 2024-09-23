@@ -1,0 +1,17 @@
+#!/bin/sh
+
+INTERVAL=3
+
+while :; do
+    # shellcheck disable=SC2034
+    read -r one five fifteen _ </proc/loadavg
+
+    printf '%s' "\
+one|float|$one
+five|float|$five
+fifteen|float|$fifteen
+
+"
+
+    sleep "$INTERVAL"
+done
