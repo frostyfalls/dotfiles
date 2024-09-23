@@ -2,6 +2,8 @@
 
 [[ $- != *i* ]] && return
 
+PS1='[\u@\h \W]\$ '
+
 # Default options
 alias cp='cp -iv'
 alias mv='mv -iv'
