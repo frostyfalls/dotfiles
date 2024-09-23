@@ -21,7 +21,7 @@ export NPM_CONFIG_USERCONFIG="$XDG_CONFIG_HOME/npm/npmrc"
 
 export PATH="$PATH:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.local/bin"
 
-[[ ! -d "$XDG_RUNTIME_DIR" ]] && mkdir -p "$XDG_RUNTIME_DIR"
+mkdir -p "$XDG_RUNTIME_DIR"
 
 [[ -f "$HOME/.bashrc" ]] && . "$HOME/.bashrc"
 [[ "$(tty)" == "/dev/tty2" ]] && exec dwl -s "$XDG_CONFIG_HOME/dwl/exec"
