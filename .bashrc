@@ -1,34 +1,61 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
 
-[[ $- != *i* ]] && return
+[[ "$-" != *i* ]] && return
 
-PS1='[\u@\h \W]\$ '
+PROMPT_COL_SUCCESS='\[\e[0;0m\]'
+PROMPT_COL_USER_HOST='\[\e[1;32m\]'
+PROMPT_COL_ROOT='\[\e[1;31m\]'
+PROMPT_COL_WORK_DIR='\[\e[1;34m\]'
+PROMPT_COL_FAILURE='\[\e[1;31m\]'
 
-# Default options
+__prompt() {
+    _last_exit="$?"
+    case "${_last_exit}" in
+        0 | 130) _prompt_color="${PROMPT_COL_SUCCESS}" ;;
+        *) _prompt_color="${PROMPT_COL_FAILURE}" ;;
+    esac
+
+    if [[ -n "${SSH_CLIENT}" ]]; then
+        _user_host="${PROMPT_COL_ROOT}\u@\h"
+    elif [[ "${EUID}" -ne 0 ]]; then
+        _user_host="${PROMPT_COL_USER_HOST}\u@\h"
+    else
+        _user_host="${PROMPT_COL_ROOT}\u"
+    fi
+
+    PS1="${_user_host} ${PROMPT_COL_WORK_DIR}\w ${_prompt_color}$ \[\e[0;0m\]"
+}
+
+PROMPT_DIRTRIM=3
+PROMPT_COMMAND='__prompt'
+
+# Verbose filesystem actions
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias rm='rm -vI'
 alias mkdir='mkdir -pv'
+
+# Color options
 alias ls='ls --color=auto -AF'
 alias grep='grep --color=auto'
-alias wget='wget --no-hsts'
+
+# ls on cd
 cd() { builtin cd "$@" && ls; }
 
-# Alternative programs
+# Alternatives
 alias cat='bat'
 alias vim='nvim'
 
 # Shorthands
-alias c='cd'
 alias l='ls'
 alias t='tmux'
-alias v='vim'
+alias v='nvim'
 alias g='git'
-alias f='fastfetch'
 
-# Commands or options
 alias ll='ls -l'
+
+# Git aliases
 alias ge='git clone'
 alias ga='git add'
 alias gc='git commit'
@@ -38,6 +65,8 @@ alias gp='git push'
 alias gl='git pull'
 alias gg='git log'
 
-# Python virtual environment
-[[ -d "${XDG_DATA_HOME}/venv" ]] &&
-    VIRTUAL_ENV_DISABLE_PROMPT=1 . "${XDG_DATA_HOME}/venv/bin/activate"
+alias wget='wget --no-hsts'
+
+lf() { cd "$(command lf -print-last-dir "$@")" || return; }
+
+[[ -d "${XDG_DATA_HOME}/venv" ]] && VIRTUAL_ENV_DISABLE_PROMPT=1 . "${XDG_DATA_HOME}/venv/bin/activate"
