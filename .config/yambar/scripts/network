@@ -1,0 +1,21 @@
+#!/bin/sh
+
+set -eu
+
+if network_data=$(ip route get 1); then
+    read -r _ _ _ _ device _ local_ip _ <<EOF
+${network_data}
+EOF
+    connected="true"
+else
+    device=
+    local_ip=
+    connected="false"
+fi
+
+printf '%s' "\
+device|string|${device}
+local_ip|string|${local_ip}
+connected|bool|${connected}
+
+"

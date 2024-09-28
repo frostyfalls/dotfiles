@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -eu
+
+WTTR_URL=${WTTR_URL:-wttr.in}
+REPORT_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/wttr-report"
+FETCH_INTERVAL=1800
+
+is_report_old() {
+    current_time=$(date '+%s')
+    report_file_time=$(date -r "${REPORT_FILE}" '+%s')
+    [ "$((current_time - report_file_time))" -ge "${FETCH_INTERVAL}" ]
+}
+
+if [ ! -f "${REPORT_FILE}" ] || is_report_old; then
+    curl --silent --connect-timeout 3 "${WTTR_URL}?format=%C\t%t" >"${REPORT_FILE}"
+fi
+
+IFS=$(printf '\t') read -r conditions temperature <"${REPORT_FILE}"
+
+printf '%s' "\
+conditions|string|${conditions}
+temperature|string|${temperature}
+
+"
