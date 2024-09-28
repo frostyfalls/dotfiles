@@ -39,6 +39,10 @@ bar:
                   id == 7: {string: {text: ""}}
                   id == 8: {string: {text: ""}}
                   id == 9: {string: {text: ""}}
+          - tag-spacer: &tag-spacer
+              map:
+                conditions:
+                  id <= 8: {<<: *spacer}
         content:
           - map:
               conditions:
@@ -49,7 +53,7 @@ bar:
                       - <<: *river-prefix
                       - <<: *river-name
                       - <<: *river-urgent
-                      - <<: *spacer
+                      - <<: *tag-spacer
                 state == focused:
                   list:
                     spacing: 0
@@ -57,14 +61,14 @@ bar:
                       - <<: *river-prefix
                       - <<: *river-name
                       - <<: *river-focused
-                      - <<: *spacer
+                      - <<: *tag-spacer
                 occupied:
                   list:
                     spacing: 0
                     items:
                       - <<: *river-prefix
                       - <<: *river-name
-                      - <<: *spacer
+                      - <<: *tag-spacer
         title:
           list:
             spacing: 0
@@ -75,16 +79,17 @@ bar:
                       list:
                         spacing: 0
                         items:
+                          - <<: *spacer
                           - <<: *separator-left
                           - <<: *spacer
                           - string: {text: "{layout}"}
-                          - <<: *spacer
               - map:
                   conditions:
                     title != "":
                       list:
                         spacing: 0
                         items:
+                          - <<: *spacer
                           - <<: *separator-left
                           - <<: *spacer
                           - string: {text: "{title}"}
