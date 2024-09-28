@@ -2,9 +2,7 @@
 
 set -eu
 
-# shellcheck disable=SC1091
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
-OUTPUT_DIRECTORY=${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}
+OUTPUT_DIRECTORY=${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-${HOME}}}
 FILENAME_DATE_FORMAT="%Y-%m-%d_%H-%M-%S"
 
 COPY=1
@@ -45,12 +43,9 @@ fi
 
 screenshot_"${screenshot_type}" "${FILE_PATH}" || die "failed"
 
-# Copy either file or raw data based on save state
 [ "${COPY}" -eq 1 ] && [ "${SAVE}" -eq 1 ] && wl-copy --type image/png "${FILE_PATH}"
 [ "${COPY}" -eq 1 ] && [ "${SAVE}" -ne 1 ] && wl-copy --type image/png <"${FILE_PATH}"
 
-# Remove file if user didn't save
 [ "${SAVE}" -ne 1 ] && rm -f "${FILE_PATH}"
 
-# Print file path
 [ "${SAVE}" -eq 1 ] && printf '%s\n' "${FILE_PATH}"
