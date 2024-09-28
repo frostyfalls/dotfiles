@@ -3,7 +3,7 @@
 set -eu
 
 WTTR_URL=${WTTR_URL:-wttr.in}
-REPORT_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/wttr-report"
+REPORT_FILE="${XDG_CACHE_HOME:-${HOME}/.cache}/wttr-report"
 FETCH_INTERVAL=1800
 
 is_report_old() {
@@ -18,8 +18,6 @@ fi
 
 IFS=$(printf '\t') read -r conditions temperature <"${REPORT_FILE}"
 
-printf '%s' "\
-conditions|string|${conditions}
-temperature|string|${temperature}
-
-"
+printf -- '%s\n' "conditions|string|${conditions}"
+printf -- '%s\n' "temperature|string|${temperature}"
+printf -- '%s\n' ""

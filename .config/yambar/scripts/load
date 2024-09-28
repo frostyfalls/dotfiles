@@ -4,9 +4,7 @@ set -eu
 
 read -r one five fifteen _ </proc/loadavg
 
-printf '%s' "\
-one|float|${one}
-five|float|${five}
-fifteen|float|${fifteen}
-
-"
+printf -- '%s\n' "one|float|${one}"
+printf -- '%s\n' "five|float|${five}"
+printf -- '%s\n' "fifteen|float|${fifteen}"
+printf -- '%s\n' ""

@@ -8,14 +8,12 @@ ${network_data}
 EOF
     connected="true"
 else
-    device=
-    local_ip=
+    device=""
+    local_ip=""
     connected="false"
 fi
 
-printf '%s' "\
-device|string|${device}
-local_ip|string|${local_ip}
-connected|bool|${connected}
-
-"
+printf -- '%s\n' "device|string|${device}"
+printf -- '%s\n' "local_ip|string|${local_ip}"
+printf -- '%s\n' "connected|bool|${connected}"
+printf -- '%s\n' ""
