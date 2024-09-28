@@ -9,7 +9,7 @@ fi
 
 # Look and feel
 setwallpaper &
-xrdb -merge "$XDG_CONFIG_HOME/X11/xresources" &
+xrdb -merge "${XDG_CONFIG_HOME}/X11/xresources" &
 
 # Background services
 yambar &
@@ -18,11 +18,12 @@ mako &
 foot --server &
 mpd --no-daemon &
 lf -server &
-pidof -sx rbw-agent || rbw-agent &
+pgrep rbw-agent || rbw-agent &
 
 #
 # LAYOUT GENERATOR
 #
+
 riverctl default-layout wideriver
 wideriver \
     --layout left \
@@ -50,12 +51,14 @@ riverctl map normal Super Return spawn footclient
 riverctl map normal Super P spawn fuzzel
 riverctl map normal Super W spawn qutebrowser
 riverctl map normal Super V spawn 'footclient pulsemixer'
+riverctl map normal Super F spawn 'footclient lf'
 
 # Super+Q to close the focused view
 riverctl map normal Super+Shift C close
 
 # Super+Shift+E to exit river
 riverctl map normal Control+Alt Delete exit
+riverctl map normal Control+Alt L spawn 'swaylock -f'
 
 # Super+J and Super+K to focus the next/previous view in the layout stack
 riverctl map normal Super J focus-view next
@@ -102,23 +105,23 @@ for i in $(seq 1 9); do
     tags=$((1 << (i - 1)))
 
     # Super+[1-9] to focus tag [0-8]
-    riverctl map normal Super "$i" set-focused-tags "$tags"
+    riverctl map normal Super "${i}" set-focused-tags "${tags}"
 
     # Super+Shift+[1-9] to tag focused view with tag [0-8]
-    riverctl map normal Super+Shift "$i" set-view-tags "$tags"
+    riverctl map normal Super+Shift "${i}" set-view-tags "${tags}"
 
     # Super+Control+[1-9] to toggle focus of tag [0-8]
-    riverctl map normal Super+Control "$i" toggle-focused-tags "$tags"
+    riverctl map normal Super+Control "${i}" toggle-focused-tags "${tags}"
 
     # Super+Shift+Control+[1-9] to toggle tag [0-8] of focused view
-    riverctl map normal Super+Shift+Control "$i" toggle-view-tags "$tags"
+    riverctl map normal Super+Shift+Control "${i}" toggle-view-tags "${tags}"
 done
 
 # Super+0 to focus all tags
 # Super+Shift+0 to tag focused view with all tags
 all_tags=$(((1 << 32) - 1))
-riverctl map normal Super 0 set-focused-tags $all_tags
-riverctl map normal Super+Shift 0 set-view-tags $all_tags
+riverctl map normal Super 0 set-focused-tags "${all_tags}"
+riverctl map normal Super+Shift 0 set-view-tags "${all_tags}"
 
 riverctl map normal Super+Shift Space toggle-float
 
@@ -158,9 +161,9 @@ riverctl focus-follows-cursor normal
 
 # shellcheck disable=SC2041
 for trackpad in 'pointer-1452-657-bcm5974'; do
-    riverctl input "$trackpad" disable while-typing enabled
-    riverctl input "$trackpad" natural-scroll enabled
-    riverctl input "$trackpad" tap enabled
+    riverctl input "${trackpad}" disable while-typing enabled
+    riverctl input "${trackpad}" natural-scroll enabled
+    riverctl input "${trackpad}" tap enabled
 done
 
 # Set keyboard repeat rate
