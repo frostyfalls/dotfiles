@@ -4,3 +4,5 @@ Nsxiv.window.foreground: #a89984
 Nsxiv.mark.foreground: #a89984
 Nsxiv.bar.background: #504945
 Nsxiv.bar.foreground: #ebdbb2
+
+! vim: ft=xdefaults
