@@ -1,0 +1,16 @@
+set previewer ~/.config/lf/previewer
+
+set shell sh
+set shellopts '-eu'
+set ifs "\n"
+
+set hidden
+
+set scrolloff 10
+
+map <enter> shell
+map ` !:
+map x $chmod +x $f
+map . set hidden!
+
+# vim: ft=conf
