@@ -1,5 +1,5 @@
 program_options:
   tray: true
   automount: false
-  file_manager: 'footclient -e lf'
-  terminal: 'footclient -e'
+  file_manager: 'footclient lf'
+  terminal: 'footclient'
