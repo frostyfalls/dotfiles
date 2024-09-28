@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC1091
 
 [[ $- != *i* ]] && return
 
@@ -12,23 +13,14 @@ alias mkdir='mkdir -pv'
 alias ls='ls --color=auto -AF'
 alias grep='grep --color=auto'
 alias wget='wget --no-hsts'
-
-# Utilities
-alias ipp='curl https://ipinfo.io/ip && echo'
-ipl() {
-    if address=$(ip route get 1 2>/dev/null); then
-        address=${address#* via * dev * src }
-        address=${address% uid *}
-    fi
-
-    [ -n "$address" ] && echo "$address" || echo "Offline"
-}
-
 cd() { builtin cd "$@" && ls; }
 
+# Alternative programs
+alias cat='bat'
 alias vim='nvim'
 
 # Shorthands
+alias c='cd'
 alias l='ls'
 alias t='tmux'
 alias v='vim'
@@ -45,3 +37,7 @@ alias gd='git diff'
 alias gp='git push'
 alias gl='git pull'
 alias gg='git log'
+
+# Python virtual environment
+[[ -d "${XDG_DATA_HOME}/venv" ]] &&
+    VIRTUAL_ENV_DISABLE_PROMPT=1 . "${XDG_DATA_HOME}/venv/bin/activate"
