@@ -5,27 +5,52 @@ set -eu
 # shellcheck disable=SC1091
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
 OUTPUT_DIRECTORY=${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}
-FILENAME_BASE=
 FILENAME_DATE_FORMAT="%Y-%m-%d_%H-%M-%S"
 
-NOTIFY=1
 COPY=1
 SAVE=1
 
-screenshot_type=$1
+die() {
+    printf '%s' "\
+${0##*/}: ${1}
+" >&2
+    exit 1
+}
 
-if [ "$SAVE" ]; then
-    FILE_PATH=${FILE_PATH:-$OUTPUT_DIRECTORY/$FILENAME_BASE$(date "+$FILENAME_DATE_FORMAT").png}
-else
-    FILE_PATH="/tmp/${0##*/}-$!.png"
-fi
+screenshot_select() {
+    file_path=${1}
 
-case $screenshot_type in
-    select) grim -qug "$(slurp || exit 1)" "$FILE_PATH" ;;
-    full) grim -qu "$FILE_PATH" ;;
-    *) exit 1 ;;
+    region=$(slurp 2>/dev/null) || return 1
+    grim -g "${region}" "${file_path}"
+}
+
+screenshot_full() {
+    file_path=${1}
+
+    grim "${file_path}"
+}
+
+screenshot_type=${1}
+
+case ${screenshot_type} in
+    select | full) ;;
+    *) die "invalid screenshot type" ;;
 esac
 
-[ "$NOTIFY" ] && notify-send "${0##*/}" "Screenshot taken"
-[ "$COPY" ] && wl-copy --type image/png "$FILE_PATH"
-[ "$SAVE" ] || rm "$FILE_PATH"
+if [ "${SAVE}" -eq 1 ]; then
+    FILE_PATH="${OUTPUT_DIRECTORY}/$(date "+${FILENAME_DATE_FORMAT}").png"
+else
+    FILE_PATH="/tmp/${0##*/}-$(date '+%s').png"
+fi
+
+screenshot_"${screenshot_type}" "${FILE_PATH}" || die "failed"
+
+# Copy either file or raw data based on save state
+[ "${COPY}" -eq 1 ] && [ "${SAVE}" -eq 1 ] && wl-copy --type image/png "${FILE_PATH}"
+[ "${COPY}" -eq 1 ] && [ "${SAVE}" -ne 1 ] && wl-copy --type image/png <"${FILE_PATH}"
+
+# Remove file if user didn't save
+[ "${SAVE}" -ne 1 ] && rm -f "${FILE_PATH}"
+
+# Print file path
+[ "${SAVE}" -eq 1 ] && printf '%s\n' "${FILE_PATH}"
