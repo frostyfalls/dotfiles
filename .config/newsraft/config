@@ -1,0 +1,18 @@
+# Settings
+scrolloff 8
+notification-command "notify-send 'Newsraft' 'Refreshed and found %q new entries.'"
+status-show-menu-path false
+
+# Colors
+color-status              default black
+color-status-info         cyan    black
+color-status-fail         red     black
+color-list-item           cyan    default
+color-list-item-unread    blue    default
+color-list-item-important magenta default
+color-list-feed           cyan    default
+color-list-feed-unread    blue    default
+color-list-section        cyan    default
+color-list-section-unread blue    default
+
+# vim: ft=conf
