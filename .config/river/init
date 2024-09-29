@@ -17,7 +17,6 @@ pipewire &
 mako &
 foot --server &
 mpd --no-daemon &
-lf -server &
 pgrep rbw-agent || rbw-agent &
 
 #
@@ -52,6 +51,8 @@ riverctl map normal Super P spawn fuzzel
 riverctl map normal Super W spawn qutebrowser
 riverctl map normal Super V spawn 'footclient pulsemixer'
 riverctl map normal Super F spawn 'footclient lf'
+riverctl map normal Super N spawn 'footclient newsraft'
+riverctl map normal Super Q spawn 'footclient ncmpcpp'
 
 # Super+Q to close the focused view
 riverctl map normal Super+Shift C close
