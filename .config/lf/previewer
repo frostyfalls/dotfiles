@@ -7,10 +7,10 @@ case "$(file -bL --mime-type -- "${1}")" in
         mediainfo "${1}"
         ;;
     text/*)
-        less -R "${1}"
+        bat -f "${1}" --style='numbers'
         ;;
     *)
-        { is_text_file "${1}" && less -R "${1}"; } || file -b "${1}"
+        { is_text_file "${1}" && cat "${1}"; } || file -b "${1}"
         ;;
 esac
 
