@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091
 
-[[ "$-" != *i* ]] && return
+[[ $- != *i* ]] && return
 
 PROMPT_COL_SUCCESS='\[\e[0;0m\]'
 PROMPT_COL_USER_HOST='\[\e[1;32m\]'
