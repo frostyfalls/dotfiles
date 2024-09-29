@@ -1,7 +1,7 @@
 directory: ~/music
 library: ~/music/library.db
 
-plugins: deezer spotify edit missing mpdupdate the lyrics zero lastgenre convert
+plugins: deezer spotify edit missing mpdupdate the lyrics zero lastgenre
 
 import:
   move: yes
