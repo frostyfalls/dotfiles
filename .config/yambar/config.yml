@@ -95,6 +95,15 @@ bar:
                           - string: {text: "{title}"}
 
   right:
+    - network:
+        content:
+          map:
+            conditions:
+              name != lo:
+                string: {text: "{ipv4}"}
+    - label:
+        content:
+          list: *sep-right
     - pipewire:
         anchors:
           - prefix: &volume-prefix {string: {text: "VOL"}}
