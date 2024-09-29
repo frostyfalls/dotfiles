@@ -1,0 +1,236 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: frosty
+#+EMAIL: passedgoandgot200@gmail.com
+#+OPTIONS: num:nil
+
+* Package Bootstrapping
+MELPA is a must for any Emacs configuration, it houses nearly everything you'd need related to Emacs. =use-package= is a useful macro for installing and configuring local remote packages.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Add MELPA to the repositories list
+  (require 'package)
+  (add-to-list 'package-archives
+	       '("melpa" . "https://melpa.org/packages/") t)
+
+  ;; Load packages list
+  (package-initialize)
+
+  ;; Setup `use-package'
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-when-compile
+    (require 'use-package))
+#+END_SRC
+
+* Look and Feel
+I tend to like having a clean and unobtrusive interface, so I disable most of the UI elements. Switching to a visual-only bell is also essential; the audio one is quite annoying.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Set the theme
+  (use-package ample-theme
+    :ensure t
+    :config (load-theme 'ample t))
+
+  ;; Disable menu bar
+  (menu-bar-mode -1)
+
+  ;; Disable tool bar
+  (tool-bar-mode -1)
+
+  ;; Disable scroll bars
+  (toggle-scroll-bar -1)
+
+  ;; Disable splash screen
+  (setq inhibit-startup-screen t)
+
+  ;; Display line numbers
+  (global-display-line-numbers-mode 1)
+  (setq-default display-line-numbers-width 3)
+
+  ;; Highlight current line
+  (global-hl-line-mode 1)
+
+  ;; Show trailing whitespace
+  (setq-default show-trailing-whitespace t)
+
+  ;; Flash mode line on bell
+  (use-package mode-line-bell
+    :ensure t
+    :config (mode-line-bell-mode))
+#+END_SRC
+
+* Input and Text Manipulation
+Useful options and packages for manipulating text, including the almighty Evil mode, which emulates Vi-style bindings. I also use these bindings in other modes, such as Dired and Org.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Better mouse scrolling
+  (setq mouse-wheel-progressive-speed nil)
+
+  ;; Auto-pair parenthesis
+  (electric-pair-mode 1)
+
+  ;; Automatically trim trailing whitespace on save
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+  ;;; VIM emulation
+  (use-package evil
+    :ensure t
+    :init
+    (setq
+     ;; Scroll up with C-u
+     evil-want-C-u-scroll t
+     ;; Yank to EOL with Y
+     evil-want-Y-yank-to-eol t
+     ;; Create split windows below
+     evil-split-window-below t
+     ;; Create vsplit windows to the right
+     evil-vsplit-window-right t)
+    :config (evil-mode))
+
+  ;; General extension for Evil
+  (use-package evil-collection
+    :ensure t
+    :after evil
+    :config
+    (setq evil-collection-mode-list '(dired ibuffer))
+    (evil-collection-init))
+
+  ;; Org extension for Evil
+  (use-package evil-org
+    :ensure t
+    :after org
+    :hook (org-mode . evil-org-mode))
+#+END_SRC
+
+* General Interface Improvements
+I consider Vertico to be essential, as I find it to be a superior completion UI over the default one. Orderless is also very convenient as a completion style. Consult is very useful for searching through your buffers.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Use short yes/no answers
+  (setq-default use-short-answers t)
+
+  ;;; Completion UI
+  (use-package vertico
+    :ensure t
+    :config
+    (vertico-mode)
+    ;; Improve directory navigation
+    (define-key vertico-map (kbd "RET") #'vertico-directory-enter)
+    (define-key vertico-map (kbd "DEL") #'vertico-directory-delete-word)
+    (define-key vertico-map (kbd "M-d") #'vertico-directory-delete-char))
+
+  ;;; Completion style
+  (use-package orderless
+    :ensure t
+    :config
+    (setq completion-styles '(orderless basic)
+	  completion-category-overrides '((file (styles basic partial-completion)))))
+
+  ;;; Extended completion utilities
+  (use-package consult
+    :ensure t
+    :config
+    (global-set-key [rebind switch-to-buffer] #'consult-buffer)
+    (global-set-key (kbd "C-c j") #'consult-line)
+    (global-set-key (kbd "C-c i") #'consult-imenu))
+
+  ;; Completion options
+  (setq read-buffer-completion-ignore-case t
+	read-file-name-completion-ignore-case t
+	completion-ignore-case t)
+#+END_SRC
+
+* Programming Extensions
+Adding support for LSP, enabling static analysis, pop-up completions, Git integration, and other major modes not included by default.
+
+#+BEGIN_SRC emacs-lisp
+  ;;; LSP support
+  (use-package eglot
+    :ensure t
+    ;; Enable LSP support by default in programming buffers
+    :hook (prog-mode-hook . eglot-ensure)
+    :config
+    ;; Create a memorable alias for `eglot-ensure'.
+    (defalias 'start-lsp-server #'eglot))
+
+  ;;; Static analysis
+  (use-package flymake
+    :hook (prog-mode-hook . flymake-mode)
+    :config
+    ;; Display messages when idle, without prompting
+    (setq help-at-pt-display-when-idle t)
+    ;; Message navigation bindings
+    (define-key flymake-mode-map (kbd "C-c n") #'flymake-goto-next-error)
+    (define-key flymake-mode-map (kbd "C-c p") #'flymake-goto-prev-error))
+
+  ;;; Pop-up completion
+  (use-package corfu
+    :ensure t
+    ;; Enable autocompletion by default in programming buffers
+    :hook (prog-mode-hook . corfu-mode)
+    ;; Enable automatic completion
+    :init (setq corfu-auto t))
+
+  ;;; Git client
+  (use-package magit
+    :ensure t
+    :config
+    ;; Bind the `magit-status' command to a convenient key.
+    (global-set-key (kbd "C-c g") #'magit-status))
+
+  ;;; Diff indication
+  (use-package diff-hl
+    :ensure t
+    ;; Enable `diff-hl' support by default in programming buffers
+    :hook (prog-mode-hook . diff-hl-mode))
+
+  ;;; Extra language modes
+  (use-package go-mode
+    :ensure t)
+  (use-package json-mode
+    :ensure t)
+  (use-package lua-mode
+    :ensure t)
+  (use-package rust-mode
+    :ensure t)
+  (use-package yaml-mode
+    :ensure t)
+  (use-package markdown-mode
+    :ensure t)
+
+  ;;; EditorConfig support
+  (use-package editorconfig
+    :ensure t
+    :config (editorconfig-mode))
+
+  ;;; Terminal emulator
+  (use-package eat
+    :ensure t
+    :config
+    (setq
+     ;; Close the terminal buffer when the shell terminates
+     eat-kill-buffer-on-exit t
+     ;; Enable mouse support
+     eat-enable-mouse t))
+
+  ;;; Jump to arbitrary positions
+  (use-package avy
+    :ensure t
+    :config
+    (global-set-key (kbd "C-c z") #'avy-goto-word-1))
+#+END_SRC
+
+* Etcetera
+Anything else that doesn't fit the bill.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Store automatic customization options elsewhere
+  (setq custom-file (locate-user-emacs-file "custom.el"))
+  (when (file-exists-p custom-file)
+    (load custom-file))
+
+  ;; Persist history over restarts
+  (use-package savehist
+    :config (savehist-mode))
+#+END_SRC
