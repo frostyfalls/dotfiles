@@ -17,6 +17,8 @@ export CARGO_HOME="${XDG_DATA_HOME}/cargo"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export GNUPGHOME="${XDG_DATA_HOME}/gnupg"
 
+export QT_QPA_PLATFORMTHEME="qt6ct"
+
 export PATH="${PATH}:${GOPATH}/bin:${CARGO_HOME}/bin:${HOME}/.local/bin"
 
 [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc"
