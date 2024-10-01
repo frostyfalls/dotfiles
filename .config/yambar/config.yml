@@ -1,13 +1,7 @@
-separator-color: &separator-color {foreground: 7c6f64ff}
-separator-left: &separator-left {string: {text: "", <<: *separator-color}}
-separator-right: &separator-right {string: {text: "", <<: *separator-color}}
+separator-color: &separator-color 7c6f64ff
+separator-left: &separator-left {string: {text: "", foreground: *separator-color}}
+separator-right: &separator-right {string: {text: "", foreground: *separator-color}}
 spacer: &spacer {string: {text: " "}}
-sep-right: &sep-right
-  spacing: 0
-  items:
-    - <<: *spacer
-    - <<: *separator-right
-    - <<: *spacer
 
 bar:
   height: 14
@@ -20,14 +14,15 @@ bar:
 
   left:
     - label:
-        content:
-          <<: *spacer
+        content: *spacer
     - river:
         anchors:
-          - prefix: &river-prefix {string: {text: "{id}:"}}
-          - urgent: &river-urgent {string: {text: "!"}}
-          - focused: &river-focused {string: {text: "*"}}
-          - name: &river-name
+          - &river-prefix {string: {text: "{id}:"}}
+          - &river-urgent {string: {text: "!"}}
+          - &river-focused {string: {text: "*"}}
+          - &river-layout {string: {text: "{layout}"}}
+          - &river-title {string: {text: "{title}"}}
+          - &river-name
               map:
                 conditions:
                   id == 1: {string: {text: "term"}}
@@ -39,36 +34,21 @@ bar:
                   id == 7: {string: {text: ""}}
                   id == 8: {string: {text: ""}}
                   id == 9: {string: {text: ""}}
-          - tag-spacer: &tag-spacer
-              map:
-                conditions:
-                  id <= 8: {<<: *spacer}
         content:
           - map:
               conditions:
                 state == urgent:
                   list:
                     spacing: 0
-                    items:
-                      - <<: *river-prefix
-                      - <<: *river-name
-                      - <<: *river-urgent
-                      - <<: *tag-spacer
+                    items: [*river-prefix, *river-name, *river-urgent, *spacer]
                 state == focused:
                   list:
                     spacing: 0
-                    items:
-                      - <<: *river-prefix
-                      - <<: *river-name
-                      - <<: *river-focused
-                      - <<: *tag-spacer
+                    items: [*river-prefix, *river-name, *river-focused, *spacer]
                 occupied:
                   list:
                     spacing: 0
-                    items:
-                      - <<: *river-prefix
-                      - <<: *river-name
-                      - <<: *tag-spacer
+                    items: [*river-prefix, *river-name, *spacer]
         title:
           list:
             spacing: 0
@@ -78,21 +58,13 @@ bar:
                     layout != "":
                       list:
                         spacing: 0
-                        items:
-                          - <<: *spacer
-                          - <<: *separator-left
-                          - <<: *spacer
-                          - string: {text: "{layout}"}
+                        items: [*separator-left, *spacer, *river-layout, *spacer]
               - map:
                   conditions:
                     title != "":
                       list:
                         spacing: 0
-                        items:
-                          - <<: *spacer
-                          - <<: *separator-left
-                          - <<: *spacer
-                          - string: {text: "{title}"}
+                        items: [*separator-left, *spacer, *river-title]
 
   right:
     - network:
@@ -103,7 +75,9 @@ bar:
                 string: {text: "{ipv4}"}
     - label:
         content:
-          list: *sep-right
+          list:
+            spacing: 0
+            items: [*spacer, *separator-right, *spacer]
     - pipewire:
         anchors:
           - prefix: &volume-prefix {string: {text: "VOL"}}
@@ -113,13 +87,12 @@ bar:
               type == "sink":
                 list:
                   spacing: 0
-                  items:
-                    - <<: *volume-prefix
-                    - <<: *spacer
-                    - string: {text: "{cubic_volume}%"}
+                  items: [*volume-prefix, *spacer, string: {text: "{cubic_volume}%"}]
     - label:
         content:
-          list: *sep-right
+          list:
+            spacing: 0
+            items: [*spacer, *separator-right, *spacer]
     - battery:
         anchors:
           - prefix: &battery-prefix {string: {text: "BAT"}}
@@ -130,21 +103,17 @@ bar:
             default:
               list:
                 spacing: 0
-                items:
-                  - <<: *battery-prefix
-                  - <<: *spacer
-                  - string: {text: "{capacity}% ({estimate})"}
+                items: [*battery-prefix, *spacer, string: {text: "{capacity}% ({estimate})"}]
             conditions:
               state != discharging:
                 list:
                   spacing: 0
-                  items:
-                    - <<: *battery-prefix
-                    - <<: *spacer
-                    - string: {text: "{capacity}%"}
+                  items: [*battery-prefix, *spacer, string: {text: "{capacity}%"}]
     - label:
         content:
-          list: *sep-right
+          list:
+            spacing: 0
+            items: [*spacer, *separator-right, *spacer]
     - clock:
         date-format: "%b %d %Y"
         time-format: "%H:%M"
@@ -152,12 +121,13 @@ bar:
           string: {text: "{date} {time}"}
     - label:
         content:
-          list: *sep-right
+          list:
+            spacing: 0
+            items: [*spacer, *separator-right, *spacer]
     - script:
         path: ~/.config/yambar/scripts/load
         poll-interval: 3000
         content:
           string: {text: "{one}"}
     - label:
-        content:
-          <<: *spacer
+        content: *spacer
