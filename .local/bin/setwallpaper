@@ -1,0 +1,44 @@
+#!/bin/sh
+
+set -eu
+
+OUTPUT_FILE="${XDG_DATA_HOME}/wallpaper"
+WALLPAPER_MODE="fill"
+
+die() {
+    printf '%s' "\
+${0##*/}: ${1}
+" >&2
+    exit 1
+}
+
+set_wallpaper() {
+    pkill swaybg || :
+    swaybg --image "${OUTPUT_FILE}" --mode "${WALLPAPER_MODE}"
+}
+
+source_image_path="${1:-}"
+
+if [ -n "${source_image_path}" ]; then
+    [ ! -f "${source_image_path}" ] && die "no such file"
+    case "${source_image_path}" in
+        /*) ;;
+        *) die "path must be absolute" ;;
+    esac
+    case "${source_image_path##*.}" in
+        png | jpg | jpeg) ;;
+        *) die "unsupported file type" ;;
+    esac
+
+    relative_image_path=$(realpath --relative-to="${OUTPUT_FILE%/*}" "${source_image_path}") ||
+        die "failed to determine relative image path"
+
+    mkdir -p "${OUTPUT_FILE%/*}"
+    ln -sf "${relative_image_path}" "${OUTPUT_FILE}"
+
+    set_wallpaper
+else
+    [ ! -f "${OUTPUT_FILE}" ] && die "output file not found"
+
+    set_wallpaper
+fi

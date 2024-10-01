@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -eu
+
+device=${1}
+amount=${2}
+display_name=${3}
+
+IFS=',' read -r _ _ _ brightness _ <<EOF
+$(brightnessctl --machine-readable --device="${device}" set "${amount}")
+EOF
+brightness=${brightness%\%}
+
+notify-send \
+    --urgency=low \
+    --hint=string:x-dunst-stack-tag:"brightness_${device}" \
+    --hint=int:value:"${brightness}" \
+    "${display_name} Brightness"

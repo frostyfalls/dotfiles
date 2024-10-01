@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -eu
+
+UGUU_BASE_URL="${UGUU_BASE_URL:-https://uguu.se}"
+
+if [ "$#" -gt 0 ]; then
+    file=${1}
+else
+    read -r file
+fi
+
+curl --silent --fail --form "files[]=@${file}" "${UGUU_BASE_URL}/upload?output=text"

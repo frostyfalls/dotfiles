@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+die() {
+    printf '%s' "\
+${0##*/}: ${1}
+" >&2
+    exit 1
+}
+
+confirm() {
+    [ "$(printf '%s' "\
+no
+yes
+" | fuzzel -d -p "${1}")" = "yes" ]
+}
+
+action=${1:-$(printf '%s' "\
+lock
+suspend
+poweroff
+reboot
+" | fuzzel -d)}
+
+case ${action} in
+    lock) pkill -USR1 swayidle ;;
+    suspend) pkill -USR1 swayidle && doas zzz -z ;;
+    poweroff) confirm 'poweroff? ' && doas poweroff ;;
+    reboot) confirm 'reboot? ' && doas reboot ;;
+    *) die "invalid action" ;;
+esac
