@@ -3,6 +3,8 @@
 
 [[ $- != *i* ]] && return
 
+[[ -d "${XDG_DATA_HOME}/venv" ]] && VIRTUAL_ENV_DISABLE_PROMPT=1 . "${XDG_DATA_HOME}/venv/bin/activate"
+
 PROMPT_COL_SUCCESS='\[\e[0;0m\]'
 PROMPT_COL_USER_HOST='\[\e[1;32m\]'
 PROMPT_COL_ROOT='\[\e[1;31m\]'
@@ -12,22 +14,22 @@ PROMPT_COL_FAILURE='\[\e[1;31m\]'
 __prompt() {
     _last_exit="$?"
     case "${_last_exit}" in
-        0 | 130) _prompt_color="${PROMPT_COL_SUCCESS}" ;;
-        *) _prompt_color="${PROMPT_COL_FAILURE}" ;;
+    0 | 130) _prompt_color="${PROMPT_COL_SUCCESS}" ;;
+    *) _prompt_color="${PROMPT_COL_FAILURE}" ;;
     esac
 
-    if [[ -n "${SSH_CLIENT}" ]]; then
-        _user_host="${PROMPT_COL_ROOT}\u@\h"
-    elif [[ "${EUID}" -ne 0 ]]; then
+    if [[ "${EUID}" -ne 0 ]]; then
         _user_host="${PROMPT_COL_USER_HOST}\u@\h"
+        _prompt_char="$"
     else
-        _user_host="${PROMPT_COL_ROOT}\u"
+        _user_host="${PROMPT_COL_ROOT}\h"
+        _prompt_char="#"
     fi
 
-    PS1="${_user_host} ${PROMPT_COL_WORK_DIR}\w ${_prompt_color}$ \[\e[0;0m\]"
+    PS1="${_user_host}\[\e[0;0m\]:${PROMPT_COL_WORK_DIR}\w ${_prompt_color}${_prompt_char} \[\e[0;0m\]"
 }
 
-PROMPT_DIRTRIM=3
+[[ "${EUID}" -ne 0 ]] && PROMPT_DIRTRIM=3
 PROMPT_COMMAND='__prompt'
 
 # Verbose filesystem actions
@@ -68,5 +70,3 @@ alias gg='git log'
 alias wget='wget --no-hsts'
 
 lf() { cd "$(command lf -print-last-dir "$@")" || return; }
-
-[[ -d "${XDG_DATA_HOME}/venv" ]] && VIRTUAL_ENV_DISABLE_PROMPT=1 . "${XDG_DATA_HOME}/venv/bin/activate"
