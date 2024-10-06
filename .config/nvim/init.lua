@@ -166,21 +166,10 @@ require('lazy').setup({
             diagnostics = {
               globals = { 'vim' },
             },
-            format = {
-              enable = true,
-              defaultConfig = {
-                quote_style = 'single',
-                trailing_table_separator = 'always',
-                space_after_comment_dash = true,
-              },
-            },
           },
         },
       })
       lspconfig['clangd'].setup({
-        capabilities = capabilities,
-      })
-      lspconfig['rust_analyzer'].setup({
         capabilities = capabilities,
       })
     end,
@@ -216,11 +205,6 @@ require('lazy').setup({
           rust = { 'rustfmt', lsp_format = 'fallback' },
           go = { 'goimports', 'gofmt', lsp_format = 'fallback' },
           sh = { 'shfmt', lsp_format = 'fallback' },
-        },
-        formatters = {
-          shfmt = {
-            prepend_args = { '-ci' },
-          },
         },
       })
     end,
