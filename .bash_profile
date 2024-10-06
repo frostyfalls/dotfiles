@@ -23,6 +23,8 @@ export PATH="${PATH}:${GOPATH}/bin:${CARGO_HOME}/bin:${HOME}/.local/bin"
 
 [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc"
 
-[[ "$(tty || :)" == "/dev/tty2" ]] &&
+[[ "$(tty)" == "/dev/tty2" ]] &&
     ! pgrep river >/dev/null &&
-    exec dbus-run-session river 2>/dev/null
+    exec dbus-run-session river >/dev/null 2>&1
+
+:
