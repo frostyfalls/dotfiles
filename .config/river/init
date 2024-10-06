@@ -1,28 +1,130 @@
 #!/bin/sh
 
-# Display configuration
-if wlr-randr | grep -e 'HDMI-A-2' -e '1280x1024'; then
-    wlr-randr \
-        --output eDP-1 --off \
-        --output HDMI-A-2 --mode 1280x1024@75.025002 Hz
-fi
+# Common programs
+riverctl map normal Super Return spawn footclient
+riverctl map normal Super P spawn fuzzel
+riverctl map normal Super W spawn qutebrowser
+riverctl map normal Super V spawn 'footclient pulsemixer'
+riverctl map normal Super F spawn 'footclient lf'
+riverctl map normal Super N spawn 'footclient newsraft'
+riverctl map normal Super Q spawn 'footclient ncmpcpp'
+riverctl map normal Super U spawn 'footclient rbw-ez'
 
-# Look and feel
-setwallpaper &
-xrdb -merge "${XDG_CONFIG_HOME}/X11/xresources" &
+# Screenshotting
+riverctl map normal Super+Shift O spawn 'screenshot --notify --copy --save full'
+riverctl map normal Super+Shift P spawn 'screenshot --notify --copy --save select'
 
-# Background services
-yambar &
-pipewire &
-mako &
-foot --server &
-mpd --no-daemon &
-pgrep rbw-agent || rbw-agent &
+# Move/resize
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
 
-#
-# LAYOUT GENERATOR
-#
+# Toggle float
+riverctl map normal Super+Shift Space toggle-float
+riverctl map-pointer normal Super BTN_MIDDLE toggle-float
 
+# Fullscreen
+riverctl map normal Super+Shift F toggle-fullscreen
+
+# Close view
+riverctl map normal Super+Shift C close
+
+# Focusing views
+riverctl map normal Super J focus-view next
+riverctl map normal Super K focus-view previous
+
+# Moving views
+riverctl map normal Super+Shift J swap next
+riverctl map normal Super+Shift K swap previous
+riverctl map normal Super+Shift Return zoom
+
+# Outputs
+riverctl map normal Super Period focus-output next
+riverctl map normal Super Comma focus-output previous
+riverctl map normal Super+Shift Period send-to-output next
+riverctl map normal Super+Shift Comma send-to-output previous
+
+# Main ratio/count
+riverctl map normal Super H send-layout-cmd wideriver '--ratio -0.0125'
+riverctl map normal Super L send-layout-cmd wideriver '--ratio +0.0125'
+riverctl map normal Super+Shift H send-layout-cmd wideriver '--ratio -0.05'
+riverctl map normal Super+Shift L send-layout-cmd wideriver '--ratio +0.05'
+riverctl map normal Super I send-layout-cmd wideriver '--count +1'
+riverctl map normal Super D send-layout-cmd wideriver '--count -1'
+
+# Layouts
+riverctl map normal Super T send-layout-cmd wideriver '--layout left'
+riverctl map normal Super+Shift T send-layout-cmd wideriver '--layout top'
+riverctl map normal Super M send-layout-cmd wideriver '--layout monocle'
+riverctl map normal Super Space send-layout-cmd wideriver '--layout-toggle'
+
+# Toggle the bar
+riverctl map normal Super B spawn 'pkill yambar || yambar'
+
+# Screen locking
+riverctl map normal Control+Alt L spawn 'swaylock -f'
+riverctl map normal Super F12 spawn 'swaylock -f'
+
+# Exiting/session
+riverctl map normal Control+Alt Delete exit
+
+# Tag management
+for i in $(seq 1 9); do
+    tags=$((1 << (i - 1)))
+    riverctl map normal Super "${i}" set-focused-tags "${tags}"
+    riverctl map normal Super+Shift "${i}" set-view-tags "${tags}"
+    riverctl map normal Super+Control "${i}" toggle-focused-tags "${tags}"
+    riverctl map normal Super+Shift+Control "${i}" toggle-view-tags "${tags}"
+done
+all_tags=$(((1 << 32) - 1))
+riverctl map normal Super 0 set-focused-tags "${all_tags}"
+riverctl map normal Super+Shift 0 set-view-tags "${all_tags}"
+riverctl map normal Super Tab focus-previous-tags
+
+# Passthrough mode
+riverctl declare-mode passthrough
+riverctl map normal Super F11 enter-mode passthrough
+riverctl map passthrough Super F11 enter-mode normal
+
+# Special keys
+for mode in normal locked; do
+    # Volume
+    riverctl map -repeat "${mode}" None XF86AudioMute spawn 'volumectl toggle'
+    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn 'volumectl 5%-'
+    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn 'volumectl 5%+'
+    riverctl map -repeat "${mode}" Super F9 spawn 'volumectl toggle'
+    riverctl map -repeat "${mode}" Super F10 spawn 'volumectl 5%-'
+    riverctl map -repeat "${mode}" Super F11 spawn 'volumectl 5%+'
+
+    # Brightness
+    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn 'brightnessctl acpi_video0 10%- Display'
+    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn 'brightnessctl acpi_video0 10%+ Display'
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn 'brightnessctl smc::kbd_backlight 10%- Keyboard'
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn 'brightnessctl smc::kbd_backlight 10%+ Keyboard'
+
+done
+
+# Other options
+riverctl default-attach-mode bottom
+riverctl hide-cursor when-typing enabled
+riverctl focus-follows-cursor normal
+
+# Input management
+riverctl set-repeat 50 300
+# shellcheck disable=SC2041
+for trackpad in 'pointer-1452-657-bcm5974'; do
+    riverctl input "${trackpad}" disable while-typing enabled
+    riverctl input "${trackpad}" natural-scroll enabled
+    riverctl input "${trackpad}" tap enabled
+done
+
+# Rules
+riverctl rule-add -app-id 'qutebrowser' tags 2
+riverctl rule-add ssd
+
+# Themes
+riverctl xcursor-theme 'Breeze Light'
+
+# Layout management
 riverctl default-layout wideriver
 wideriver \
     --layout left \
@@ -41,137 +143,14 @@ wideriver \
     --border-color-unfocused 0x777777 \
     --log-threshold info &
 
-#
-# KEY MAPPINGS
-#
+export XDG_CURRENT_DESKTOP="river"
 
-# Spawning stuff
-riverctl map normal Super Return spawn footclient
-riverctl map normal Super P spawn fuzzel
-riverctl map normal Super W spawn qutebrowser
-riverctl map normal Super V spawn 'footclient pulsemixer'
-riverctl map normal Super F spawn 'footclient lf'
-riverctl map normal Super N spawn 'footclient newsraft'
-riverctl map normal Super Q spawn 'footclient ncmpcpp'
-
-# Super+Q to close the focused view
-riverctl map normal Super+Shift C close
-
-# Super+Shift+E to exit river
-riverctl map normal Control+Alt Delete exit
-riverctl map normal Control+Alt L spawn 'swaylock -f'
-
-# Super+J and Super+K to focus the next/previous view in the layout stack
-riverctl map normal Super J focus-view next
-riverctl map normal Super K focus-view previous
-
-# Super+Shift+J and Super+Shift+K to swap the focused view with the next/previous
-# view in the layout stack
-riverctl map normal Super+Shift J swap next
-riverctl map normal Super+Shift K swap previous
-
-# Super+Period and Super+Comma to focus the next/previous output
-riverctl map normal Super Period focus-output next
-riverctl map normal Super Comma focus-output previous
-
-# Super+Shift+{Period,Comma} to send the focused view to the next/previous output
-riverctl map normal Super+Shift Period send-to-output next
-riverctl map normal Super+Shift Comma send-to-output previous
-
-# Super+Return to bump the focused view to the top of the layout stack
-riverctl map normal Super+Shift Return zoom
-
-# Decrease/increase the main ratio
-riverctl map normal Super H send-layout-cmd wideriver '--ratio -0.0125'
-riverctl map normal Super L send-layout-cmd wideriver '--ratio +0.0125'
-riverctl map normal Super+Shift H send-layout-cmd wideriver '--ratio -0.05'
-riverctl map normal Super+Shift L send-layout-cmd wideriver '--ratio +0.05'
-
-# Switch layouts
-riverctl map normal Super T send-layout-cmd wideriver '--layout left'
-riverctl map normal Super+Shift T send-layout-cmd wideriver '--layout top'
-riverctl map normal Super M send-layout-cmd wideriver '--layout monocle'
-riverctl map normal Super Space send-layout-cmd wideriver '--layout-toggle'
-
-# Increment/decrement the main count
-riverctl map normal Super I send-layout-cmd wideriver '--count +1'
-riverctl map normal Super D send-layout-cmd wideriver '--count -1'
-
-# Super + Left Mouse Button to move views
-riverctl map-pointer normal Super BTN_LEFT move-view
-riverctl map-pointer normal Super BTN_RIGHT resize-view
-riverctl map-pointer normal Super BTN_MIDDLE toggle-float
-
-for i in $(seq 1 9); do
-    tags=$((1 << (i - 1)))
-
-    # Super+[1-9] to focus tag [0-8]
-    riverctl map normal Super "${i}" set-focused-tags "${tags}"
-
-    # Super+Shift+[1-9] to tag focused view with tag [0-8]
-    riverctl map normal Super+Shift "${i}" set-view-tags "${tags}"
-
-    # Super+Control+[1-9] to toggle focus of tag [0-8]
-    riverctl map normal Super+Control "${i}" toggle-focused-tags "${tags}"
-
-    # Super+Shift+Control+[1-9] to toggle tag [0-8] of focused view
-    riverctl map normal Super+Shift+Control "${i}" toggle-view-tags "${tags}"
-done
-
-# Super+0 to focus all tags
-# Super+Shift+0 to tag focused view with all tags
-all_tags=$(((1 << 32) - 1))
-riverctl map normal Super 0 set-focused-tags "${all_tags}"
-riverctl map normal Super+Shift 0 set-view-tags "${all_tags}"
-
-riverctl map normal Super+Shift Space toggle-float
-
-riverctl map normal Super+Shift F toggle-fullscreen
-riverctl map normal Super Tab focus-previous-tags
-
-# Declare a passthrough mode. This mode has only a single mapping to return to
-# normal mode. This makes it useful for testing a nested wayland compositor
-riverctl declare-mode passthrough
-riverctl map normal Super F11 enter-mode passthrough
-riverctl map passthrough Super F11 enter-mode normal
-
-# Volume keys
-riverctl map -repeat normal None XF86AudioRaiseVolume spawn 'volume 5%+'
-riverctl map -repeat normal None XF86AudioLowerVolume spawn 'volume 5%-'
-riverctl map -repeat normal None XF86AudioMute spawn 'volume toggle'
-
-# Media keys
-# riverctl map $mode None XF86AudioPlay spawn 'playerctl play-pause'
-# riverctl map $mode None XF86AudioPrev spawn 'playerctl previous'
-# riverctl map $mode None XF86AudioNext spawn 'playerctl next'
-
-# Brightness keys
-riverctl map -repeat normal None XF86MonBrightnessUp spawn 'brightness acpi_video0 10%+ Display'
-riverctl map -repeat normal None XF86MonBrightnessDown spawn 'brightness acpi_video0 10%- Display'
-riverctl map -repeat normal None XF86KbdBrightnessUp spawn 'brightness *::kbd_backlight 10%+ Keyboard'
-riverctl map -repeat normal None XF86KbdBrightnessDown spawn 'brightness *::kbd_backlight 10%- Keyboard'
-
-# Other options
-riverctl default-attach-mode bottom
-riverctl hide-cursor when-typing enabled
-riverctl focus-follows-cursor normal
-
-#
-# INPUT OPTIONS
-#
-
-# shellcheck disable=SC2041
-for trackpad in 'pointer-1452-657-bcm5974'; do
-    riverctl input "${trackpad}" disable while-typing enabled
-    riverctl input "${trackpad}" natural-scroll enabled
-    riverctl input "${trackpad}" tap enabled
-done
-
-# Set keyboard repeat rate
-riverctl set-repeat 50 300
-
-#
-# RULES
-#
-
-riverctl rule-add -app-id 'qutebrowser' tags 2
+kanshi &
+setwallpaper &
+xrdb -merge "${XDG_CONFIG_HOME}/X11/xresources" &
+yambar &
+pipewire &
+mako &
+foot --server &
+mpd --no-daemon &
+pgrep rbw-agent || rbw-agent &
