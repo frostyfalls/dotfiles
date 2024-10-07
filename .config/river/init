@@ -88,19 +88,18 @@ riverctl map passthrough Super F11 enter-mode normal
 # Special keys
 for mode in normal locked; do
     # Volume
-    riverctl map -repeat "${mode}" None XF86AudioMute spawn 'volumectl toggle'
-    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn 'volumectl 5%-'
-    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn 'volumectl 5%+'
-    riverctl map -repeat "${mode}" Super F9 spawn 'volumectl toggle'
-    riverctl map -repeat "${mode}" Super F10 spawn 'volumectl 5%-'
-    riverctl map -repeat "${mode}" Super F11 spawn 'volumectl 5%+'
+    riverctl map -repeat "${mode}" None XF86AudioMute spawn 'audioctl toggle-mute'
+    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn 'audioctl 5%-'
+    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn 'audioctl 5%+'
+    riverctl map -repeat "${mode}" Super F9 spawn 'audioctl toggle'
+    riverctl map -repeat "${mode}" Super F10 spawn 'audioctl 5%-'
+    riverctl map -repeat "${mode}" Super F11 spawn 'audioctl 5%+'
 
     # Brightness
-    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn 'brightnessctl acpi_video0 10%- Display'
-    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn 'brightnessctl acpi_video0 10%+ Display'
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn 'brightnessctl smc::kbd_backlight 10%- Keyboard'
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn 'brightnessctl smc::kbd_backlight 10%+ Keyboard'
-
+    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn 'brightctl acpi_video0 10%-'
+    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn 'brightctl acpi_video0 10%+'
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn 'brightctl smc::kbd_backlight 10%-'
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn 'brightctl smc::kbd_backlight 10%+'
 done
 
 # Other options
@@ -146,7 +145,7 @@ wideriver \
 export XDG_CURRENT_DESKTOP="river"
 
 kanshi &
-setwallpaper &
+wallpaperctl restore &
 xrdb -merge "${XDG_CONFIG_HOME}/X11/xresources" &
 yambar &
 pipewire &

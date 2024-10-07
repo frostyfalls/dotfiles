@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+confirm() {
+    [ "$(echo "no
+yes" | fuzzel --dmenu --prompt="$1 ")" = "yes" ]
+}
+
+get_action() {
+    echo "lock
+suspend
+poweroff
+reboot" | fuzzel --dmenu
+}
+
+case "$(get_action)" in
+lock) swaylock -f ;;
+suspend) swaylock -f && doas zzz ;;
+poweroff) confirm "poweroff?" && doas poweroff ;;
+reboot) confirm "reboot?" && doas reboot ;;
+*) exit 1 ;;
+esac

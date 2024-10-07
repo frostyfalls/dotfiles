@@ -2,12 +2,19 @@
 
 set -eu
 
-UGUU_BASE_URL="${UGUU_BASE_URL:-https://uguu.se}"
+BASE_URL="https://uguu.se"
 
-if [ "$#" -gt 0 ]; then
-    file=${1}
-else
-    read -r file
-fi
+die() {
+    echo "${0##*/}: $1" >&2
+    exit 1
+}
 
-curl --silent --fail --form "files[]=@${file}" "${UGUU_BASE_URL}/upload?output=text"
+file="$1"
+
+[ ! -f "${file}" ] && die "no such file"
+
+curl \
+    --silent \
+    --fail \
+    --form "files[]=@${file}" \
+    "${BASE_URL}/upload?output=text"
