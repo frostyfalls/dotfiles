@@ -2,50 +2,110 @@
 
 set -eu
 
-OUTPUT_DIRECTORY=${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-${HOME}}}
+# shellcheck disable=SC1091
+[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-${HOME}/.config}/user-dirs.dirs"
+OUTPUT_DIRECTORY="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-${HOME}}}"
 FILENAME_DATE_FORMAT="%Y-%m-%d_%H-%M-%S"
 
-COPY=1
-SAVE=1
+SLURP_OPTIONS="-d -b #00000080 -c #ffffff -w 2 -F Terminus"
+
+NOTIFY=0
+COPY=0
+SAVE=0
+WAIT=0
 
 die() {
-    printf '%s' "\
-${0##*/}: ${1}
-" >&2
+    echo "${0##*/}: $1" >&2
     exit 1
 }
 
-screenshot_select() {
-    file_path=${1}
+cleanup() {
+    [ "${FILE_PATH}" != "-" ] && [ "${SAVE}" -ne 1 ] && rm -f "${FILE_PATH}"
+}
 
-    region=$(slurp 2>/dev/null) || return 1
-    grim -g "${region}" "${file_path}"
+notify() {
+    notify-send "${0##*/}" "$@"
+}
+
+get_file_path() {
+    if [ "${SAVE}" -eq 1 ]; then
+        echo "${OUTPUT_DIRECTORY}/$(date "+${FILENAME_DATE_FORMAT}").png"
+    elif [ "${COPY}" -eq 1 ]; then
+        echo "/tmp/${0##*/}-$$.png"
+    else
+        echo "-"
+    fi
+}
+
+screenshot_select() {
+    # shellcheck disable=SC2086
+    geometry=$(slurp ${SLURP_OPTIONS} 2>/dev/null) || die "failed to grab selection"
+
+    grim -g "${geometry}" "${FILE_PATH}"
 }
 
 screenshot_full() {
-    file_path=${1}
-
-    grim "${file_path}"
+    grim "${FILE_PATH}"
 }
 
-screenshot_type=${1}
+while [ "$#" -gt 0 ]; do
+    key="$1"
 
-case ${screenshot_type} in
-    select | full) ;;
-    *) die "invalid screenshot type" ;;
+    case "${key}" in
+    -n | --notify)
+        NOTIFY=1
+        shift
+        ;;
+    -c | --copy)
+        COPY=1
+        shift
+        ;;
+    -s | --save)
+        SAVE=1
+        shift
+        ;;
+    -w | --wait)
+        shift
+        WAIT="${1:-}"
+        [ -z "${WAIT}" ] && die "no value provided for wait"
+        echo "${WAIT}" | grep -q '[^0-9]' && die "invalid value for wait: ${WAIT}"
+        shift
+        ;;
+    *)
+        break
+        ;;
+    esac
+done
+
+SCREENSHOT_TYPE="${1:-select}"
+FILE_PATH=$(get_file_path)
+
+trap cleanup EXIT
+
+case "${SCREENSHOT_TYPE}" in
+select | full)
+    [ "${WAIT}" -gt 0 ] && sleep "${WAIT}"
+    screenshot_"${SCREENSHOT_TYPE}" || die "failed to take screenshot"
+    ;;
+*)
+    die "invalid screenshot type"
+    ;;
 esac
 
-if [ "${SAVE}" -eq 1 ]; then
-    FILE_PATH="${OUTPUT_DIRECTORY}/$(date "+${FILENAME_DATE_FORMAT}").png"
-else
-    FILE_PATH="/tmp/${0##*/}-$(date '+%s').png"
+if [ "${COPY}" -eq 1 ]; then
+    wl-copy --type image/png <"${FILE_PATH}"
 fi
 
-screenshot_"${screenshot_type}" "${FILE_PATH}" || die "failed"
+if [ "${SAVE}" -eq 1 ]; then
+    echo "${FILE_PATH}"
+fi
 
-[ "${COPY}" -eq 1 ] && [ "${SAVE}" -eq 1 ] && wl-copy --type image/png "${FILE_PATH}"
-[ "${COPY}" -eq 1 ] && [ "${SAVE}" -ne 1 ] && wl-copy --type image/png <"${FILE_PATH}"
-
-[ "${SAVE}" -ne 1 ] && rm -f "${FILE_PATH}"
-
-[ "${SAVE}" -eq 1 ] && printf '%s\n' "${FILE_PATH}"
+if [ "${NOTIFY}" -eq 1 ]; then
+    if [ "${SAVE}" -eq 1 ]; then
+        notify "Screenshot saved to <b>${FILE_PATH}</b>."
+    elif [ "${COPY}" -eq 1 ]; then
+        notify "Screenshot copied."
+    else
+        notify "Screenshot taken."
+    fi
+fi
