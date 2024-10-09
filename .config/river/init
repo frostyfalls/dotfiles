@@ -4,15 +4,15 @@
 riverctl map normal Super Return spawn footclient
 riverctl map normal Super P spawn fuzzel
 riverctl map normal Super W spawn qutebrowser
-riverctl map normal Super V spawn 'footclient pulsemixer'
-riverctl map normal Super F spawn 'footclient lf'
-riverctl map normal Super N spawn 'footclient newsraft'
-riverctl map normal Super Q spawn 'footclient ncmpcpp'
-riverctl map normal Super U spawn 'footclient rbw-ez'
+riverctl map normal Super V spawn "footclient pulsemixer"
+riverctl map normal Super F spawn "footclient lf"
+riverctl map normal Super N spawn "footclient newsraft"
+riverctl map normal Super Q spawn "footclient ncmpcpp"
+riverctl map normal Super U spawn "footclient rbw-ez"
 
 # Screenshotting
-riverctl map normal Super+Shift O spawn 'screenshot --notify --copy --save full'
-riverctl map normal Super+Shift P spawn 'screenshot --notify --copy --save select'
+riverctl map normal Super+Shift O spawn "screenshot --notify --copy --save full"
+riverctl map normal Super+Shift P spawn "screenshot --notify --copy --save select"
 
 # Move/resize
 riverctl map-pointer normal Super BTN_LEFT move-view
@@ -44,25 +44,25 @@ riverctl map normal Super+Shift Period send-to-output next
 riverctl map normal Super+Shift Comma send-to-output previous
 
 # Main ratio/count
-riverctl map normal Super H send-layout-cmd wideriver '--ratio -0.0125'
-riverctl map normal Super L send-layout-cmd wideriver '--ratio +0.0125'
-riverctl map normal Super+Shift H send-layout-cmd wideriver '--ratio -0.05'
-riverctl map normal Super+Shift L send-layout-cmd wideriver '--ratio +0.05'
-riverctl map normal Super I send-layout-cmd wideriver '--count +1'
-riverctl map normal Super D send-layout-cmd wideriver '--count -1'
+riverctl map normal Super H send-layout-cmd wideriver "--ratio -0.0125"
+riverctl map normal Super L send-layout-cmd wideriver "--ratio +0.0125"
+riverctl map normal Super+Shift H send-layout-cmd wideriver "--ratio -0.05"
+riverctl map normal Super+Shift L send-layout-cmd wideriver "--ratio +0.05"
+riverctl map normal Super I send-layout-cmd wideriver "--count +1"
+riverctl map normal Super D send-layout-cmd wideriver "--count -1"
 
 # Layouts
-riverctl map normal Super T send-layout-cmd wideriver '--layout left'
-riverctl map normal Super+Shift T send-layout-cmd wideriver '--layout top'
-riverctl map normal Super M send-layout-cmd wideriver '--layout monocle'
-riverctl map normal Super Space send-layout-cmd wideriver '--layout-toggle'
+riverctl map normal Super T send-layout-cmd wideriver "--layout left"
+riverctl map normal Super+Shift T send-layout-cmd wideriver "--layout top"
+riverctl map normal Super M send-layout-cmd wideriver "--layout monocle"
+riverctl map normal Super Space send-layout-cmd wideriver "--layout-toggle"
 
 # Toggle the bar
-riverctl map normal Super B spawn 'pkill yambar || yambar'
+riverctl map normal Super B spawn "pkill yambar || yambar"
 
 # Screen locking
-riverctl map normal Control+Alt L spawn 'swaylock -f'
-riverctl map normal Super F12 spawn 'swaylock -f'
+riverctl map normal Control+Alt L spawn "swaylock -f"
+riverctl map normal Super F12 spawn "swaylock -f"
 
 # Exiting/session
 riverctl map normal Control+Alt Delete exit
@@ -88,18 +88,18 @@ riverctl map passthrough Super F11 enter-mode normal
 # Special keys
 for mode in normal locked; do
     # Volume
-    riverctl map -repeat "${mode}" None XF86AudioMute spawn 'audioctl toggle-mute'
-    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn 'audioctl set-volume 5%-'
-    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn 'audioctl set-volume 5%+'
-    riverctl map -repeat "${mode}" Super F9 spawn 'audioctl toggle-mute'
-    riverctl map -repeat "${mode}" Super F10 spawn 'audioctl set-volume 5%-'
-    riverctl map -repeat "${mode}" Super F11 spawn 'audioctl set-volume 5%+'
+    riverctl map -repeat "${mode}" None XF86AudioMute spawn "audioctl toggle-mute"
+    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn "audioctl set-volume 5%-"
+    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn "audioctl set-volume 5%+"
+    riverctl map -repeat "${mode}" Super F9 spawn "audioctl toggle-mute"
+    riverctl map -repeat "${mode}" Super F10 spawn "audioctl set-volume 5%-"
+    riverctl map -repeat "${mode}" Super F11 spawn "audioctl set-volume 5%+"
 
     # Brightness
-    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn 'brightctl set acpi_video0 10%-'
-    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn 'brightctl set acpi_video0 10%+'
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn 'brightctl set smc::kbd_backlight 10%-'
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn 'brightctl set smc::kbd_backlight 10%+'
+    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn "brightctl set acpi_video0 10%-"
+    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn "brightctl set acpi_video0 10%+"
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn "brightctl set smc::kbd_backlight 10%-"
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn "brightctl set smc::kbd_backlight 10%+"
 done
 
 # Other options
@@ -110,18 +110,17 @@ riverctl focus-follows-cursor normal
 # Input management
 riverctl set-repeat 50 300
 # shellcheck disable=SC2041
-for trackpad in 'pointer-1452-657-bcm5974'; do
-    riverctl input "${trackpad}" disable while-typing enabled
-    riverctl input "${trackpad}" natural-scroll enabled
-    riverctl input "${trackpad}" tap enabled
-done
+trackpad="pointer-1452-657-bcm5974"
+riverctl input "${trackpad}" disable while-typing enabled
+riverctl input "${trackpad}" natural-scroll enabled
+riverctl input "${trackpad}" tap enabled
 
 # Rules
-riverctl rule-add -app-id 'qutebrowser' tags 2
+riverctl rule-add -app-id "qutebrowser" tags 2
 riverctl rule-add ssd
 
 # Themes
-riverctl xcursor-theme 'Breeze Light'
+riverctl xcursor-theme "Breeze Light"
 
 # Layout management
 riverctl default-layout wideriver
@@ -146,4 +145,5 @@ pipewire &
 mako &
 foot --server &
 mpd --no-daemon &
+swayidle &
 pgrep rbw-agent || rbw-agent &
