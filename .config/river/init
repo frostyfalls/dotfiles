@@ -89,17 +89,17 @@ riverctl map passthrough Super F11 enter-mode normal
 for mode in normal locked; do
     # Volume
     riverctl map -repeat "${mode}" None XF86AudioMute spawn 'audioctl toggle-mute'
-    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn 'audioctl 5%-'
-    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn 'audioctl 5%+'
-    riverctl map -repeat "${mode}" Super F9 spawn 'audioctl toggle'
-    riverctl map -repeat "${mode}" Super F10 spawn 'audioctl 5%-'
-    riverctl map -repeat "${mode}" Super F11 spawn 'audioctl 5%+'
+    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn 'audioctl set-volume 5%-'
+    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn 'audioctl set-volume 5%+'
+    riverctl map -repeat "${mode}" Super F9 spawn 'audioctl toggle-mute'
+    riverctl map -repeat "${mode}" Super F10 spawn 'audioctl set-volume 5%-'
+    riverctl map -repeat "${mode}" Super F11 spawn 'audioctl set-volume 5%+'
 
     # Brightness
-    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn 'brightctl acpi_video0 10%-'
-    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn 'brightctl acpi_video0 10%+'
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn 'brightctl smc::kbd_backlight 10%-'
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn 'brightctl smc::kbd_backlight 10%+'
+    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn 'brightctl set acpi_video0 10%-'
+    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn 'brightctl set acpi_video0 10%+'
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn 'brightctl set smc::kbd_backlight 10%-'
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn 'brightctl set smc::kbd_backlight 10%+'
 done
 
 # Other options
@@ -131,16 +131,10 @@ wideriver \
     --stack even \
     --count-master 1 \
     --ratio-master 0.55 \
-    --no-smart-gaps \
-    --inner-gaps 0 \
-    --outer-gaps 0 \
     --border-width 1 \
-    --border-width-monocle 1 \
-    --border-width-smart-gaps 0 \
-    --border-color-focused 0xffffff \
-    --border-color-focused-monocle 0xffffff \
-    --border-color-unfocused 0x777777 \
-    --log-threshold info &
+    --border-color-focused 0x8ec07c \
+    --border-color-focused-monocle 0x8ec07c \
+    --border-color-unfocused 0x3c3836 &
 
 export XDG_CURRENT_DESKTOP="river"
 
