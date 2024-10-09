@@ -2,6 +2,8 @@
 
 set -eu
 
+XDG_CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
+
 notify() {
     notify-send \
         --hint=string:x-dunst-stack-tag:brightness \
@@ -12,11 +14,12 @@ get_device_name() {
     case "${1:-}" in
     intel_backlight | acpi_video0) echo "Display" ;;
     *::kbd_backlight) echo "Keyboard" ;;
-    *) return 1 ;;
+    "") return 1 ;;
+    *) echo "$1" ;;
     esac
 }
 
-set_volume() {
+set_brightness() {
     device="$1"
     amount="$2"
     name="$(get_device_name "${device}")" || return 1
@@ -31,7 +34,34 @@ EOF
         "${name} Brightness"
 }
 
+off_brightness() {
+    device="$1"
+
+    # Save current brightness state
+    brightness=$(brightnessctl --device="${device}" get) || return 1
+    echo "${brightness}" >"${XDG_CACHE_HOME}/brightness_${device}"
+
+    # Turn off the device
+    brightnessctl --quiet --device="${device}" set 0
+}
+
+on_brightness() {
+    device="$1"
+
+    # Retrieve last brightness state, or set to 100 if not found
+    if [ -f "${XDG_CACHE_HOME}/brightness_${device}" ]; then
+        read -r brightness <"${XDG_CACHE_HOME}/brightness_${device}"
+    else
+        brightness="100%"
+    fi
+
+    # Restore the previous brightness
+    brightnessctl --quiet --device="${device}" set "${brightness}"
+}
+
 case "${1:-}" in
-set) set_volume "${2:-intel_backlight}" "${3:-100}" ;;
+set) set_brightness "${2:-intel_backlight}" "${3:-100}" ;;
+off) off_brightness "${2:-intel_backlight}" ;;
+on) on_brightness "${2:-intel_backlight}" ;;
 *) exit 1 ;;
 esac
