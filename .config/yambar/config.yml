@@ -1,19 +1,22 @@
 separator-color: &separator-color 7c6f64ff
 spacer: &spacer {string: {text: " "}}
 
-font-icon: &font-icon {font: "Symbols Nerd Font:size=12"}
-
 bar-bg-color: &bar-bg-color 121212ff
+block-color: &block-color 282828ff
+block-alt-color: &block-alt-color 3c3836ff
 
-bg-block-alt: &bg-block-alt {deco: {background: {color: 3c3836ff}}}
-bg-block: &bg-block {deco: {background: {color: 282828ff}}}
+bg-block-alt: &bg-block-alt {deco: {background: {color: *block-alt-color}}}
+bg-block: &bg-block {deco: {background: {color: *block-color}}}
+fg-block: &fg-block {foreground: *block-color}
+fg-block-alt: &fg-block-alt {foreground: *block-alt-color}
 bg-block-reset: &bg-block-reset {deco: {background: {color: *bar-bg-color}}}
-fg-block-alt: &fg-block {foreground: 282828ff}
-fg-block: &fg-block-alt {foreground: 3c3836ff}
 
 block-char-right: &block-char-right {text: ""}
-separator-left: &separator-left {string: {text: "", foreground: *separator-color}}
-separator-right: &separator-right {string: {text: "", foreground: *separator-color}}
+sep-char-left: &sep-char-left {text: ""}
+sep-char-right: &sep-char-right {text: ""}
+
+separator-left: &separator-left {string: {<<: *sep-char-left, foreground: *separator-color}}
+separator-right: &separator-right {string: {<<: *sep-char-right, foreground: *separator-color}}
 
 sep-right: &sep-right {string: {text: "  "}}
 
