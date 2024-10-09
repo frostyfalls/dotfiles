@@ -10,14 +10,16 @@ yes" | fuzzel --dmenu --prompt="$1 ")" = "yes" ]
 get_action() {
     echo "lock
 suspend
+exit
 poweroff
 reboot" | fuzzel --dmenu
 }
 
-case "$(get_action)" in
+case "${1:-$(get_action)}" in
 lock) swaylock -f ;;
-suspend) swaylock -f && doas zzz ;;
-poweroff) confirm "poweroff?" && doas poweroff ;;
-reboot) confirm "reboot?" && doas reboot ;;
+suspend) swaylock -f && loginctl suspend ;;
+exit) confirm "exit?" && riverctl exit ;;
+poweroff) confirm "poweroff?" && loginctl poweroff ;;
+reboot) confirm "reboot?" && loginctl reboot ;;
 *) exit 1 ;;
 esac
