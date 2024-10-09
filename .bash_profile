@@ -30,5 +30,7 @@ export PATH="${PATH}:${GOPATH}/bin:${CARGO_HOME}/bin:${HOME}/.local/bin"
 [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc"
 [[ "$(tty)" == "/dev/tty2" ]] &&
     ! pgrep river >/dev/null &&
-    exec dbus-run-session river >/dev/null 2>&1
+    exec XDG_CURRENT_DESKTOP="river" \
+        dbus-run-session river >/dev/null 2>&1
+
 :

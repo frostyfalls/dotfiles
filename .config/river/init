@@ -135,8 +135,6 @@ wideriver \
     --border-color-focused-monocle 0x8ec07c \
     --border-color-unfocused 0x3c3836 &
 
-export XDG_CURRENT_DESKTOP="river"
-
 kanshi &
 wallpaperctl restore &
 xrdb -merge "${XDG_CONFIG_HOME}/X11/xresources" &
