@@ -32,6 +32,6 @@ EOF
 }
 
 case "${1:-}" in
-set) set_volume "${1:-intel_backlight}" "${2:-100}" ;;
+set) set_volume "${2:-intel_backlight}" "${3:-100}" ;;
 *) exit 1 ;;
 esac
