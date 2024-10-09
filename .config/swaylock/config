@@ -1,4 +1,4 @@
 daemonize
 ignore-empty-password
-image=${XDG_DATA_HOME}/wallpaper
+image=$XDG_DATA_HOME/wallpaper
 scaling=fill
