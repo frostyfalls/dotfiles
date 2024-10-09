@@ -1,7 +1,28 @@
 separator-color: &separator-color 7c6f64ff
+spacer: &spacer {string: {text: " "}}
+
+font-icon: &font-icon {font: "Symbols Nerd Font:size=12"}
+
+bar-bg-color: &bar-bg-color 121212ff
+
+bg-block-alt: &bg-block-alt {deco: {background: {color: 3c3836ff}}}
+bg-block: &bg-block {deco: {background: {color: 282828ff}}}
+bg-block-reset: &bg-block-reset {deco: {background: {color: *bar-bg-color}}}
+fg-block-alt: &fg-block {foreground: 282828ff}
+fg-block: &fg-block-alt {foreground: 3c3836ff}
+
+block-char-right: &block-char-right {text: ""}
 separator-left: &separator-left {string: {text: "", foreground: *separator-color}}
 separator-right: &separator-right {string: {text: "", foreground: *separator-color}}
-spacer: &spacer {string: {text: " "}}
+
+sep-right: &sep-right {string: {text: "  "}}
+
+block-separator: &block-separator {string: {<<: [*block-char-right, *fg-block, *bg-block-alt]}}
+block-separator-alt: &block-separator-alt {string: {<<: [*block-char-right, *fg-block-alt, *bg-block]}}
+block-separator-reset: &block-separator-reset {string: {<<: [*block-char-right, *fg-block, *bg-block-reset]}}
+block-separator-alt-reset: &block-separator-alt-reset {string: {<<: [*block-char-right, *fg-block-alt, *bg-block-reset]}}
+
+std-list: &std-list {spacing: 0}
 
 bar:
   height: 14
@@ -10,124 +31,144 @@ bar:
   font: Terminus:size=12
 
   foreground: ebdbb2ff
-  background: 121212ff
+  background: *bar-bg-color
 
   left:
     - label:
         content: *spacer
     - river:
         anchors:
-          - &river-prefix {string: {text: "{id}:"}}
+          - &river-focused-color 8ec07cff
+          - &river-urgent-color fb4934ff
+          - &river-id {string: {text: "{id}"}}
           - &river-urgent {string: {text: "!"}}
           - &river-focused {string: {text: "*"}}
           - &river-layout {string: {text: "{layout}"}}
-          - &river-title {string: {text: "{title}"}}
-          - &river-name
-              map:
-                conditions:
-                  id == 1: {string: {text: "term"}}
-                  id == 2: {string: {text: "www"}}
-                  id == 3: {string: {text: "mus"}}
-                  id == 4: {string: {text: "chat"}}
-                  id == 5: {string: {text: "vol"}}
-                  id == 6: {string: {text: "sys"}}
-                  id == 7: {string: {text: ""}}
-                  id == 8: {string: {text: ""}}
-                  id == 9: {string: {text: ""}}
+          - &river-title {string: {text: "{title}", max: 70}}
         content:
-          - map:
-              conditions:
-                state == urgent:
-                  list:
-                    spacing: 0
-                    items: [*river-prefix, *river-name, *river-urgent, *spacer]
-                state == focused:
-                  list:
-                    spacing: 0
-                    items: [*river-prefix, *river-name, *river-focused, *spacer]
-                occupied:
-                  list:
-                    spacing: 0
-                    items: [*river-prefix, *river-name, *spacer]
+          map:
+            conditions:
+              id > 9: {empty: {}}
+              state == urgent:
+                list:
+                  <<: *std-list
+                  foreground: *river-urgent-color
+                  items: [*river-id, *river-urgent, *spacer]
+              state == focused:
+                list:
+                  <<: *std-list
+                  foreground: *river-focused-color
+                  items: [*river-id, *river-focused, *spacer]
+              occupied:
+                list:
+                  <<: *std-list
+                  items: [*river-id, *spacer]
+              ~occupied:
+                list:
+                  <<: *std-list
+                  foreground: *separator-color
+                  items: [*river-id, *spacer]
         title:
           list:
-            spacing: 0
+            <<: *std-list
             items:
               - map:
                   conditions:
                     layout != "":
                       list:
-                        spacing: 0
+                        <<: *std-list
                         items: [*separator-left, *spacer, *river-layout, *spacer]
               - map:
                   conditions:
                     title != "":
                       list:
-                        spacing: 0
+                        <<: *std-list
                         items: [*separator-left, *spacer, *river-title]
 
   right:
     - network:
+        anchors:
+          - &network-offline {string: {text: "Offline"}}
+          - &network-connected {string: {text: "{ipv4}"}}
+        content:
+          list:
+            <<: [*std-list, *bg-block-alt]
+            items:
+              - map:
+                  default:
+                    list:
+                      <<: *std-list
+                      items: [*block-separator-alt-reset, *spacer, *network-connected, *spacer]
+                  conditions:
+                    name == lo: {empty: {}}
+                    ipv4 == "":
+                      list:
+                        <<: *std-list
+                        items: [*block-separator-alt-reset, *spacer, *network-offline, *spacer]
+    - cpu:
+        poll-interval: 2500
+        anchors:
+          - &cpu-item {string: {text: "CPU {cpu}%"}}
         content:
           map:
             conditions:
-              name != lo:
-                string: {text: "{ipv4}"}
-    - label:
+              id < 0:
+                list:
+                  <<: [*std-list, *bg-block]
+                  items: [*block-separator, *spacer, *cpu-item, *sep-right]
+    - mem:
+        poll-interval: 2500
+        anchors:
+          - &mem-item {string: {text: "RAM {used:mb} MB"}}
         content:
           list:
-            spacing: 0
-            items: [*spacer, *separator-right, *spacer]
+            <<: [*std-list, *bg-block]
+            items: [*mem-item, *spacer]
     - pipewire:
         anchors:
-          - prefix: &volume-prefix {string: {text: "VOL"}}
+          - &volume-source {string: {text: "MIC {cubic_volume}%"}}
+          - &volume-sink {string: {text: "VOL {cubic_volume}%"}}
         content:
           map:
+            <<: *bg-block-alt
             conditions:
-              type == "sink":
+              type == sink:
                 list:
-                  spacing: 0
-                  items: [*volume-prefix, *spacer, string: {text: "{cubic_volume}%"}]
-    - label:
-        content:
-          list:
-            spacing: 0
-            items: [*spacer, *separator-right, *spacer]
+                  <<: *std-list
+                  items: [*block-separator-alt, *spacer, *volume-sink]
+              type == source:
+                list:
+                  <<: *std-list
+                  items: [*sep-right, *volume-source, *spacer]
     - battery:
-        anchors:
-          - prefix: &battery-prefix {string: {text: "BAT"}}
         name: BAT0
         poll-interval: 60000
-        content:
-          map:
-            default:
-              list:
-                spacing: 0
-                items: [*battery-prefix, *spacer, string: {text: "{capacity}% ({estimate})"}]
-            conditions:
-              state != discharging:
-                list:
-                  spacing: 0
-                  items: [*battery-prefix, *spacer, string: {text: "{capacity}%"}]
-    - label:
+        anchors:
+          - &battery-map
+              map:
+                conditions:
+                  state == discharging: {string: {text: "BAT {capacity}% ({estimate})"}}
+                  state != discharging: {string: {text: "BAT {capacity}%"}}
         content:
           list:
-            spacing: 0
-            items: [*spacer, *separator-right, *spacer]
+            <<: [*std-list, *bg-block]
+            items: [*block-separator, *spacer, *battery-map, *spacer]
     - clock:
         date-format: "%b %d %Y"
         time-format: "%H:%M"
-        content:
-          string: {text: "{date} {time}"}
-    - label:
+        anchors:
+          - &clock-date {string: {text: "{date}"}}
+          - &clock-time {string: {text: "{time}"}}
         content:
           list:
-            spacing: 0
-            items: [*spacer, *separator-right, *spacer]
+            <<: [*std-list, *bg-block-alt]
+            items: [*block-separator-alt, *spacer, *clock-date, *sep-right, *clock-time, *spacer]
     - script:
         path: ~/.config/yambar/scripts/load
         poll-interval: 3000
+        anchors:
+          - &load-one {string: {text: "{one}"}}
         content:
-          string: {text: "{one}"}
-    - label:
-        content: *spacer
+          list:
+            <<: [*std-list, *bg-block]
+            items: [*block-separator, *spacer, *load-one, *spacer]
