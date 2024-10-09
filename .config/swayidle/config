@@ -1,2 +1,4 @@
 timeout 300 "swaylock"
-timeout 600 "doas zzz -z"
+timeout 330 "brightctl off acpi_video0" resume "brightctl on acpi_video0"
+timeout 400 "loginctl suspend"
+before-sleep "swaylock"
