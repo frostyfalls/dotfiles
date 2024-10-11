@@ -1,0 +1,13 @@
+[general]
+sensitivity = 60
+
+[input]
+method = pipewire
+source = auto
+
+[output]
+channels = mono
+show_idle_bar_heads = 0
+
+[smoothing]
+noise_reduction = 15
