@@ -1,0 +1,6 @@
+dotfiles
+
+A megacollection of my user configurations. These are deployed across my workstation and laptop.
+
+Installation instructions:
+    stow --restow --target=$HOME .
