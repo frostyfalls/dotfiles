@@ -1,30 +1,5 @@
-separator-color: &separator-color 7c6f64ff
-spacer: &spacer {string: {text: " "}}
-
-bar-bg-color: &bar-bg-color 121212ff
-block-color: &block-color 282828ff
-block-alt-color: &block-alt-color 3c3836ff
-
-bg-block-alt: &bg-block-alt {deco: {background: {color: *block-alt-color}}}
-bg-block: &bg-block {deco: {background: {color: *block-color}}}
-fg-block: &fg-block {foreground: *block-color}
-fg-block-alt: &fg-block-alt {foreground: *block-alt-color}
-bg-block-reset: &bg-block-reset {deco: {background: {color: *bar-bg-color}}}
-
-block-char-right: &block-char-right {text: ""}
-sep-char-left: &sep-char-left {text: ""}
-sep-char-right: &sep-char-right {text: ""}
-
-separator-left: &separator-left {string: {<<: *sep-char-left, foreground: *separator-color}}
-separator-right: &separator-right {string: {<<: *sep-char-right, foreground: *separator-color}}
-
-sep-right: &sep-right {string: {text: "  "}}
-
-block-separator: &block-separator {string: {<<: [*block-char-right, *fg-block, *bg-block-alt]}}
-block-separator-alt: &block-separator-alt {string: {<<: [*block-char-right, *fg-block-alt, *bg-block]}}
-block-separator-reset: &block-separator-reset {string: {<<: [*block-char-right, *fg-block, *bg-block-reset]}}
-block-separator-alt-reset: &block-separator-alt-reset {string: {<<: [*block-char-right, *fg-block-alt, *bg-block-reset]}}
-
+separator: &separator {text: " | ", foreground: "7c6f64ff"}
+spacer: &spacer {text: " "}
 std-list: &std-list {spacing: 0}
 
 bar:
@@ -34,43 +9,26 @@ bar:
   font: Terminus:size=12
 
   foreground: ebdbb2ff
-  background: *bar-bg-color
+  background: 121212ff
 
   left:
     - label:
-        content: *spacer
+        content: {string: {<<: *spacer}}
     - river:
-        anchors:
-          - &river-focused-color 8ec07cff
-          - &river-urgent-color fb4934ff
-          - &river-id {string: {text: "{id}"}}
-          - &river-urgent {string: {text: "!"}}
-          - &river-focused {string: {text: "*"}}
-          - &river-layout {string: {text: "{layout}"}}
-          - &river-title {string: {text: "{title}", max: 70}}
         content:
-          map:
-            conditions:
-              id > 9: {empty: {}}
-              state == urgent:
-                list:
-                  <<: *std-list
-                  foreground: *river-urgent-color
-                  items: [*river-id, *river-urgent, *spacer]
-              state == focused:
-                list:
-                  <<: *std-list
-                  foreground: *river-focused-color
-                  items: [*river-id, *river-focused, *spacer]
-              occupied:
-                list:
-                  <<: *std-list
-                  items: [*river-id, *spacer]
-              ~occupied:
-                list:
-                  <<: *std-list
-                  foreground: *separator-color
-                  items: [*river-id, *spacer]
+          list:
+            <<: *std-list
+            items:
+              - map:
+                  conditions:
+                    id > 9: {empty: {}}
+                    urgent: {string: {text: "{id}!", foreground: "fb4934ff"}}
+                    focused: {string: {text: "{id}*", foreground: "8ec07cff"}}
+                    ~occupied: {string: {text: "{id}", foreground: "7c6f64ff"}}
+                    occupied: {string: {text: "{id}"}}
+              - map:
+                  conditions:
+                    id < 9: {string: {<<: *spacer}}
         title:
           list:
             <<: *std-list
@@ -80,98 +38,52 @@ bar:
                     layout != "":
                       list:
                         <<: *std-list
-                        items: [*separator-left, *spacer, *river-layout, *spacer]
+                        items:
+                          - string: {<<: *separator}
+                          - string: {text: "{layout}"}
               - map:
                   conditions:
                     title != "":
                       list:
                         <<: *std-list
-                        items: [*separator-left, *spacer, *river-title]
+                        items:
+                          - string: {<<: *separator}
+                          - string: {text: "{title}", max: 70}
 
   right:
-    - network:
-        anchors:
-          - &network-offline {string: {text: "Offline"}}
-          - &network-connected {string: {text: "{ipv4}"}}
-        content:
-          list:
-            <<: [*std-list, *bg-block-alt]
-            items:
-              - map:
-                  default:
-                    list:
-                      <<: *std-list
-                      items: [*block-separator-alt-reset, *spacer, *network-connected, *spacer]
-                  conditions:
-                    name == lo: {empty: {}}
-                    ipv4 == "":
-                      list:
-                        <<: *std-list
-                        items: [*block-separator-alt-reset, *spacer, *network-offline, *spacer]
-    - cpu:
-        poll-interval: 2500
-        anchors:
-          - &cpu-item {string: {text: "CPU {cpu}%"}}
-        content:
-          map:
-            conditions:
-              id < 0:
-                list:
-                  <<: [*std-list, *bg-block]
-                  items: [*block-separator, *spacer, *cpu-item, *sep-right]
-    - mem:
-        poll-interval: 2500
-        anchors:
-          - &mem-item {string: {text: "RAM {used:mb} MB"}}
-        content:
-          list:
-            <<: [*std-list, *bg-block]
-            items: [*mem-item, *spacer]
+    - script:
+        path: ~/.config/yambar/scripts/weather
+        poll-interval: 3600000
+        content: {string: {text: "{conditions} ({temperature})"}}
+    - label:
+        content: {string: {<<: *separator}}
     - pipewire:
-        anchors:
-          - &volume-source {string: {text: "MIC {cubic_volume}%"}}
-          - &volume-sink {string: {text: "VOL {cubic_volume}%"}}
         content:
           map:
-            <<: *bg-block-alt
             conditions:
-              type == sink:
-                list:
-                  <<: *std-list
-                  items: [*block-separator-alt, *spacer, *volume-sink]
-              type == source:
-                list:
-                  <<: *std-list
-                  items: [*sep-right, *volume-source, *spacer]
+              type == sink: {string: {text: "VOL {cubic_volume}%"}}
+    - label:
+        content: {string: {<<: *separator}}
     - battery:
         name: BAT0
         poll-interval: 60000
-        anchors:
-          - &battery-map
-              map:
-                conditions:
-                  state == discharging: {string: {text: "BAT {capacity}% ({estimate})"}}
-                  state != discharging: {string: {text: "BAT {capacity}%"}}
         content:
-          list:
-            <<: [*std-list, *bg-block]
-            items: [*block-separator, *spacer, *battery-map, *spacer]
+          map:
+            default: {string: {text: "BAT {capacity}%"}}
+            conditions:
+              state == discharging: {string: {text: "BAT {capacity}% ({estimate})"}}
+              state == unknown: {string: {text: "Unknown"}}
+    - label:
+        content: {string: {<<: *separator}}
     - clock:
         date-format: "%b %d %Y"
         time-format: "%H:%M"
-        anchors:
-          - &clock-date {string: {text: "{date}"}}
-          - &clock-time {string: {text: "{time}"}}
-        content:
-          list:
-            <<: [*std-list, *bg-block-alt]
-            items: [*block-separator-alt, *spacer, *clock-date, *sep-right, *clock-time, *spacer]
+        content: {string: {text: "{date} {time}"}}
+    - label:
+        content: {string: {<<: *separator}}
     - script:
         path: ~/.config/yambar/scripts/load
         poll-interval: 3000
-        anchors:
-          - &load-one {string: {text: "{one}"}}
-        content:
-          list:
-            <<: [*std-list, *bg-block]
-            items: [*block-separator, *spacer, *load-one, *spacer]
+        content: {string: {text: "{one}"}}
+    - label:
+        content: {string: {<<: *spacer}}
