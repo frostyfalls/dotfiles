@@ -1,0 +1,4 @@
+program_options:
+  automount: false
+  file_manager: 'footclient lf'
+  terminal: 'footclient'
