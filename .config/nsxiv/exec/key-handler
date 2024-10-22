@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -eu
+
+read -r file
+
+case "${1:-}" in
+w) setsid -f wallpaperctl set "${file}" ;;
+e) setsid -f gimp "${file}" ;;
+y) wl-copy --type image/png "${file}" ;;
+*) exit 1 ;;
+esac
