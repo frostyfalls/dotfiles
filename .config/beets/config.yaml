@@ -1,0 +1,34 @@
+directory: ~/music
+library: ~/music/library.db
+
+plugins: deezer spotify edit missing mpdupdate the lyrics zero lastgenre
+
+import:
+  move: yes
+  languages: en
+  log: ~/.cache/beets.log
+  set_fields:
+    artist_sort: %the{$artist}
+    artists_sort: %the{$artists}
+    albumartists_sort: %the{$albumartist}
+    albumartists_sort: %the{$albumartists}
+
+match:
+  preferred:
+    countries: ['US', 'GB|UK']
+    media: ['CD', 'Vinyl', 'Digital Media|File']
+    original_year: yes
+
+zero:
+  fields: month day comments
+  update_database: true
+
+paths:
+  default: %the{$albumartist}/($year) $album/$disc.$track $title
+
+the:
+  a: no
+
+lyrics:
+  sources: genius tekstowo lrclib
+  synced: yes
