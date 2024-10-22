@@ -1,0 +1,86 @@
+#!/bin/sh
+
+set -eu
+
+die() {
+    echo "${0##*/}: $1" >&2
+    exit 1
+}
+
+notify() {
+    notify-send \
+        --hint=string:x-dunst-stack-tag:"${0##*/}" \
+        "$@"
+}
+
+is_valid_device() {
+    case "${1:-}" in
+    SINK | SOURCE) return 0 ;;
+    *) return 1 ;;
+    esac
+}
+
+get_device_name() {
+    case "${1:-}" in
+    SINK) echo "Output" ;;
+    SOURCE) echo "Microphone" ;;
+    *) return 1 ;;
+    esac
+}
+
+get_volume() {
+    dev="$1"
+    is_valid_device "${dev}" || return 1
+
+    volume="$(wpctl get-volume "@DEFAULT_AUDIO_${dev}@")"
+    volume="${volume#Volume: }"
+    volume="${volume%.*}${volume#*.}"
+    volume="${volume% \[MUTED\]}"
+
+    echo "${volume}"
+}
+
+is_muted() {
+    dev="$1"
+    is_valid_device "${dev}" || return 1
+
+    case "$(wpctl get-volume "@DEFAULT_AUDIO_${dev}@")" in
+    *MUTED*) return 0 ;;
+    *) return 1 ;;
+    esac
+}
+
+set_volume() {
+    dev="$1" amount="$2"
+    is_valid_device "${dev}" || return 1
+    name="$(get_device_name "${dev}")" || return 1
+
+    wpctl set-mute "@DEFAULT_AUDIO_${dev}@" 0
+    wpctl set-volume "@DEFAULT_AUDIO_${dev}@" "${amount}"
+    notify \
+        --hint=int:value:"$(get_volume "${dev}")" \
+        "${name} Volume"
+}
+
+toggle_mute() {
+    dev="$1"
+    name="$(get_device_name "${dev}")" || return 1
+
+    if is_muted "${dev}"; then
+        wpctl set-mute "@DEFAULT_AUDIO_${dev}@" 0
+        notify \
+            --hint=int:value:"$(get_volume "${dev}")" \
+            "${name} Volume"
+    else
+        wpctl set-mute "@DEFAULT_AUDIO_${dev}@" 1
+        notify \
+            "${name} Muted"
+    fi
+}
+
+case "${1:-}" in
+set-volume) set_volume SINK "$2" ;;
+toggle-mute) toggle_mute SINK ;;
+toggle-mic) toggle_mute SOURCE ;;
+*) exit 1 ;;
+esac
