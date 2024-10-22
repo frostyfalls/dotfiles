@@ -1,0 +1,65 @@
+separator: &separator {text: " | ", foreground: "7c6f64ff"}
+std-list: &std-list {spacing: 0}
+
+bar:
+  height: 14
+  location: top
+
+  font: Terminus:size=12
+
+  foreground: ebdbb2ff
+  background: 121212ff
+
+  left:
+    - river:
+        anchors:
+          - std-tag: &std-tag {text: " {id}"}
+          - focused-tag: &focused-tag {foreground: "8ec07cff"}
+          - empty-tag: &empty-tag {foreground: "7c6f64ff"}
+        content:
+          map:
+            conditions:
+              id > 9: {empty: {}}
+              focused: {string: {<<: [*std-tag, *focused-tag]}}
+              ~occupied: {string: {<<: [*std-tag, *empty-tag]}}
+              occupied: {string: {<<: *std-tag}}
+        title:
+          list:
+            <<: *std-list
+            items:
+              - string: {<<: *separator}
+              - string: {text: "{layout}"}
+              - string: {<<: *separator}
+              - string: {text: "{title}", max: 70}
+
+  right:
+    - pipewire:
+        content:
+          map:
+            conditions:
+              type == sink: {string: {text: "VOL {cubic_volume}%"}}
+    - label:
+        content: {string: {<<: *separator}}
+    - battery:
+        name: BAT1
+        poll-interval: 60000
+        content:
+          map:
+            default: {string: {text: "BAT {capacity}%"}}
+            conditions:
+              state == discharging: {string: {text: "BAT {capacity}% ({estimate})"}}
+              state == unknown: {string: {text: "Unknown"}}
+    - label:
+        content: {string: {<<: *separator}}
+    - clock:
+        date-format: "%b %d %Y"
+        time-format: "%H:%M"
+        content: {string: {text: "{date} {time}"}}
+    - label:
+        content: {string: {<<: *separator}}
+    - script:
+        path: /usr/local/bin/yambar-loadavg
+        args: [-I, 1000]
+        content: {string: {text: "{one}"}}
+    - label:
+        content: {string: {text: " "}}
