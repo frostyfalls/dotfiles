@@ -1,0 +1,34 @@
+## Columns list ##
+playlist_editor_display_mode = "columns"
+search_engine_display_mode = "columns"
+browser_display_mode = "columns"
+playlist_display_mode = "columns"
+song_columns_list_format = "(35)[green]{t} (30)[magenta]{a} (30)[yellow]{b} (6f)[blue]{lr}"
+
+## Alternative interface ##
+user_interface = "alternative"
+alternative_header_first_line_format = "$0{$6%a$9 - }{$3%t$9}|{$3%f$9} $0"
+alternative_header_second_line_format = "{{$4%b$9}{ [$8%y$9]}}|{$4%D$9}"
+
+## Progress bar ##
+progressbar_look = "━━┉"
+progressbar_color = "white"
+progressbar_elapsed_color = "blue"
+
+## Visualizer ##
+visualizer_data_source = "/tmp/mpd.fifo"
+visualizer_output_name = "FIFO"
+visualizer_type = "wave_filled"
+visualizer_fps = 75
+
+## Disabling UI ##
+header_visibility = "no"
+titles_visibility = "no"
+connected_message_on_startup = "no"
+
+## Etc. ##
+autocenter_mode = "yes"
+centered_cursor = "yes"
+media_library_primary_tag = "album_artist"
+screen_switcher_mode = "playlist, media_library, visualizer"
+lyrics_directory = ""
