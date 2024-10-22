@@ -17,6 +17,8 @@ export CARGO_HOME="${XDG_DATA_HOME}/cargo"
 export GNUPGHOME="${XDG_DATA_HOME}/gnupg"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export CUDA_CACHE_PATH="${XDG_CACHE_HOME}/nv"
+export PYTHONSTARTUP="${XDG_CONFIG_HOME}/python/pythonrc"
+export PYTHON_HISTORY="${XDG_STATE_HOME}/python_history"
 
 # Qt theme settings
 if command -v qt6ct >/dev/null; then
