@@ -21,35 +21,34 @@ __prompt() {
     PS1="${_user_host}\[\e[0;0m\]:${PROMPT_COL_WORK_DIR}\w ${_prompt_color}${_prompt_char} \[\e[0;0m\]"
 }
 
-# Verbose filesystem actions
 alias cp='cp -iv'
 alias mv='mv -iv'
 alias rm='rm -vI'
 alias mkdir='mkdir -pv'
 
-# Color options
 alias ls='ls --color=auto -AF'
 alias grep='grep --color=auto'
 
-# ls on cd
 cd() { builtin cd "$@" && ls; }
-
-# cd on lf
 lf() { cd "$(command lf -print-last-dir "$@")" || return; }
+mkcd() { mkdir -p "$*" && cd "$*" || return 1; }
 
-# Alternatives
 alias cat='bat'
 alias vim='nvim'
 
-# Shorthands
+alias em='emacs -nw'
+alias emacs='emacsclient -ca emacs'
+
+alias wget='wget --no-hsts'
+
 alias l='ls'
 alias t='tmux'
 alias v='nvim'
 alias g='git'
+alias py='python'
 
 alias ll='ls -l'
 
-# Git aliases
 alias ge='git clone'
 alias ga='git add'
 alias gc='git commit'
@@ -59,11 +58,8 @@ alias gp='git push'
 alias gl='git pull'
 alias gg='git log'
 
-alias wget='wget --no-hsts'
-
 HISTSIZE="$((2 << 15))" HISTFILESIZE="${HISTSIZE}"
 HISTFILE="${XDG_STATE_HOME}/bash_history"
-
 HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 
