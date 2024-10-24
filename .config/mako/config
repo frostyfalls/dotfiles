@@ -4,4 +4,4 @@ text-color=#CCCCCCFF
 border-size=1
 border-color=#AAAAAAFF
 progress-color=#3A3A3AFF
-default-timeout=3000
+default-timeout=15000
