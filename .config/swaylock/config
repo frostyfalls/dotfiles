@@ -1,6 +1,4 @@
-daemonize
 ignore-empty-password
-image=$XDG_DATA_HOME/wallpaper
-scaling=fill
+color=000000
 font=Liberation Mono
 font-size=9
