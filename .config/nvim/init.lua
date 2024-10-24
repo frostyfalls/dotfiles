@@ -205,6 +205,8 @@ require('lazy').setup({
           rust = { 'rustfmt', lsp_format = 'fallback' },
           go = { 'goimports', 'gofmt', lsp_format = 'fallback' },
           sh = { 'shfmt', lsp_format = 'fallback' },
+          cpp = { 'clang-format', lsp_format = 'fallback' },
+          c = { 'clang-format', lsp_format = 'fallback' },
         },
       })
     end,
