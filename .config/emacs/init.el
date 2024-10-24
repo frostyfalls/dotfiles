@@ -13,6 +13,7 @@
   (tool-bar-mode -1)
   (toggle-scroll-bar -1)
   (setq inhibit-startup-screen t)
+  (setq default-frame-alist '((undecorated . t)))
 
   (set-face-attribute 'default nil
                       :font "Liberation Mono"
