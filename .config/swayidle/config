@@ -1,4 +1,3 @@
-timeout 300 "swaylock"
-timeout 330 "wlopm --off *" resume "wlopm --on *"
-timeout 400 "systemctl suspend"
-before-sleep "swaylock"
+timeout 600 "swaylock -f"
+timeout 3600 "systemctl suspend"
+before-sleep "swaylock -f"
