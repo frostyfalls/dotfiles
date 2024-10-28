@@ -27,19 +27,24 @@ bar:
           list:
             <<: *std-list
             items:
-              - string: {<<: *separator}
-              - string: {text: "{layout}"}
-              - string: {<<: *separator}
-              - string: {text: "{title}", max: 70}
+              - map:
+                  conditions:
+                    layout != "":
+                      list:
+                        <<: *std-list
+                        items:
+                          - string: {<<: *separator}
+                          - string: {text: "{layout}"}
+              - map:
+                  conditions:
+                    title != "":
+                      list:
+                        <<: *std-list
+                        items:
+                          - string: {<<: *separator}
+                          - string: {text: "{title}", max: 70}
 
   right:
-    - script:
-        path: /usr/local/bin/yambar-weather
-        args: []
-        poll-interval: 3600000
-        content: {string: {text: "{condition_name} ({temperature})"}}
-    - label:
-        content: {string: {<<: *separator}}
     - pipewire:
         content:
           map:
