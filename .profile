@@ -12,13 +12,14 @@ export EDITOR="nvim"
 export BROWSER="qutebrowser"
 
 # $HOME cleanup
+export XAUTHORITY="${XDG_RUNTIME_DIR}/Xauthority"
 export GOPATH="${XDG_DATA_HOME}/go"
 export CARGO_HOME="${XDG_DATA_HOME}/cargo"
-export GNUPGHOME="${XDG_DATA_HOME}/gnupg"
 export NPM_CONFIG_USERCONFIG="${XDG_CONFIG_HOME}/npm/npmrc"
 export CUDA_CACHE_PATH="${XDG_CACHE_HOME}/nv"
 export PYTHONSTARTUP="${XDG_CONFIG_HOME}/python/pythonrc"
 export PYTHON_HISTORY="${XDG_STATE_HOME}/python_history"
+export SVDIR="${XDG_CONFIG_HOME}/service"
 
 # Qt theme settings
 if command -v qt6ct >/dev/null; then
@@ -28,7 +29,7 @@ elif command -v qt5ct >/dev/null; then
 fi
 
 # $PATH additions
-export PATH="${PATH}:${GOPATH}/bin:${CARGO_HOME}/bin:${HOME}/.local/bin"
+export PATH="${PATH}:${GOPATH}/bin:${CARGO_HOME}/bin:${XDG_DATA_HOME}/npm/bin:${HOME}/.local/bin"
 
 # Graphical session
 if [ "$(tty)" = "/dev/tty2" ] && ! pgrep river >/dev/null; then
