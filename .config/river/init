@@ -126,11 +126,6 @@ riverctl rule-add -app-id "qutebrowser" tags 2
 riverctl rule-add ssd
 
 # Themes
-gnome_schema="org.gnome.desktop.interface"
-gsettings set "${gnome_schema}" gtk-theme "Adwaita-dark"
-gsettings set "${gnome_schema}" icon-theme "elementary-xfce-dark"
-gsettings set "${gnome_schema}" cursor-theme "Adwaita"
-gsettings set "${gnome_schema}" font-name "Sans Serif 11"
 riverctl xcursor-theme "Adwaita"
 
 # Layout management
@@ -149,13 +144,6 @@ wideriver \
     --border-color-focused-monocle 0xcccccc \
     --border-color-unfocused 0x777777 &
 
-kanshi &
-xrdb -merge "${HOME}/.Xresources" &
+runsvdir "${SVDIR}" &
+wallpaperctl restore &
 yambar &
-pipewire &
-pipewire-pulse &
-wireplumber &
-mako &
-foot --server &
-mpd --no-daemon &
-swayidle &
