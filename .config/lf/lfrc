@@ -1,3 +1,5 @@
+# vim: ft=conf
+
 set shell sh
 set shellopts '-eu'
 set ifs "\n"
@@ -56,5 +58,3 @@ map ` !:
 map x $chmod +x $f
 map . set hidden!
 map a :push %mkdir<space>
-
-# vim: ft=conf
