@@ -1,0 +1,15 @@
+high_temp=6500
+low_temp=4000
+gamma=1.0
+use_location=1
+
+# Location
+latitude=27.9
+longitude=82.4
+
+# Manual
+sunrise=06:30
+sunset=18:30
+duration=1800
+
+# vim: ft=conf
