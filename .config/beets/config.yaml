@@ -1,17 +1,14 @@
 directory: ~/music
 library: ~/music/library.db
 
+original_date: yes
+
 plugins: deezer spotify edit missing mpdupdate the lyrics zero lastgenre
 
 import:
   move: yes
   languages: en
   log: ~/.cache/beets.log
-  set_fields:
-    artist_sort: %the{$artist}
-    artists_sort: %the{$artists}
-    albumartists_sort: %the{$albumartist}
-    albumartists_sort: %the{$albumartists}
 
 match:
   preferred:
