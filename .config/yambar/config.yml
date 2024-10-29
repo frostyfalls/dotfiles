@@ -2,7 +2,7 @@ separator: &separator {text: " | ", foreground: "7c6f64ff"}
 std-list: &std-list {spacing: 0}
 
 bar:
-  height: 14
+  height: 18
   location: top
 
   font: Terminus:size=12
@@ -13,16 +13,20 @@ bar:
   left:
     - river:
         anchors:
-          - std-tag: &std-tag {text: " {id}"}
-          - focused-tag: &focused-tag {foreground: "8ec07cff"}
-          - empty-tag: &empty-tag {foreground: "7c6f64ff"}
+          - empty-tag: &empty-tag {text: " {id}."}
+          - occupied-tag: &occupied-tag {text: " {id}*"}
+          - urgent-tag: &urgent-tag {text: " {id}!"}
+          - focused-tag: &focused-tag {foreground: "ebdbb2ff"}
+          - other-tag: &other-tag {foreground: "7c6f64ff"}
         content:
           map:
             conditions:
               id > 9: {empty: {}}
-              focused: {string: {<<: [*std-tag, *focused-tag]}}
-              ~occupied: {string: {<<: [*std-tag, *empty-tag]}}
-              occupied: {string: {<<: *std-tag}}
+              focused && ~occupied: {string: {<<: [*focused-tag, *empty-tag]}}
+              focused && occupied: {string: {<<: [*focused-tag, *occupied-tag]}}
+              urgent: {string: {<<: [*focused-tag, *urgent-tag]}}
+              ~occupied: {string: {<<: [*other-tag, *empty-tag]}}
+              occupied: {string: {<<: [*other-tag, *occupied-tag]}}
         title:
           list:
             <<: *std-list
@@ -72,6 +76,6 @@ bar:
     - script:
         path: /usr/local/bin/yambar-loadavg
         args: [-I, 1000]
-        content: {string: {text: "{one}"}}
+        content: {string: {text: "{one} {five} {fifteen}"}}
     - label:
         content: {string: {text: " "}}
