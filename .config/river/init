@@ -146,4 +146,5 @@ wideriver \
 
 runsvdir "${SVDIR}" &
 wallpaperctl restore &
+xrdb -merge "${HOME}/.Xresources"
 yambar &
