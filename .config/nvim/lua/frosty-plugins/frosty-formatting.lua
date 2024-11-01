@@ -3,7 +3,8 @@ return {
     'stevearc/conform.nvim',
     dependencies = { 'neovim/nvim-lspconfig' },
     config = function()
-      require('conform').setup({
+      local conform = require('conform')
+      conform.setup({
         formatters_by_ft = {
           c = { 'clang-format', lsp_format = 'fallback' },
           cpp = { 'clang-format', lsp_format = 'fallback' },

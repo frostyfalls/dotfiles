@@ -1,8 +1,12 @@
 return {
   {
-    'tpope/vim-fugitive',
+    'NeogitOrg/neogit',
+    dependencies = { 'nvim-lua/plenary.nvim', 'sindrets/diffview.nvim', 'nvim-telescope/telescope.nvim' },
     config = function()
-      vim.keymap.set('n', '<leader>g', vim.cmd.Git)
+      local neogit = require('neogit')
+      neogit.setup()
+
+      vim.keymap.set('n', '<leader>g', neogit.open)
     end,
   },
 }
