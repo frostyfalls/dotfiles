@@ -136,13 +136,11 @@ wideriver \
     --stack even \
     --count-master 1 \
     --ratio-master 0.55 \
-    --inner-gaps 8 \
-    --outer-gaps 4 \
     --border-width 1 \
     --border-width-monocle 1 \
-    --border-color-focused 0xcccccc \
-    --border-color-focused-monocle 0xcccccc \
-    --border-color-unfocused 0x777777 &
+    --border-color-focused 0xebdbb2 \
+    --border-color-focused-monocle 0xebdbb2 \
+    --border-color-unfocused 0x504945 &
 
 runsvdir "${SVDIR}" &
 wallpaperctl restore &
