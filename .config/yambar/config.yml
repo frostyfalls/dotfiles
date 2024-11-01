@@ -1,12 +1,10 @@
 separator: &separator {text: " | ", foreground: "7c6f64ff"}
-std-list: &std-list {spacing: 0}
+font-icon: &font-icon {font: "Symbols Nerd Font Mono:size=15"}
 
 bar:
-  height: 18
+  height: 22
   location: top
-
-  font: Terminus:size=12
-
+  font: Liberation Mono:size=12
   foreground: ebdbb2ff
   background: 121212ff
 
@@ -27,55 +25,123 @@ bar:
               urgent: {string: {<<: [*focused-tag, *urgent-tag]}}
               ~occupied: {string: {<<: [*other-tag, *empty-tag]}}
               occupied: {string: {<<: [*other-tag, *occupied-tag]}}
-        title:
-          list:
-            <<: *std-list
-            items:
-              - map:
-                  conditions:
-                    layout != "":
-                      list:
-                        <<: *std-list
-                        items:
-                          - string: {<<: *separator}
-                          - string: {text: "{layout}"}
-              - map:
-                  conditions:
-                    title != "":
-                      list:
-                        <<: *std-list
-                        items:
-                          - string: {<<: *separator}
-                          - string: {text: "{title}", max: 70}
-
-  right:
-    - pipewire:
+    - foreign-toplevel:
         content:
           map:
             conditions:
-              type == sink: {string: {text: "VOL {cubic_volume}%"}}
+              activated && title != "":
+                list:
+                  spacing: 0
+                  items:
+                    - string: {<<: *separator}
+                    - string: {text: "{title}", max: 80}
+
+  right:
+    - network:
+        anchors:
+          - net-wifi: &net-wifi
+              conditions:
+                state == up:
+                  list:
+                    spacing: 0
+                    items:
+                      - string: {text: "", <<: *font-icon}
+                      - string: {text: " "}
+                      - string: {text: "{ipv4}"}
+        content:
+          map:
+            conditions:
+              name == lo: {empty: {}}
+              name == wlo1: {map: {<<: *net-wifi}}
+    - label:
+        content: {string: {<<: *separator}}
+    - pipewire:
+        anchors:
+          - output-icon: &output-icon
+              tag: cubic_volume
+              items:
+                - string: {text: "", <<: *font-icon}
+                - string: {text: "", <<: *font-icon}
+                - string: {text: "", <<: *font-icon}
+          - input-icon: &input-icon
+              default:
+                string: {text: "", <<: *font-icon}
+              conditions:
+                muted:
+                  string: {text: "", <<: *font-icon}
+        content:
+          map:
+            conditions:
+              type == sink:
+                list:
+                  spacing: 0
+                  items:
+                    - ramp: {<<: *output-icon}
+                    - string: {text: " "}
+                    - string: {text: "{cubic_volume}%"}
+                    # XXX(frosty): hack to add spacing between the output and input display
+                    - string: {text: " "}
+              type == source:
+                list:
+                  spacing: 0
+                  items:
+                    - map: {<<: *input-icon}
+                    - string: {text: " "}
+                    - string: {text: "{cubic_volume}%"}
     - label:
         content: {string: {<<: *separator}}
     - battery:
         name: BAT1
         poll-interval: 60000
+        anchors:
+          - battery-icon: &battery-icon
+              tag: capacity
+              items:
+                - string: {text: "", <<: *font-icon}
+                - string: {text: "", <<: *font-icon}
+                - string: {text: "", <<: *font-icon}
+                - string: {text: "", <<: *font-icon}
+                - string: {text: "", <<: *font-icon}
         content:
           map:
-            default: {string: {text: "BAT {capacity}%"}}
+            default:
+              list:
+                spacing: 0
+                items:
+                  - ramp: {<<: *battery-icon}
+                  - string: {text: " "}
+                  - string: {text: "{capacity}%"}
             conditions:
-              state == discharging: {string: {text: "BAT {capacity}% ({estimate})"}}
-              state == unknown: {string: {text: "Unknown"}}
+              state == discharging:
+                list:
+                  spacing: 0
+                  items:
+                    - ramp: {<<: *battery-icon}
+                    - string: {text: " "}
+                    - string: {text: "{capacity}% ({estimate})"}
+              state == unknown:
+                list:
+                  spacing: 0
+                  items:
+                    - string: {text: "", <<: *font-icon}
+                    - string: {text: " "}
+                    - string: {text: "Unknown"}
     - label:
-        content: {string: {<<: *separator}}
+        content:
+          string: {<<: *separator}
+    - script:
+        path: /usr/local/bin/yambar-loadavg
+        args: [-I, 10]
+        content:
+          string: {text: "{one}"}
+    - label:
+        content:
+          string: {<<: *separator}
     - clock:
         date-format: "%b %d %Y"
         time-format: "%H:%M"
-        content: {string: {text: "{date} {time}"}}
+        content:
+          string: {text: "{date} {time}"}
     - label:
-        content: {string: {<<: *separator}}
-    - script:
-        path: /usr/local/bin/yambar-loadavg
-        args: [-I, 1000]
-        content: {string: {text: "{one} {five} {fifteen}"}}
-    - label:
-        content: {string: {text: " "}}
+        content:
+          string: {text: " "}
