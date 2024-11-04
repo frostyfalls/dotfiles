@@ -74,5 +74,3 @@ PROMPT_COL_FAILURE='\[\e[1;31m\]'
 
 [[ "${EUID}" -ne 0 ]] && PROMPT_DIRTRIM=3
 PROMPT_COMMAND='__prompt'
-
-uptime | xargs
