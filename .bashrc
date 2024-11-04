@@ -12,7 +12,7 @@ __prompt() {
 
     if [[ "${EUID}" -ne 0 ]]; then
         _user_host="${PROMPT_COL_USER_HOST}\u@\h"
-        _prompt_char="λ"
+        _prompt_char="%"
     else
         _user_host="${PROMPT_COL_ROOT}\h"
         _prompt_char="#"
@@ -58,14 +58,15 @@ alias gp='git push'
 alias gl='git pull'
 alias gg='git log'
 
-HISTSIZE="$((2 << 15))" HISTFILESIZE="${HISTSIZE}"
 HISTFILE="${XDG_STATE_HOME}/bash_history"
+HISTSIZE="$((2 << 15))" HISTFILESIZE="${HISTSIZE}"
 HISTCONTROL="erasedups:ignoreboth"
 shopt -s histappend
 
-[[ -d "${XDG_DATA_HOME}/venv" ]] && VIRTUAL_ENV_DISABLE_PROMPT=1 . "${XDG_DATA_HOME}/venv/bin/activate"
+[[ -d "${XDG_DATA_HOME}/venv" ]] &&
+    VIRTUAL_ENV_DISABLE_PROMPT=1 . "${XDG_DATA_HOME}/venv/bin/activate"
 
-PROMPT_COL_SUCCESS='\[\e[0;0m\]'
+PROMPT_COL_SUCCESS='\[\e[1;37m\]'
 PROMPT_COL_USER_HOST='\[\e[1;32m\]'
 PROMPT_COL_ROOT='\[\e[1;31m\]'
 PROMPT_COL_WORK_DIR='\[\e[1;34m\]'
@@ -73,3 +74,5 @@ PROMPT_COL_FAILURE='\[\e[1;31m\]'
 
 [[ "${EUID}" -ne 0 ]] && PROMPT_DIRTRIM=3
 PROMPT_COMMAND='__prompt'
+
+uptime | xargs
