@@ -38,6 +38,7 @@ bar:
             conditions:
               name == lo: {empty: {}}
               name == wlo1: {map: {<<: *net-ipv4}}
+              name == wlp3s0: {map: {<<: *net-ipv4}}
     - label:
         content: {string: {<<: *separator}}
     - pipewire:
