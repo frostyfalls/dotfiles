@@ -18,6 +18,7 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣', eol = '↵' }
+vim.opt.showbreak = '↵'
+vim.opt.listchars = { tab = '» ', trail = '·' }
 
 vim.opt.scrolloff = 4
