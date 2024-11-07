@@ -15,7 +15,6 @@ bar:
           - urgent-tag: &urgent-tag {text: " {id}!"}
           - focused-tag: &focused-tag {foreground: "bbe336ff"}
           - other-tag: &other-tag {foreground: "777777ff"}
-          - title: &title {text: " {title}", max: 80}
         content:
           map:
             conditions:
@@ -25,7 +24,13 @@ bar:
               urgent: {string: {<<: [*focused-tag, *urgent-tag]}}
               occupied: {string: {<<: [*other-tag, *occupied-tag]}}
               ~occupied: {string: {<<: [*other-tag, *empty-tag]}}
-        title: {string: {<<: *title}}
+        title: {string: {text: " {layout}"}}
+
+  center:
+    - clock:
+        date-format: "%b %d %Y"
+        time-format: "%H:%M"
+        content: {string: {text: "{date} {time}"}}
 
   right:
     - network:
@@ -63,11 +68,5 @@ bar:
         path: /usr/local/bin/yambar-loadavg
         args: [-I, 10]
         content: {string: {text: "{one}"}}
-    - label:
-        content: {string: {<<: *separator}}
-    - clock:
-        date-format: "%b %d %Y"
-        time-format: "%H:%M"
-        content: {string: {text: "{date} {time}"}}
     - label:
         content: {string: {text: " "}}
