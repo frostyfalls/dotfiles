@@ -3,18 +3,20 @@
 riverctl background-color 0x000000
 
 # Common programs
-riverctl map normal Super Return spawn footclient
+riverctl map normal Super Return spawn foot
 riverctl map normal Super P spawn fuzzel
-riverctl map normal Super W spawn qutebrowser
-riverctl map normal Super V spawn "footclient pulsemixer"
-riverctl map normal Super F spawn "footclient lf"
-riverctl map normal Super N spawn "footclient newsraft"
-riverctl map normal Super Q spawn "footclient ncmpcpp"
-riverctl map normal Super U spawn "footclient rbw-ez"
+riverctl map normal Super W spawn firefox
+riverctl map normal Super V spawn "foot pulsemixer"
+riverctl map normal Super F spawn "foot lf"
+riverctl map normal Super N spawn "foot newsraft"
+riverctl map normal Super Q spawn "foot ncmpcpp"
+riverctl map normal Super U spawn "foot rbw-ez"
 
 # Screenshotting
-riverctl map normal Super+Shift O spawn "screenshot --notify --copy --save full"
-riverctl map normal Super+Shift P spawn "screenshot --notify --copy --save select"
+riverctl map normal Super+Shift O spawn "screenshot -nc full"
+riverctl map normal Super+Shift P spawn "screenshot -nc select"
+riverctl map normal None Print spawn "screenshot -nc full"
+riverctl map normal Shift Print spawn "screenshot -nc select"
 
 # Move/resize
 riverctl map-pointer normal Super BTN_LEFT move-view
@@ -90,22 +92,32 @@ riverctl map passthrough Super+Shift Escape enter-mode normal
 # Special keys
 for mode in normal locked; do
     # Volume
-    riverctl map "${mode}" None XF86AudioMute spawn "audioctl toggle-mute"
-    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn "audioctl set-volume 5%-"
-    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn "audioctl set-volume 5%+"
-    riverctl map "${mode}" Super F9 spawn "audioctl toggle-mute"
-    riverctl map -repeat "${mode}" Super F10 spawn "audioctl set-volume 5%-"
-    riverctl map -repeat "${mode}" Super F11 spawn "audioctl set-volume 5%+"
+    riverctl map "${mode}" None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+    riverctl map "${mode}" Super F9 spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    riverctl map -repeat "${mode}" Super F10 spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+    riverctl map -repeat "${mode}" Super F11 spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+
+    # Media
+    riverctl map -repeat "${mode}" None XF86AudioPrev spawn "mpc prev"
+    riverctl map -repeat "${mode}" None XF86AudioNext spawn "mpc next"
+    riverctl map "${mode}" None XF86AudioPlay spawn "mpc toggle"
+    riverctl map "${mode}" None XF86AudioStop spawn "mpc stop"
+    riverctl map -repeat "${mode}" Super F5 spawn "mpc prev"
+    riverctl map -repeat "${mode}" Super F6 spawn "mpc next"
+    riverctl map "${mode}" Super F7 spawn "mpc toggle"
+    riverctl map "${mode}" Super F8 spawn "mpc stop"
 
     # Brightness
-    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn "brightctl set acpi_video0 10%-"
-    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn "brightctl set acpi_video0 10%+"
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn "brightctl set smc::kbd_backlight 10%-"
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn "brightctl set smc::kbd_backlight 10%+"
-    riverctl map "${mode}" Shift XF86MonBrightnessDown spawn "brightctl set acpi_video0 0%"
-    riverctl map "${mode}" Shift XF86MonBrightnessUp spawn "brightctl set acpi_video0 100%"
-    riverctl map "${mode}" Shift XF86KbdBrightnessDown spawn "brightctl set smc::kbd_backlight 0%"
-    riverctl map "${mode}" Shift XF86KbdBrightnessUp spawn "brightctl set smc::kbd_backlight 100%"
+    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn "brightnessctl set 10%-"
+    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn "brightnessctl set 10%+"
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn "brightnessctl -d smc::kbd_backlight set 10%-"
+    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn "brightnessctl -d smc::kbd_backlight set 10%+"
+    riverctl map "${mode}" Shift XF86MonBrightnessDown spawn "brightnessctl set 0%"
+    riverctl map "${mode}" Shift XF86MonBrightnessUp spawn "brightnessctl set 100%"
+    riverctl map "${mode}" Shift XF86KbdBrightnessDown spawn "brightnessctl -d smc::kbd_backlight set 0%"
+    riverctl map "${mode}" Shift XF86KbdBrightnessUp spawn "brightnessctl -d smc::kbd_backlight set 100%"
 done
 
 # Other options
@@ -138,11 +150,16 @@ wideriver \
     --ratio-master 0.55 \
     --border-width 1 \
     --border-width-monocle 1 \
-    --border-color-focused 0xebdbb2 \
-    --border-color-focused-monocle 0xebdbb2 \
-    --border-color-unfocused 0x504945 &
+    --border-color-focused 0xff0000 \
+    --border-color-focused-monocle 0xff0000 \
+    --border-color-unfocused 0x333333 &
 
-runsvdir "${SVDIR}" &
+kanshi &
+pipewire &
+wireplumber &
+pipewire-pulse &
 wallpaperctl restore &
 xrdb -merge "${HOME}/.Xresources"
+wlsunset -S 06:00 -s 19:30 -d 300 &
 yambar &
+mako &
