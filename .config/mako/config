@@ -1,7 +1,7 @@
 font=Liberation Mono 9
-background-color=#222222FF
-text-color=#CCCCCCFF
+background-color=#1A1A1A
+text-color=#EEEEEE
 border-size=1
-border-color=#AAAAAAFF
-progress-color=#3A3A3AFF
-default-timeout=15000
+border-color=#444444
+progress-color=#2A2A2A
+default-timeout=5000
