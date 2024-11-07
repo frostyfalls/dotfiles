@@ -24,13 +24,26 @@ bar:
               urgent: {string: {<<: [*focused-tag, *urgent-tag]}}
               occupied: {string: {<<: [*other-tag, *occupied-tag]}}
               ~occupied: {string: {<<: [*other-tag, *empty-tag]}}
-        title: {string: {text: " {layout}"}}
-
-  center:
-    - clock:
-        date-format: "%b %d %Y"
-        time-format: "%H:%M"
-        content: {string: {text: "{date} {time}"}}
+        title:
+          list:
+            spacing: 0
+            items:
+              - map:
+                  conditions:
+                    layout != "":
+                      list:
+                        spacing: 0
+                        items:
+                          - string: {<<: *separator}
+                          - string: {text: "{layout}"}
+              - map:
+                  conditions:
+                    title != "":
+                      list:
+                        spacing: 0
+                        items:
+                          - string: {<<: *separator}
+                          - string: {text: "{title}", max: 80}
 
   right:
     - network:
@@ -68,5 +81,11 @@ bar:
         path: /usr/local/bin/yambar-loadavg
         args: [-I, 10]
         content: {string: {text: "{one}"}}
+    - label:
+        content: {string: {<<: *separator}}
+    - clock:
+        date-format: "%b %d %Y"
+        time-format: "%H:%M"
+        content: {string: {text: "{date} {time}"}}
     - label:
         content: {string: {text: " "}}
