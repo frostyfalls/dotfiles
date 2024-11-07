@@ -1,11 +1,11 @@
-separator: &separator {text: " | ", foreground: "7c6f64ff"}
+separator: &separator {text: " | ", foreground: "777777ff"}
 
 bar:
   height: 18
   location: top
   font: Terminus:size=12
-  foreground: ebdbb2ff
-  background: 121212ff
+  foreground: eeeeeeff
+  background: 111111ff
 
   left:
     - river:
@@ -13,8 +13,8 @@ bar:
           - occupied-tag: &occupied-tag {text: " {id}*"}
           - empty-tag: &empty-tag {text: " {id}."}
           - urgent-tag: &urgent-tag {text: " {id}!"}
-          - focused-tag: &focused-tag {foreground: "ebdbb2ff"}
-          - other-tag: &other-tag {foreground: "7c6f64ff"}
+          - focused-tag: &focused-tag {foreground: "bbe336ff"}
+          - other-tag: &other-tag {foreground: "777777ff"}
           - title: &title {text: " {title}", max: 80}
         content:
           map:
