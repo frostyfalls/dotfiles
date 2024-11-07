@@ -160,6 +160,7 @@ wireplumber &
 pipewire-pulse &
 wallpaperctl restore &
 xrdb -merge "${HOME}/.Xresources"
+mpd --no-daemon &
 wlsunset -S 06:00 -s 19:30 -d 300 &
 yambar &
 mako &
