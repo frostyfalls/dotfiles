@@ -5,7 +5,7 @@ riverctl background-color 0x000000
 # Common programs
 riverctl map normal Super Return spawn foot
 riverctl map normal Super P spawn fuzzel
-riverctl map normal Super W spawn firefox
+riverctl map normal Super W spawn qutebrowser
 riverctl map normal Super V spawn "foot pulsemixer"
 riverctl map normal Super F spawn "foot lf"
 riverctl map normal Super N spawn "foot newsraft"
@@ -158,7 +158,7 @@ kanshi &
 pipewire &
 wireplumber &
 pipewire-pulse &
-wallpaperctl restore &
+swaybg -m fill -i "${XDG_DATA_HOME}/wallpaper" &
 xrdb -merge "${HOME}/.Xresources"
 mpd --no-daemon &
 wlsunset -S 06:00 -s 19:30 -d 300 &
