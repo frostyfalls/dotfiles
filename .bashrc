@@ -41,6 +41,7 @@ alias emacs='emacsclient -ca emacs'
 
 alias wget='wget --no-hsts'
 
+alias tmux='tmux -2'
 alias l='ls'
 alias t='tmux'
 alias v='nvim'
