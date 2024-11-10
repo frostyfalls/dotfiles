@@ -18,6 +18,7 @@ if [ "$(hostname)" = "styx" ]; then
 fi
 yambar &
 mako &
+gpg-agent --server --no-detach &
 # }}}
 
 # {{{ inputs
