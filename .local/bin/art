@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -eu
+
+esc="\033["
+reset="${esc}0m"
+
+fb1="${esc}91m"
+fb2="${esc}92m"
+fb3="${esc}93m"
+fb4="${esc}94m"
+fb5="${esc}95m"
+fb6="${esc}96m"
+
+space_invaders() {
+    printf '%b' "\
+$fb1  ▀▄   ▄▀    $fb2 ▄▄▄████▄▄▄   $fb3  ▄██▄    $fb4  ▀▄   ▄▀    $fb5 ▄▄▄████▄▄▄   $fb6  ▄██▄
+$fb1 ▄█▀███▀█▄   $fb2███▀▀██▀▀███  $fb3▄█▀██▀█▄  $fb4 ▄█▀███▀█▄   $fb5███▀▀██▀▀███  $fb6▄█▀██▀█▄
+$fb1█▀███████▀█  $fb2▀▀███▀▀███▀▀  $fb3▀█▀██▀█▀  $fb4█▀███████▀█  $fb5▀▀███▀▀███▀▀  $fb6▀█▀██▀█▀
+$fb1▀ ▀▄▄ ▄▄▀ ▀  $fb2 ▀█▄ ▀▀ ▄█▀   $fb3▀▄    ▄▀  $fb4▀ ▀▄▄ ▄▄▀ ▀  $fb5 ▀█▄ ▀▀ ▄█▀   $fb6▀▄    ▄▀
+$reset
+"
+}
+
+case "${1:-}" in
+space_invaders) space_invaders ;;
+*) exit 1 ;;
+esac
