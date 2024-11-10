@@ -1,146 +1,44 @@
 #!/bin/sh
+# shellcheck disable=SC2043
 
-riverctl background-color 0x000000
-
-# Common programs
-riverctl map normal Super Return spawn foot
-riverctl map normal Super P spawn fuzzel
-riverctl map normal Super W spawn qutebrowser
-riverctl map normal Super V spawn "foot pulsemixer"
-riverctl map normal Super F spawn "foot lf"
-riverctl map normal Super N spawn "foot newsraft"
-riverctl map normal Super Q spawn "foot ncmpcpp"
-riverctl map normal Super U spawn "foot rbw-ez"
-
-# Screenshotting
-riverctl map normal Super+Shift O spawn "screenshot -nc full"
-riverctl map normal Super+Shift P spawn "screenshot -nc select"
-riverctl map normal None Print spawn "screenshot -nc full"
-riverctl map normal Shift Print spawn "screenshot -nc select"
-
-# Move/resize
-riverctl map-pointer normal Super BTN_LEFT move-view
-riverctl map-pointer normal Super BTN_RIGHT resize-view
-
-# Toggle float
-riverctl map normal Super+Shift Space toggle-float
-riverctl map-pointer normal Super BTN_MIDDLE toggle-float
-
-# Fullscreen
-riverctl map normal Super+Shift F toggle-fullscreen
-
-# Close view
-riverctl map normal Super+Shift C close
-
-# Focusing views
-riverctl map normal Super J focus-view next
-riverctl map normal Super K focus-view previous
-
-# Moving views
-riverctl map normal Super+Shift J swap next
-riverctl map normal Super+Shift K swap previous
-riverctl map normal Super+Shift Return zoom
-
-# Outputs
-riverctl map normal Super Period focus-output next
-riverctl map normal Super Comma focus-output previous
-riverctl map normal Super+Shift Period send-to-output next
-riverctl map normal Super+Shift Comma send-to-output previous
-
-# Main ratio/count
-riverctl map normal Super H send-layout-cmd wideriver "--ratio -0.0125"
-riverctl map normal Super L send-layout-cmd wideriver "--ratio +0.0125"
-riverctl map normal Super+Shift H send-layout-cmd wideriver "--ratio -0.05"
-riverctl map normal Super+Shift L send-layout-cmd wideriver "--ratio +0.05"
-riverctl map normal Super I send-layout-cmd wideriver "--count +1"
-riverctl map normal Super D send-layout-cmd wideriver "--count -1"
-
-# Layouts
-riverctl map normal Super T send-layout-cmd wideriver "--layout left"
-riverctl map normal Super+Shift T send-layout-cmd wideriver "--layout top"
-riverctl map normal Super M send-layout-cmd wideriver "--layout monocle"
-riverctl map normal Super Space send-layout-cmd wideriver "--layout-toggle"
-
-# Toggle the bar
-riverctl map normal Super B spawn "pkill yambar || yambar"
-
-# Screen locking
-riverctl map normal Control+Alt L spawn "swaylock -f"
-riverctl map normal Super F12 spawn "swaylock -f"
-
-# Exiting/session
-riverctl map normal Control+Alt Delete exit
-
-# Tag management
-for i in $(seq 1 9); do
-    tags=$((1 << (i - 1)))
-    riverctl map normal Super "${i}" set-focused-tags "${tags}"
-    riverctl map normal Super+Shift "${i}" set-view-tags "${tags}"
-    riverctl map normal Super+Control "${i}" toggle-focused-tags "${tags}"
-    riverctl map normal Super+Shift+Control "${i}" toggle-view-tags "${tags}"
-done
-all_tags=$(((1 << 32) - 1))
-riverctl map normal Super 0 set-focused-tags "${all_tags}"
-riverctl map normal Super+Shift 0 set-view-tags "${all_tags}"
-riverctl map normal Super Tab focus-previous-tags
-
-# Passthrough mode
-riverctl declare-mode passthrough
-riverctl map normal Super+Shift Escape enter-mode passthrough
-riverctl map passthrough Super+Shift Escape enter-mode normal
-
-# Special keys
-for mode in normal locked; do
-    # Volume
-    riverctl map "${mode}" None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-    riverctl map -repeat "${mode}" None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-    riverctl map -repeat "${mode}" None XF86AudioRaiseVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-    riverctl map "${mode}" Super F9 spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-    riverctl map -repeat "${mode}" Super F10 spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-    riverctl map -repeat "${mode}" Super F11 spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-
-    # Media
-    riverctl map -repeat "${mode}" None XF86AudioPrev spawn "mpc prev"
-    riverctl map -repeat "${mode}" None XF86AudioNext spawn "mpc next"
-    riverctl map "${mode}" None XF86AudioPlay spawn "mpc toggle"
-    riverctl map "${mode}" None XF86AudioStop spawn "mpc stop"
-    riverctl map -repeat "${mode}" Super F5 spawn "mpc prev"
-    riverctl map -repeat "${mode}" Super F6 spawn "mpc next"
-    riverctl map "${mode}" Super F7 spawn "mpc toggle"
-    riverctl map "${mode}" Super F8 spawn "mpc stop"
-
-    # Brightness
-    riverctl map -repeat "${mode}" None XF86MonBrightnessDown spawn "brightnessctl set 10%-"
-    riverctl map -repeat "${mode}" None XF86MonBrightnessUp spawn "brightnessctl set 10%+"
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessDown spawn "brightnessctl -d smc::kbd_backlight set 10%-"
-    riverctl map -repeat "${mode}" None XF86KbdBrightnessUp spawn "brightnessctl -d smc::kbd_backlight set 10%+"
-    riverctl map "${mode}" Shift XF86MonBrightnessDown spawn "brightnessctl set 0%"
-    riverctl map "${mode}" Shift XF86MonBrightnessUp spawn "brightnessctl set 100%"
-    riverctl map "${mode}" Shift XF86KbdBrightnessDown spawn "brightnessctl -d smc::kbd_backlight set 0%"
-    riverctl map "${mode}" Shift XF86KbdBrightnessUp spawn "brightnessctl -d smc::kbd_backlight set 100%"
-done
-
-# Other options
-riverctl default-attach-mode bottom
-riverctl hide-cursor when-typing enabled
-riverctl focus-follows-cursor normal
-
-# Input management
-riverctl set-repeat 50 300
-# shellcheck disable=SC2041
-trackpad="pointer-1452-657-bcm5974"
-riverctl input "${trackpad}" disable while-typing enabled
-riverctl input "${trackpad}" natural-scroll enabled
-riverctl input "${trackpad}" tap enabled
-
-# Rules
-riverctl rule-add -app-id "qutebrowser" tags 2
-riverctl rule-add ssd
-
-# Themes
+# {{{ themes
 riverctl xcursor-theme "Adwaita"
+xrdb -merge "$HOME/.Xresources"
+riverctl background-color 0x222222
+swaybg -m fill -i "$XDG_DATA_HOME/wallpaper" &
+# }}}
 
-# Layout management
+# {{{ autoruns
+pipewire &
+pipewire-pulse &
+wireplumber &
+if [ "$(hostname)" = "styx" ]; then
+    kanshi &
+    mpd --no-daemon &
+fi
+yambar &
+mako &
+# }}}
+
+# {{{ inputs
+riverctl set-repeat 50 300
+riverctl hide-cursor when-typing enabled
+for input in "pointer-1452-657-bcm5974"; do
+    riverctl input "$input" disable while-typing enabled
+    riverctl input "$input" natural-scroll enabled
+    riverctl input "$input" tap enabled
+done
+# }}}
+
+# {{{ rules
+riverctl rule-add ssd
+riverctl rule-add -app-id "org.qutebrowser.qutebrowser" tags 2
+riverctl rule-add -app-id "Firefox" tags 2
+riverctl rule-add -app-id "Signal" tags 4
+riverctl rule-add -app-id "vesktop" tags 4
+# }}}
+
+# {{{ window management
 riverctl default-layout wideriver
 wideriver \
     --layout left \
@@ -150,17 +48,115 @@ wideriver \
     --ratio-master 0.55 \
     --border-width 1 \
     --border-width-monocle 1 \
-    --border-color-focused 0xff0000 \
-    --border-color-focused-monocle 0xff0000 \
-    --border-color-unfocused 0x333333 &
+    --border-color-focused 0xfabd2f \
+    --border-color-focused-monocle 0xfabd2f \
+    --border-color-unfocused 0x3c3836 &
+riverctl focus-follows-cursor normal
+riverctl default-attach-mode bottom
+# }}}
 
-kanshi &
-pipewire &
-wireplumber &
-pipewire-pulse &
-swaybg -m fill -i "${XDG_DATA_HOME}/wallpaper" &
-xrdb -merge "${HOME}/.Xresources"
-mpd --no-daemon &
-wlsunset -S 06:00 -s 19:30 -d 300 &
-yambar &
-mako &
+# {{{ mappings
+# applications
+riverctl map normal Super Return spawn foot
+riverctl map normal Super P spawn fuzzel
+riverctl map normal Super W spawn qutebrowser
+riverctl map normal Super V spawn "foot pulsemixer"
+riverctl map normal Super F spawn "foot lf"
+riverctl map normal Super N spawn "foot newsraft"
+riverctl map normal Super Q spawn "foot ncmpcpp"
+
+# screenshot
+riverctl map normal Super+Shift O spawn "screenshot -nc full"
+riverctl map normal Super+Shift P spawn "screenshot -nc select"
+riverctl map normal None Print spawn "screenshot -nc full"
+riverctl map normal Shift Print spawn "screenshot -nc select"
+
+# view actions
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+riverctl map normal Super+Shift Space toggle-float
+riverctl map-pointer normal Super BTN_MIDDLE toggle-float
+riverctl map normal Super+Shift F toggle-fullscreen
+riverctl map normal Super+Shift C close
+
+# focus/swap view
+riverctl map normal Super J focus-view next
+riverctl map normal Super K focus-view previous
+riverctl map normal Super+Shift J swap next
+riverctl map normal Super+Shift K swap previous
+riverctl map normal Super+Shift Return zoom
+
+# output
+riverctl map normal Super Period focus-output next
+riverctl map normal Super Comma focus-output previous
+riverctl map normal Super+Shift Period send-to-output next
+riverctl map normal Super+Shift Comma send-to-output previous
+
+# master view
+riverctl map normal Super H send-layout-cmd wideriver "--ratio -0.0125"
+riverctl map normal Super L send-layout-cmd wideriver "--ratio +0.0125"
+riverctl map normal Super+Shift H send-layout-cmd wideriver "--ratio -0.05"
+riverctl map normal Super+Shift L send-layout-cmd wideriver "--ratio +0.05"
+riverctl map normal Super I send-layout-cmd wideriver "--count +1"
+riverctl map normal Super D send-layout-cmd wideriver "--count -1"
+
+# layout
+riverctl map normal Super T send-layout-cmd wideriver "--layout left"
+riverctl map normal Super+Shift T send-layout-cmd wideriver "--layout top"
+riverctl map normal Super M send-layout-cmd wideriver "--layout monocle"
+riverctl map normal Super Space send-layout-cmd wideriver "--layout-toggle"
+riverctl map normal Super B spawn "pkill yambar || yambar"
+
+# session
+riverctl map normal Control+Alt Delete exit
+riverctl map normal Control+Alt L spawn "swaylock -f"
+riverctl map normal Super F12 spawn "swaylock -f"
+
+# tags
+for i in $(seq 1 9); do
+    tags=$((1 << (i - 1)))
+    riverctl map normal Super "${i}" set-focused-tags "$tags"
+    riverctl map normal Super+Shift "${i}" set-view-tags "$tags"
+    riverctl map normal Super+Control "${i}" toggle-focused-tags "$tags"
+    riverctl map normal Super+Shift+Control "${i}" toggle-view-tags "$tags"
+done
+all_tags=$(((1 << 32) - 1))
+riverctl map normal Super 0 set-focused-tags "$all_tags"
+riverctl map normal Super+Shift 0 set-view-tags "$all_tags"
+riverctl map normal Super Tab focus-previous-tags
+
+# passthrough mode
+riverctl declare-mode passthrough
+riverctl map normal Super+Shift Escape enter-mode passthrough
+riverctl map passthrough Super+Shift Escape enter-mode normal
+
+for mode in normal locked; do
+    # volume
+    riverctl map "$mode" None XF86AudioMute spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    riverctl map -repeat "$mode" None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+    riverctl map -repeat "$mode" None XF86AudioRaiseVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+    riverctl map "$mode" Super F9 spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    riverctl map -repeat "$mode" Super F10 spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+    riverctl map -repeat "$mode" Super F11 spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+
+    # media
+    riverctl map -repeat "$mode" None XF86AudioPrev spawn "mpc prev"
+    riverctl map -repeat "$mode" None XF86AudioNext spawn "mpc next"
+    riverctl map "$mode" None XF86AudioPlay spawn "mpc toggle"
+    riverctl map "$mode" None XF86AudioStop spawn "mpc stop"
+    riverctl map -repeat "$mode" Super F5 spawn "mpc prev"
+    riverctl map -repeat "$mode" Super F6 spawn "mpc next"
+    riverctl map "$mode" Super F7 spawn "mpc toggle"
+    riverctl map "$mode" Super F8 spawn "mpc stop"
+
+    # brightness
+    riverctl map -repeat "$mode" None XF86MonBrightnessDown spawn "brightnessctl set 10%-"
+    riverctl map -repeat "$mode" None XF86MonBrightnessUp spawn "brightnessctl set 10%+"
+    riverctl map -repeat "$mode" None XF86KbdBrightnessDown spawn "brightnessctl -d smc::kbd_backlight set 10%-"
+    riverctl map -repeat "$mode" None XF86KbdBrightnessUp spawn "brightnessctl -d smc::kbd_backlight set 10%+"
+    riverctl map "$mode" Shift XF86MonBrightnessDown spawn "brightnessctl set 0%"
+    riverctl map "$mode" Shift XF86MonBrightnessUp spawn "brightnessctl set 100%"
+    riverctl map "$mode" Shift XF86KbdBrightnessDown spawn "brightnessctl -d smc::kbd_backlight set 0%"
+    riverctl map "$mode" Shift XF86KbdBrightnessUp spawn "brightnessctl -d smc::kbd_backlight set 100%"
+done
+# }}}
