@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Foot
+GenericName=Terminal Emulator
+Exec=foot
+Icon=foot
+Categories=System;TerminalEmulator;
