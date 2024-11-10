@@ -1,10 +1,10 @@
 return {
   {
-    'maxmx03/solarized.nvim',
+    'ellisonleao/gruvbox.nvim',
     lazy = false,
     priority = 1000,
     config = function()
-      vim.cmd('colorscheme solarized')
+      vim.cmd('colorscheme gruvbox')
       vim.cmd('hi Normal guibg=NONE ctermbg=NONE')
     end,
   },
