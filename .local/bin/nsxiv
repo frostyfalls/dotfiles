@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -n "$*" ]; then
+    exec nsxiv "$@"
+else
+    # shellcheck disable=SC1091
+    [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
+    PICTURES_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}"
+
+    exec nsxiv "$PICTURES_DIR"
+fi
