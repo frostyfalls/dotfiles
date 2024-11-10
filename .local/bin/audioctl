@@ -2,6 +2,8 @@
 
 set -eu
 
+AUDIO_LIMIT=1.0
+
 die() {
     echo "${0##*/}: $1" >&2
     exit 1
@@ -56,7 +58,7 @@ set_volume() {
     name="$(get_device_name "${dev}")" || return 1
 
     wpctl set-mute "@DEFAULT_AUDIO_${dev}@" 0
-    wpctl set-volume "@DEFAULT_AUDIO_${dev}@" "${amount}"
+    wpctl set-volume --limit="${AUDIO_LIMIT}" "@DEFAULT_AUDIO_${dev}@" "${amount}"
     notify \
         --hint=int:value:"$(get_volume "${dev}")" \
         "${name} Volume"
