@@ -120,3 +120,5 @@ myip() {
     echo "Public: $(curl -s ipv4.icanhazip.com)"
     echo "Local: $(ip route get 1 | awk 'NR==1{print $7}')"
 }
+
+cmd art && art space_invaders
