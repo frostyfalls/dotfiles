@@ -66,6 +66,7 @@ riverctl map normal Super F spawn "foot lf"
 riverctl map normal Super N spawn "foot newsraft"
 riverctl map normal Super Q spawn "foot ncmpcpp"
 riverctl map normal Super U spawn passget
+riverctl map normal Super+Shift U spawn "passget -o"
 
 # screenshot
 riverctl map normal Super+Shift O spawn "screenshot -nc full"
