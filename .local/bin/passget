@@ -2,27 +2,86 @@
 
 set -eu
 
+# Path options
 PREFIX=${PASSWORD_STORE_DIR:-$HOME/.password-store}
+SUFFIX=
+
+# Other options
+PROMPT="pass: "
 TYPE=0
+TOTP=0
 
-case "${1:-}" in
--t | --type)
-    TYPE=1
-    shift
-    ;;
-*) ;;
-esac
+type_password() {
+    entry="$1"
 
-password=$(find "$PREFIX" -type f -name '*.gpg' | while IFS= read -r file; do
+    { if [ "$TOTP" -eq 1 ]; then
+        pass otp "$SUFFIX/$entry"
+    else
+        pass show "$entry"
+    fi; } | {
+        IFS= read -r password
+        printf '%s' "$password"
+    } | wtype -
+}
+
+copy_password() {
+    entry="$1"
+
+    if [ "$TOTP" -eq 1 ]; then
+        pass otp -c "$SUFFIX/$entry" 2>/dev/null
+    else
+        pass show -c "$entry" 2>/dev/null
+    fi
+}
+
+create_find_directory() {
+    printf '%s' "$PREFIX"
+    [ -n "$PREFIX" ] && printf '/%s' "$SUFFIX"
+}
+
+filter_password_file() {
+    file="$1"
+
     password="${file#"$PREFIX"/}"
+    [ -n "$SUFFIX" ] && password="${password#"$SUFFIX"/}"
     password="${password%.gpg}"
     printf '%s\n' "$password"
-done | sort -f | fuzzel -d -p "pass: ")
+}
 
-[ -z "$password" ] && exit
+create_entries_list() {
+    find "$(create_find_directory)" -type f -name '*.gpg' | while IFS= read -r file; do
+        filter_password_file "$file"
+    done | sort -f
+}
 
-if [ "$TYPE" -eq 0 ]; then
-    pass show -c "$password" 2>/dev/null
+prompt_user_selection() {
+    fuzzel -d -p "$PROMPT"
+}
+
+while [ $# -gt 0 ]; do
+    case "${1:-}" in
+    -t | --type)
+        TYPE=1
+        shift
+        ;;
+    -o | --totp)
+        TOTP=1
+        shift
+        ;;
+    *)
+        break
+        ;;
+    esac
+done
+
+# Apply argument options
+[ "$TOTP" -eq 1 ] && SUFFIX="TOTP" PROMPT="totp: "
+
+entry=$(create_entries_list | prompt_user_selection)
+[ -z "$entry" ] && exit
+
+if [ "$TYPE" -eq 1 ]; then
+    type_password "$entry"
 else
-    pass show "$password" | head -n1 | wtype -
+    copy_password "$entry"
 fi
