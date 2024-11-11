@@ -63,6 +63,9 @@ elif cmd vim; then
 fi
 alias g='git'
 alias py='python'
+alias d='doas '
+alias i='xbps-install'
+alias r='xbps-remove'
 
 # ls
 alias ll='ls -l'
