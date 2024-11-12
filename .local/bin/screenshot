@@ -1,0 +1,92 @@
+#!/bin/sh
+
+set -eu
+
+FILENAME_DATE_FORMAT="%Y-%m-%d_%H-%M-%S"
+
+MODE="full"
+COPY=0
+NOTIFY=0
+
+get_output_path() {
+    # shellcheck disable=SC1091
+    [ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-${HOME}/.config}/user-dirs.dirs"
+    OUTPUT_DIRECTORY="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}"
+
+    printf '%s' "$OUTPUT_DIRECTORY/$(date "+$FILENAME_DATE_FORMAT").png"
+}
+
+do_copy() {
+    output_path="$1"
+
+    [ "$COPY" -ne 1 ] && return
+
+    wl-copy -t image/png <"$output_path"
+}
+
+do_notify() {
+    output_path="$1"
+
+    [ "$NOTIFY" -ne 1 ] && return
+
+    notify-send \
+        "Screenshot" \
+        "$(if [ "$COPY" -eq 1 ]; then
+            echo "Saved to <b>${output_path##*/}</b> and copied to clipboard."
+        else
+            echo "Saved to <b>${output_path##*/}</b>."
+        fi)"
+}
+
+screenshot_full() {
+    output_path="$1"
+
+    grim "$output_path"
+}
+
+screenshot_select() {
+    output_path="$1"
+
+    grim -g "$(slurp)" "$output_path"
+}
+
+while [ $# -gt 0 ]; do
+    case "${1:-}" in
+    -m | --mode)
+        shift
+        MODE="$1"
+        shift
+        ;;
+    -c | --copy)
+        COPY=1
+        shift
+        ;;
+    -n | --notify)
+        NOTIFY=1
+        shift
+        ;;
+    *)
+        break
+        ;;
+    esac
+done
+
+case "$MODE" in
+full)
+    output_path="$(get_output_path)"
+
+    screenshot_full "$output_path"
+    do_copy "$output_path"
+    do_notify "$output_path"
+    ;;
+select)
+    output_path="$(get_output_path)"
+
+    screenshot_select "$output_path"
+    do_copy "$output_path"
+    do_notify "$output_path"
+    ;;
+*)
+    exit 1
+    ;;
+esac
