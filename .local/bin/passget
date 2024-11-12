@@ -34,11 +34,6 @@ copy_password() {
     fi
 }
 
-create_find_directory() {
-    printf '%s' "$PREFIX"
-    [ -n "$PREFIX" ] && printf '/%s' "$SUFFIX"
-}
-
 filter_password_file() {
     file="$1"
 
@@ -49,7 +44,11 @@ filter_password_file() {
 }
 
 create_entries_list() {
-    find "$(create_find_directory)" -type f -name '*.gpg' | while IFS= read -r file; do
+    { if [ "$TOTP" -eq 1 ]; then
+        find "$PREFIX/$SUFFIX" -type f -name '*.gpg'
+    else
+        find "$PREFIX" -type f -name '*.gpg' -not -path '*TOTP*'
+    fi; } | while IFS= read -r file; do
         filter_password_file "$file"
     done | sort -f
 }
