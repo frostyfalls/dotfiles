@@ -8,52 +8,7 @@ call plug#begin()
 Plug 'morhetz/gruvbox'
 Plug 'dense-analysis/ale'
 Plug 'jiangmiao/auto-pairs'
-Plug 'girishji/vimcomplete'
 call plug#end()
-
-" Colors
-set background=dark
-colorscheme gruvbox
-hi Normal guibg=NONE ctermbg=NONE
-
-" ALE configuration
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %severity%: %s'
-
-let g:ale_virtualtext_cursor = 'current'
-
-highlight ALEWarning ctermbg=Yellow ctermfg=Black
-highlight ALEError ctermbg=Red ctermfg=Black
-
-let g:ale_linters = {
-\   'c': ['clangd'],
-\   'cpp': ['clangd'],
-\   'go': ['gopls'],
-\   'sh': ['shellcheck'],
-\ }
-
-let g:ale_fixers = {
-\   'c': ['clang-format', 'clangtidy'],
-\   'cpp': ['clang-format', 'clangtidy'],
-\   'go': ['gofmt'],
-\   'sh': ['shfmt'],
-\ }
-let g:ale_sh_shfmt_options = '-i 4'
-
-" Remaps
-let mapleader = ' '
-nnoremap <leader>ww :w<cr>
-nnoremap <leader>e :Ex<cr>
-nnoremap <tab> :bn<cr>
-nnoremap <s-tab> :bp<cr>
-nnoremap <leader>Q :bd<cr>
-nnoremap <leader>y "+y
-vnoremap <leader>y "+y
-
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
 
 set number
 set relativenumber
@@ -75,7 +30,46 @@ set splitright
 set splitbelow
 set scrolloff=4
 
-" Status line
+set background=dark
+colorscheme gruvbox
+hi Normal guibg=NONE ctermbg=NONE
+
+let &t_SI = "\<Esc>[6 q"
+let &t_SR = "\<Esc>[4 q"
+let &t_EI = "\<Esc>[2 q"
+
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %severity%: %s'
+
+let g:ale_virtualtext_cursor = 'current'
+
+highlight ALEWarning ctermbg=Yellow ctermfg=Black
+highlight ALEError ctermbg=Red ctermfg=Black
+
+let g:ale_linters = {
+\   'c': ['clangd'],
+\   'cpp': ['clangd'],
+\   'go': ['gopls'],
+\   'sh': ['shellcheck'],
+\ }
+let g:ale_fixers = {
+\   'c': ['clang-format', 'clangtidy'],
+\   'cpp': ['clang-format', 'clangtidy'],
+\   'go': ['gofmt'],
+\   'sh': ['shfmt'],
+\ }
+let g:ale_sh_shfmt_options = '-i 4'
+
+let mapleader = ' '
+nnoremap <leader>ww :w<cr>
+nnoremap <leader>e :Ex<cr>
+nnoremap <tab> :bn<cr>
+nnoremap <s-tab> :bp<cr>
+nnoremap <leader>Q :bd<cr>
+nnoremap <leader>y "+y
+vnoremap <leader>y "+y
+
 function! LinterStatus() abort
     let l:counts = ale#statusline#Count(bufnr(''))
 
