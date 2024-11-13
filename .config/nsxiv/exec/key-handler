@@ -4,9 +4,9 @@ set -eu
 
 read -r file
 
-case "${1:-}" in
-w) setsid -f wallpaperctl set "${file}" ;;
-e) setsid -f gimp "${file}" ;;
-y) wl-copy --type image/png "${file}" ;;
+case "$1" in
+w) riverctl spawn "wallpaper $file" ;;
+e) riverctl spawn "gimp $file" ;;
+y) wl-copy --type image/png "$file" ;;
 *) exit 1 ;;
 esac
