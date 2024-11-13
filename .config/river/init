@@ -42,10 +42,12 @@ done
 
 # {{{ rules
 riverctl rule-add ssd
-riverctl rule-add -app-id "org.qutebrowser.qutebrowser" tags 2
-riverctl rule-add -app-id "Firefox" tags 2
-riverctl rule-add -app-id "Signal" tags 4
-riverctl rule-add -app-id "vesktop" tags 4
+for app in "org.qutebrowser.qutebrowser" "Firefox"; do
+    riverctl rule-add -app-id "$app" tags "$((1 << (2 - 1)))"
+done
+for app in "Signal" "vesktop"; do
+    riverctl rule-add -app-id "$app" tags "$((1 << (4 - 1)))"
+done
 # }}}
 
 # {{{ window management
