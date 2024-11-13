@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -eu
+
+OUTPUT_RESOLUTION="1920x1080"
+OUTPUT_PATH="$XDG_DATA_HOME/wallpaper.jpg"
+
+[ ! -f "$1" ] && exit 1
+case "$1" in
+*.jpg | *.jpeg | *.png) ;;
+*) exit 1 ;;
+esac
+
+pgrep wbg >/dev/null && pkill wbg
+
+magick \
+    "$1" \
+    -resize "$OUTPUT_RESOLUTION"^ \
+    -gravity center \
+    -extent "$OUTPUT_RESOLUTION" \
+    "$OUTPUT_PATH"
+
+wbg "$OUTPUT_PATH"
