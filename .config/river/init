@@ -10,7 +10,7 @@ lock_cmd="waylock -ignore-empty-password -init-color 0x121212 -input-color 0x222
 riverctl xcursor-theme "Adwaita"
 xrdb -merge "$HOME/.Xresources"
 riverctl background-color 0x222222
-wbg "$XDG_DATA_HOME/wallpaper" &
+wbg "$XDG_DATA_HOME/wallpaper.jpg" &
 # }}}
 
 # {{{ autoruns
