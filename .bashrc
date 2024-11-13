@@ -101,21 +101,24 @@ PROMPT_COMMAND='__prompt'
 
 # interactive functions
 ex() {
-    [[ ! -f "$1" ]] && return 1
-    case "$1" in
-    *.tar.bz2) tar xvjf "$1" ;;
-    *.tar.gz) tar xvzf "$1" ;;
-    *.bz2) bunzip2 "$1" ;;
-    *.rar) unrar x "$1" ;;
-    *.gz) gunzip "$1" ;;
-    *.tar) tar xvf "$1" ;;
-    *.tbz2) tar xvjf "$1" ;;
-    *.tgz) tar xvzf "$1" ;;
-    *.zip) unzip "$1" ;;
-    *.Z) uncompress "$1" ;;
-    *.7z) 7z x "$1" ;;
-    *) return 1 ;;
-    esac
+    [[ -z "$1" ]] && return 1
+    for f in "$@"; do
+        [[ ! -f "$f" ]] && return 1
+        case "$f" in
+        *.tar.bz2) tar xvjf "$f" ;;
+        *.tar.gz) tar xvzf "$f" ;;
+        *.bz2) bunzip2 "$f" ;;
+        *.rar) unrar x "$f" ;;
+        *.gz) gunzip "$f" ;;
+        *.tar) tar xvf "$f" ;;
+        *.tbz2) tar xvjf "$f" ;;
+        *.tgz) tar xvzf "$f" ;;
+        *.zip) unzip "$f" ;;
+        *.Z) uncompress "$f" ;;
+        *.7z) 7z x "$f" ;;
+        *) return 1 ;;
+        esac
+    done
 }
 hf() { eval "$(history | sort -r | fzf | awk '{$1=""; print substr($0,2)}')"; }
 alias hg='history | grep'
