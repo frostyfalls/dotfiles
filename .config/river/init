@@ -123,8 +123,8 @@ riverctl map normal Super B spawn "pkill yambar || yambar"
 
 # session
 riverctl map normal Control+Alt Delete exit
-riverctl map normal Control+Alt L spawn "swaylock -f"
-riverctl map normal Super F12 spawn "swaylock -f"
+riverctl map normal Control+Alt L spawn "$lock_cmd"
+riverctl map normal Super F12 spawn "$lock_cmd"
 
 # tags
 for i in $(seq 1 9); do
