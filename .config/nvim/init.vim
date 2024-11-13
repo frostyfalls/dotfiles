@@ -80,7 +80,7 @@ function! LinterStatus() abort
     \   '%dW %dE',
     \   all_non_errors,
     \   all_errors
-    \)
+    \ )
 endfunction
 
 set laststatus=2
