@@ -1,19 +1,28 @@
 #!/bin/sh
 # shellcheck disable=SC2043
 
+# {{{ variables
+terminal="footclient"
+lock_cmd="waylock -ignore-empty-password -init-color 0x121212 -input-color 0x222222 -fail-color 0x900000 -fork-on-lock"
+# }}}
+
 # {{{ themes
 riverctl xcursor-theme "Adwaita"
 xrdb -merge "$HOME/.Xresources"
 riverctl background-color 0x222222
-swaybg -m fill -i "$XDG_DATA_HOME/wallpaper" &
+wbg "$XDG_DATA_HOME/wallpaper" &
 # }}}
 
 # {{{ autoruns
 pipewire &
 pipewire-pulse &
 wireplumber &
+kanshi &
+foot --server &
+swayidle -w \
+    timeout 300 "$lock_cmd" \
+    timeout 600 "loginctl suspend" &
 if [ "$(hostname)" = "styx" ]; then
-    kanshi &
     mpd --no-daemon &
 fi
 yambar &
@@ -47,6 +56,8 @@ wideriver \
     --stack even \
     --count-master 1 \
     --ratio-master 0.55 \
+    --inner-gaps 4 \
+    --outer-gaps 4 \
     --border-width 1 \
     --border-width-monocle 1 \
     --border-color-focused 0xfabd2f \
@@ -58,13 +69,13 @@ riverctl default-attach-mode bottom
 
 # {{{ mappings
 # applications
-riverctl map normal Super Return spawn foot
+riverctl map normal Super Return spawn "$terminal"
 riverctl map normal Super P spawn "XDG_DATA_DIRS=$XDG_DATA_HOME/applications fuzzel"
 riverctl map normal Super W spawn qutebrowser
-riverctl map normal Super V spawn "foot pulsemixer"
-riverctl map normal Super F spawn "foot lf"
-riverctl map normal Super N spawn "foot newsraft"
-riverctl map normal Super Q spawn "foot ncmpcpp"
+riverctl map normal Super V spawn "$terminal pulsemixer"
+riverctl map normal Super F spawn "$terminal lf"
+riverctl map normal Super N spawn "$terminal newsraft"
+riverctl map normal Super Q spawn "$terminal ncmpcpp"
 riverctl map normal Super U spawn passget
 riverctl map normal Super+Shift U spawn "passget -o"
 
@@ -118,10 +129,10 @@ riverctl map normal Super F12 spawn "swaylock -f"
 # tags
 for i in $(seq 1 9); do
     tags=$((1 << (i - 1)))
-    riverctl map normal Super "${i}" set-focused-tags "$tags"
-    riverctl map normal Super+Shift "${i}" set-view-tags "$tags"
-    riverctl map normal Super+Control "${i}" toggle-focused-tags "$tags"
-    riverctl map normal Super+Shift+Control "${i}" toggle-view-tags "$tags"
+    riverctl map normal Super "$i" set-focused-tags "$tags"
+    riverctl map normal Super+Shift "$i" set-view-tags "$tags"
+    riverctl map normal Super+Control "$i" toggle-focused-tags "$tags"
+    riverctl map normal Super+Shift+Control "$i" toggle-view-tags "$tags"
 done
 all_tags=$(((1 << 32) - 1))
 riverctl map normal Super 0 set-focused-tags "$all_tags"
