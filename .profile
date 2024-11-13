@@ -34,7 +34,7 @@ fi
 export PATH="$PATH:$GOPATH/bin:$CARGO_HOME/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin"
 
 # Graphical session
-if [ "$(tty)" = "/dev/tty2" ] && ! pgrep river >/dev/null; then
+if ! pgrep ly >/dev/null && [ "$(tty)" = "/dev/tty2" ] && ! pgrep river >/dev/null; then
     exec env XDG_CURRENT_DESKTOP="river" \
         dbus-run-session river >/dev/null 2>&1
 fi
