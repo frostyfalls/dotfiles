@@ -30,6 +30,8 @@ set splitright
 set splitbelow
 set scrolloff=4
 
+set shm+=I
+
 set background=dark
 colorscheme gruvbox
 hi Normal guibg=NONE ctermbg=NONE
@@ -48,17 +50,17 @@ highlight ALEWarning ctermbg=Yellow ctermfg=Black
 highlight ALEError ctermbg=Red ctermfg=Black
 
 let g:ale_linters = {
-\   'c': ['clangd'],
-\   'cpp': ['clangd'],
-\   'go': ['gopls'],
-\   'sh': ['shellcheck'],
-\ }
+      \   'c': ['clangd'],
+      \   'cpp': ['clangd'],
+      \   'go': ['gopls'],
+      \   'sh': ['shellcheck'],
+      \ }
 let g:ale_fixers = {
-\   'c': ['clang-format', 'clangtidy'],
-\   'cpp': ['clang-format', 'clangtidy'],
-\   'go': ['gofmt'],
-\   'sh': ['shfmt'],
-\ }
+      \   'c': ['clang-format', 'clangtidy'],
+      \   'cpp': ['clang-format', 'clangtidy'],
+      \   'go': ['gofmt'],
+      \   'sh': ['shfmt'],
+      \ }
 let g:ale_sh_shfmt_options = '-i 4'
 
 let mapleader = ' '
@@ -71,17 +73,26 @@ nnoremap <leader>y "+y
 vnoremap <leader>y "+y
 
 function! LinterStatus() abort
-    let l:counts = ale#statusline#Count(bufnr(''))
+  let l:counts = ale#statusline#Count(bufnr(''))
 
-    let l:all_errors = l:counts.error + l:counts.style_error
-    let l:all_non_errors = l:counts.total - l:all_errors
+  let l:all_errors = l:counts.error + l:counts.style_error
+  let l:all_non_errors = l:counts.total - l:all_errors
 
-    return l:counts.total == 0 ? 'OK' : printf(
-    \   '%dW %dE',
-    \   all_non_errors,
-    \   all_errors
-    \ )
+  return l:counts.total == 0 ? 'OK' : printf(
+        \   '%dW %dE',
+        \   all_non_errors,
+        \   all_errors
+        \ )
 endfunction
 
 set laststatus=2
-set statusline=%f\ %7.(%{&filetype}%)\ %h%m%r%=%-14.(%{LinterStatus()}%)%-10.(%l,%c%)\ %P
+set statusline=%f\ %h%m%r\ %{&filetype}%=%-14.(%{LinterStatus()}%)%-10.(%l,%c%)\ %P
+
+if has('nvim')
+  augroup highlight_yank
+    autocmd!
+    au TextYankPost * silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=250})
+  augroup END
+endif
+
+" vim: sw=2 ts=2 et
