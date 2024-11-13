@@ -1,4 +1,0 @@
-program_options:
-  automount: false
-  file_manager: 'foot lf'
-  terminal: 'foot'
