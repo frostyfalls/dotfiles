@@ -8,6 +8,7 @@ call plug#begin()
 Plug 'morhetz/gruvbox'
 Plug 'dense-analysis/ale'
 Plug 'jiangmiao/auto-pairs'
+Plug 'mattn/emmet-vim'
 call plug#end()
 
 set number
@@ -32,6 +33,7 @@ set scrolloff=4
 
 set shm+=I
 
+set termguicolors
 set background=dark
 colorscheme gruvbox
 hi Normal guibg=NONE ctermbg=NONE
@@ -91,8 +93,8 @@ set statusline=%f\ %h%m%r\ %{&filetype}%=%-14.(%{LinterStatus()}%)%-10.(%l,%c%)\
 if has('nvim')
   augroup highlight_yank
     autocmd!
-    au TextYankPost * silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=250})
+    au TextYankPost * silent! lua vim.highlight.on_yank({higroup='IncSearch', timeout=250})
   augroup END
 endif
 
-" vim: sw=2 ts=2 et
+let g:user_emmet_leader_key='<C-Z>'
