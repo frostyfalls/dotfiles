@@ -1,22 +1,23 @@
 separator: &separator {text: " | ", foreground: "7c6f64ff"}
+spacer: &spacer {text: " "}
 
 bar:
   height: 18
   location: top
   font: Terminus:size=12
   foreground: ebdbb2ff
-  background: 111111ff
+  background: 121212ff
 
   left:
+    - label:
+        content: {string: {<<: *spacer}}
     - river:
         anchors:
-          - occupied-tag: &occupied-tag {text: " {id}*"}
-          - empty-tag: &empty-tag {text: " {id}."}
-          - urgent-tag: &urgent-tag {text: " {id}!"}
+          - occupied-tag: &occupied-tag {text: "{id}* "}
+          - empty-tag: &empty-tag {text: "{id}. "}
+          - urgent-tag: &urgent-tag {text: "{id}! "}
           - focused-tag: &focused-tag {foreground: "fabd2fff"}
           - other-tag: &other-tag {foreground: "7c6f64ff"}
-          - layout: &layout {text: "{layout}"}
-          - title: &title {text: "{title}", max: 80}
         content:
           map:
             conditions:
@@ -26,44 +27,16 @@ bar:
               urgent: {string: {<<: [*focused-tag, *urgent-tag]}}
               occupied: {string: {<<: [*other-tag, *occupied-tag]}}
               ~occupied: {string: {<<: [*other-tag, *empty-tag]}}
-        title:
-          list:
-            spacing: 0
-            items:
-              - map:
-                  conditions:
-                    layout != "":
-                      list:
-                        spacing: 0
-                        items: [{string: {<<: *separator}}, {string: {<<: *layout}}]
-              - map:
-                  conditions:
-                    title != "":
-                      list:
-                        spacing: 0
-                        items: [{string: {<<: *separator}}, {string: {<<: *title}}]
+        title: {string: {text: "{layout}"}}
+    - label:
+        content: {string: {<<: *separator}}
+    - foreign-toplevel:
+        content:
+          map:
+            conditions:
+              activated: {string: {text: "{title}", max: 80}}
 
   right:
-    - network:
-        anchors:
-          - net-ipv4: &net-ipv4
-              conditions:
-                state == up: {string: {text: "{ipv4}"}}
-        content:
-          map:
-            conditions:
-              name == lo: {empty: {}}
-              name == wlo1: {map: {<<: *net-ipv4}}
-              name == wlp3s0: {map: {<<: *net-ipv4}}
-    - label:
-        content: {string: {<<: *separator}}
-    - pipewire:
-        content:
-          map:
-            conditions:
-              type == sink: {string: {text: "VOL {cubic_volume}%"}}
-    - label:
-        content: {string: {<<: *separator}}
     - battery:
         name: BAT1
         poll-interval: 60000
@@ -71,8 +44,8 @@ bar:
           map:
             default: {string: {text: "BAT {capacity}%"}}
             conditions:
+              state == unknown: {empty: {}}
               state == discharging: {string: {text: "BAT {capacity}% ({estimate})"}}
-              state == unknown: {string: {text: "Unknown"}}
     - label:
         content: {string: {<<: *separator}}
     - script:
@@ -86,4 +59,4 @@ bar:
         time-format: "%H:%M"
         content: {string: {text: "{date} {time}"}}
     - label:
-        content: {string: {text: " "}}
+        content: {string: {<<: *spacer}}
