@@ -43,7 +43,6 @@ shopt -s autocd
 
 # alternatives
 cmd bat && alias cat='bat'
-cmd nvim && alias vim='nvim'
 
 # emacs
 alias em='emacs -nw'
@@ -56,11 +55,7 @@ alias tmux='tmux -2'
 # shorthands
 alias l='ls'
 alias t='tmux'
-if cmd nvim; then
-    alias v='nvim'
-elif cmd vim; then
-    alias v='vim'
-fi
+alias v='vim'
 alias g='git'
 alias py='python'
 alias d='doas '
