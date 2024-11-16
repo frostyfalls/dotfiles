@@ -72,7 +72,7 @@ riverctl default-attach-mode bottom
 # {{{ mappings
 # applications
 riverctl map normal Super Return spawn "$terminal"
-riverctl map normal Super P spawn "XDG_DATA_DIRS=$XDG_DATA_HOME/applications fuzzel"
+riverctl map normal Super P spawn "fuzzel"
 riverctl map normal Super W spawn qutebrowser
 riverctl map normal Super V spawn "$terminal pulsemixer"
 riverctl map normal Super F spawn "$terminal lf"
