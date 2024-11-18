@@ -8,7 +8,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 
 # Default programs
 export TERMINAL="footclient"
-export EDITOR="nvim"
+export EDITOR="vim"
 export BROWSER="qutebrowser"
 
 # $HOME cleanup
@@ -26,6 +26,9 @@ if command -v qt6ct >/dev/null; then
 elif command -v qt5ct >/dev/null; then
     export QT_QPA_PLATFORMTHEME="qt5ct"
 fi
+
+# Other program settings
+export NO_AT_BRIDGE=1
 
 # $PATH additions
 export PATH="$PATH:$GOPATH/bin:$CARGO_HOME/bin:$XDG_DATA_HOME/npm/bin:$HOME/.local/bin"
