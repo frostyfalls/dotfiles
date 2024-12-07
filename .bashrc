@@ -12,7 +12,7 @@ __prompt() {
 
     if [[ "${EUID}" -ne 0 ]]; then
         _user_host="${PROMPT_COL_USER_HOST}\u@\h"
-        _prompt_char="%"
+        _prompt_char="$"
     else
         _user_host="${PROMPT_COL_ROOT}\h"
         _prompt_char="#"
