@@ -1,16 +1,16 @@
-" File system setup
+" === XDG base directories ===
+set runtimepath^=$XDG_DATA_HOME/vim,$XDG_CONFIG_HOME/vim/after,$XDG_CONFIG_HOME/vim
+set viminfofile=$XDG_STATE_HOME/vim/viminfo
+
 set backupdir=$XDG_STATE_HOME/vim/backup | call mkdir(&backupdir, 'p')
 set directory=$XDG_STATE_HOME/vim/swap   | call mkdir(&directory, 'p')
 set undodir=$XDG_STATE_HOME/vim/undo     | call mkdir(&undodir,   'p')
 set viewdir=$XDG_STATE_HOME/vim/view     | call mkdir(&viewdir,   'p')
 
-set runtimepath^=$XDG_DATA_HOME/vim,$XDG_CONFIG_HOME/vim/after,$XDG_CONFIG_HOME/vim
-set viminfofile=$XDG_STATE_HOME/vim/viminfo
-
 let g:netrw_home = $XDG_DATA_HOME . '/vim'
 call mkdir($XDG_DATA_HOME . '/vim/spell', 'p')
 
-" Initialize plugin manager
+" === Plugin manager ===
 let data_dir = $XDG_DATA_HOME . '/vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
   silent execute '!curl -fLo ' . data_dir . '/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -20,99 +20,130 @@ endif
 let mapleader = ' '
 
 call plug#begin(data_dir . '/plugged')
-Plug 'morhetz/gruvbox'           " Color scheme
-Plug 'dense-analysis/ale'        " LSP client, linter, and formatter
-Plug 'LunarWatcher/auto-pairs'   " Paired quotes, brackets, etc.
-Plug 'lifepillar/vim-mucomplete' " Minimalist completion
-Plug 'vimwiki/vimwiki'           " Markdown and personal wiki
-Plug 'tpope/vim-commentary'      " Comment management
+Plug 'morhetz/gruvbox'
+Plug 'dense-analysis/ale'
+Plug 'lifepillar/vim-mucomplete'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-endwise'
+Plug 'rstacruz/vim-closer'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'baskerville/vim-sxhkdrc'
 call plug#end()
 
-" Interface options
-set number relativenumber
-set cursorline
-set list breakindent listchars=tab:»\ ,trail:·
-set title
-
-" Default indentation
-set tabstop=4 shiftwidth=4 expandtab
-
-" Status line
-set laststatus=1
-
-" Remaps
+" === Key maps ===
 nnoremap <Leader>ww :w<CR>
-nnoremap <Tab> :bn<CR>
-nnoremap <S-Tab> :bp<CR>
-nnoremap <Leader>y "+y
-vnoremap <Leader>y "+y
+nnoremap <Leader>wx :!chmod +x %<CR>
 
-" netrw
-let g:netrw_banner = 0
-let g:netrw_liststyle = 3
-let g:netrw_altv = 1
-let g:netrw_hide = 0
-let g:netrw_usetab = 1
-let g:netrw_winsize = -30
-nnoremap <C-n> :Lexplore!<CR>
+function! s:ToggleQuickFix()
+  if empty(filter(getwininfo(), 'v:val.quickfix'))
+    copen
+  else
+    cclose
+  endif
+endfunction
+nnoremap <Leader>m :call <SID>ToggleQuickFix()<CR>
+
+nnoremap <Leader>cl :so $MYVIMRC<CR>
+nnoremap <Leader>ci :PlugInstall<CR>
+nnoremap <Leader>cx :PlugClean<CR>
+
+nnoremap <Leader>s :setlocal invspell<CR>
+
 nnoremap <Leader>e :Explore<CR>
 
-" Cursors per mode
-let &t_SI = "\<Esc>[6 q"
-let &t_SR = "\<Esc>[4 q"
-let &t_EI = "\<Esc>[2 q"
+" === Other options ===
+set number relativenumber
+set cursorline
+set breakindent list listchars=tab:»\ ,trail:·
+set laststatus=2
+set signcolumn=yes
+set title
 
-" Completion
-set completeopt+=menuone,noselect
-set shortmess+=c
+set splitbelow splitright
+set tabstop=4 shiftwidth=4 expandtab
 
-" Searching
-set ignorecase smartcase
-vnoremap S :%s//g<Left><Left>
-vnoremap s :s//g<Left><Left>
-nnoremap S :%s//g<Left><Left>
-nnoremap s :s//g<Left><Left>
+set formatoptions-=cro
 
-" Spell check
 set spelllang=en_us
-nnoremap <Leader>o :setlocal invspell<CR>
 
-" Window split directions
-set splitright splitbelow
+let g:netrw_banner = 0
 
-" Scroll lines between edges
-set scrolloff=5
+" === Color scheme ===
+function! s:CustomizeThemeColors()
+  " Background
+  highlight Normal guibg=NONE ctermbg=NONE
 
-" Color scheme
-set termguicolors
-set background=dark
+  " GitGutter
+  highlight SignColumn            guibg=NONE ctermbg=NONE
+  highlight GitGutterAdd          guibg=NONE ctermbg=NONE
+  highlight GitGutterChange       guibg=NONE ctermbg=NONE
+  highlight GitGutterChangeDelete guibg=NONE ctermbg=NONE
+  highlight GitGutterDelete       guibg=NONE ctermbg=NONE
+endfunction
+
+set termguicolors background=dark
 let g:gruvbox_guisp_fallback = 'bg'
+autocmd! ColorScheme gruvbox call s:CustomizeThemeColors()
 silent! colorscheme gruvbox
-highlight Normal guibg=NONE ctermbg=NONE
 
-" ALE status line format
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '[%linter%] %severity%: %s'
+" === ALE ===
+let g:ale_linters = {
+      \ 'c':   ['clangd'],
+      \ 'cpp': ['clangd'],
+      \ 'go':  ['gopls'],
+      \ 'lua': ['lua-language-server'],
+      \ 'sh':  ['shellcheck'],
+      \ }
+let g:ale_fixers = {
+      \ '*':      ['remove_trailing_lines', 'trim_whitespace'],
+      \ 'c':      ['clang-format', 'clangtidy'],
+      \ 'cpp':    ['clang-format', 'clangtidy'],
+      \ 'go':     ['gofmt'],
+      \ 'lua':    ['stylua'],
+      \ 'python': ['black'],
+      \ 'sh':     ['shfmt'],
+      \ }
+let g:ale_sh_shfmt_options = '-i 4'
 
-" ALE inline messages
+let g:ale_sign_column_always = 1
 let g:ale_virtualtext_cursor = 'current'
-
-" ALE color format
 highlight ALEWarning ctermbg=Yellow ctermfg=Black
 highlight ALEError   ctermbg=Red    ctermfg=Black
 
-" ALE linters and fixers
-let g:ale_linters = {
-      \   'c': ['clangd'],
-      \   'cpp': ['clangd'],
-      \   'go': ['gopls'],
-      \   'sh': ['shellcheck'],
+nnoremap <Leader>f :ALEFix<CR>
+
+" === mucomplete ===
+set completeopt+=menuone,noselect
+set shortmess+=c
+set complete-=t,i
+set complete+=k
+set dictionary+=spell
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#no_mappings = 1
+let g:mucomplete#spel#good_words = 1
+
+let g:mucomplete#chains = {
+      \ 'default': { 'default':     ['vsnip', 'path', 'keyp', 'uspl'],
+      \              '.*string.*':  ['uspl', 'path'],
+      \              '.*comment.*': ['uspl', 'path'] },
+      \ 'c':   ['vsnip', 'file', 'omni', 'uspl'],
+      \ 'cpp': ['vsnip', 'file', 'omni', 'uspl'],
+      \ 'go':  ['vsnip', 'file', 'omni', 'uspl'],
+      \ 'sh':  ['vsnip', 'file', 'uspl'],
+      \ 'vim': ['vsnip', 'file', 'cmd',  'uspl'],
       \ }
-let g:ale_fixers = {
-      \   'c': ['clang-format', 'clangtidy'],
-      \   'cpp': ['clang-format', 'clangtidy'],
-      \   'go': ['gofmt'],
-      \   'sh': ['shfmt'],
-      \ }
-let g:ale_sh_shfmt_options = '-i 4'
+
+inoremap <expr> <CR> pumvisible() ? '<C-y><CR>' : '<CR>'
+
+" === vsnip ===
+let g:vsnip_snippet_dir = $XDG_CONFIG_HOME . '/vim/snippets'
+
+inoremap <expr> <C-l> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-f>'
+snoremap <expr> <C-l> vsnip#jumpable(1)  ? '<Plug>(vsnip-jump-next)' : '<C-f>'
+inoremap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-b>'
+snoremap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)' : '<C-b>'
+
+" vim:ts=2 sw=2 et
