@@ -1,25 +1,11 @@
 #!/bin/sh
 
-media_prev() {
-    mpc prev
-}
-
-media_next() {
-    mpc next
-}
-
-media_toggle() {
-    mpc toggle
-}
-
-media_stop() {
-    mpc stop
-}
+set -eu
 
 case "${1:-}" in
-prev) media_prev ;;
-next) media_next ;;
-toggle) media_toggle ;;
-stop) media_stop ;;
+prev) mpc prev ;;
+next) mpc next ;;
+toggle) mpc toggle ;;
+stop) mpc stop ;;
 *) exit 1 ;;
 esac
