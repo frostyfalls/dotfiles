@@ -2,46 +2,9 @@
 
 set -eu
 
-# Path options
-PREFIX=${PASSWORD_STORE_DIR:-$HOME/.password-store}
+PREFIX="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 SUFFIX=
-
-# Other options
-PROMPT="pass: "
-TYPE=0
 TOTP=0
-
-type_password() {
-    entry="$1"
-
-    { if [ "$TOTP" -eq 1 ]; then
-        pass otp "$SUFFIX/$entry"
-    else
-        pass show "$entry"
-    fi; } | {
-        IFS= read -r password
-        printf '%s' "$password"
-    } | wtype -
-}
-
-copy_password() {
-    entry="$1"
-
-    if [ "$TOTP" -eq 1 ]; then
-        pass otp -c "$SUFFIX/$entry" 2>/dev/null
-    else
-        pass show -c "$entry" 2>/dev/null
-    fi
-}
-
-filter_password_file() {
-    file="$1"
-
-    password="${file#"$PREFIX"/}"
-    [ -n "$SUFFIX" ] && password="${password#"$SUFFIX"/}"
-    password="${password%.gpg}"
-    printf '%s\n' "$password"
-}
 
 create_entries_list() {
     { if [ "$TOTP" -eq 1 ]; then
@@ -49,22 +12,20 @@ create_entries_list() {
     else
         find "$PREFIX" -type f -name '*.gpg' -not -path '*TOTP*'
     fi; } | while IFS= read -r file; do
-        filter_password_file "$file"
+        password="${file#"$PREFIX"/}"
+        [ -n "$SUFFIX" ] && password="${password#"$SUFFIX"/}"
+        password="${password%.gpg}"
+        echo "$password"
     done | sort -f
 }
 
-prompt_user_selection() {
-    fuzzel -d -p "$PROMPT"
-}
+prompt_user_selection() { dmenu -l 16 -c -bw 1; }
 
-while [ $# -gt 0 ]; do
+while [ "$#" -gt 0 ]; do
     case "${1:-}" in
-    -t | --type)
-        TYPE=1
-        shift
-        ;;
     -o | --totp)
         TOTP=1
+        SUFFIX="TOTP"
         shift
         ;;
     *)
@@ -73,14 +34,11 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-# Apply argument options
-[ "$TOTP" -eq 1 ] && SUFFIX="TOTP" PROMPT="totp: "
-
 entry=$(create_entries_list | prompt_user_selection)
 [ -z "$entry" ] && exit
 
-if [ "$TYPE" -eq 1 ]; then
-    type_password "$entry"
+if [ "$TOTP" -eq 1 ]; then
+    pass otp -c "$SUFFIX/$entry" 2>/dev/null
 else
-    copy_password "$entry"
+    pass show -c "$entry" 2>/dev/null
 fi
