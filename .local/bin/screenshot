@@ -12,15 +12,7 @@ NOTIFY_MESSAGE="Saved to <b>${OUTPUT_PATH##*/}</b> and copied to the clipboard."
 notify() { notify-send -u low -r 1001 "Screenshot" "$@"; }
 
 case "${1:-full}" in
-full)
-    maim -u | tee "$OUTPUT_PATH" | xclip -sel clip -t image/png &&
-        notify "$NOTIFY_MESSAGE"
-    ;;
-select)
-    maim -us | tee "$OUTPUT_PATH" | xclip -sel clip -t image/png &&
-        notify "$NOTIFY_MESSAGE"
-    ;;
-*)
-    exit 1
-    ;;
+full) maim -u | tee "$OUTPUT_PATH" | xclip -sel clip -t image/png && notify "$NOTIFY_MESSAGE" ;;
+select) maim -us | tee "$OUTPUT_PATH" | xclip -sel clip -t image/png && notify "$NOTIFY_MESSAGE" ;;
+*) exit 1 ;;
 esac
