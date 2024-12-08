@@ -1,9 +1,9 @@
-directory: ~/music
+directory: ~/music/data
 library: ~/music/library.db
 
 original_date: yes
 
-plugins: deezer spotify edit missing mpdupdate the lyrics zero lastgenre
+plugins: deezer spotify edit missing mpdupdate the lyrics zero lastgenre bandcamp
 
 import:
   move: yes
