@@ -20,15 +20,11 @@ export PASSWORD_STORE_DIR="$XDG_DATA_HOME/password-store"
 export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"
 export XINITRC="$XDG_CONFIG_HOME/X11/xinitrc"
 
-# Other program settings
 export NO_AT_BRIDGE=1
-
-# $PATH additions
 export PATH="$PATH:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.local/bin"
 
-# Graphical session
-if [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep X >/dev/null; then
-    exec startx >/dev/null 2>&1
-fi
+(pgrep -x gpg-agent >/dev/null || gpg-agent --daemon) &>/dev/null
+(pgrep -x mpd >/dev/null || mpd) &>/dev/null
 
+[[ "$(tty)" == "/dev/tty2" ]] && ! pgrep river >/dev/null && exec dbus-run-session river >/dev/null 2>&1
 [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc"
