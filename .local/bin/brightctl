@@ -1,42 +1,11 @@
 #!/bin/sh
+# shellcheck disable=SC2249
 
 set -eu
 
-die() {
-    echo "${0##*/}: $1" >&2
-    exit 1
-}
+notify() { notify-send --urgency=low --hint=string:x-dunst-stack-tag:"$0" "$@"; }
+get_device_name() { case "$1" in intel_backlight | acpi_video*) echo 'Display' ;; *::kbd_backlight) echo 'Keyboard' ;; esac }
+set_brightness() { brightnessctl --machine-readable --device="$1" set "$2" | awk -F',' '{print $4 + 0}'; }
 
-notify() {
-    notify-send \
-        --hint=string:x-dunst-stack-tag:"${0##*/}" \
-        "$@"
-}
-
-get_device_name() {
-    case "${1:-}" in
-    intel_backlight | acpi_video0) echo "Display" ;;
-    *::kbd_backlight) echo "Keyboard" ;;
-    "") return 1 ;;
-    *) echo "$1" ;;
-    esac
-}
-
-set_brightness() {
-    dev="$1" amount="$2"
-    name="$(get_device_name "$dev")" || return 1
-
-    IFS=',' read -r _ _ _ brightness _ <<EOF
-$(brightnessctl --machine-readable --device="$dev" set "$amount")
-EOF
-    brightness=${brightness%\%}
-
-    notify \
-        --hint=int:value:"$brightness" \
-        "$name Brightness"
-}
-
-case "${1:-}" in
-set) set_brightness "$2" "$3" ;;
-*) exit 1 ;;
-esac
+brightness="$(set_brightness "$1" "$2")"
+[ -n "${WAYLAND_DISPLAY:-}" ] && notify --hint=int:value:"$brightness" "$(get_device_name "$1") Brightness"
