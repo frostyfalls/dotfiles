@@ -1,18 +1,17 @@
 #!/bin/sh
+# shellcheck disable=SC1091
 
 set -eu
 
-# shellcheck disable=SC1091
-[ -f "${XDG_CONFIG_HOME:-${HOME}/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-${HOME}/.config}/user-dirs.dirs"
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
 
-FILENAME_DATE_FORMAT="%Y-%m-%d_%H-%M-%S"
-OUTPUT_PATH="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}/$(date "+$FILENAME_DATE_FORMAT").png"
+OUTPUT_PATH="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}/$(date "+%Y-%m-%d_%H-%M-%S").png"
 NOTIFY_MESSAGE="Saved to <b>${OUTPUT_PATH##*/}</b> and copied to the clipboard."
 
-notify() { notify-send -u low -r 1001 "Screenshot" "$@"; }
+notify() { notify-send --urgency=low 'Screenshot' "$@"; }
 
 case "${1:-full}" in
-full) maim -u | tee "$OUTPUT_PATH" | xclip -sel clip -t image/png && notify "$NOTIFY_MESSAGE" ;;
-select) maim -us | tee "$OUTPUT_PATH" | xclip -sel clip -t image/png && notify "$NOTIFY_MESSAGE" ;;
+full) grim "$OUTPUT_PATH" && wl-copy --type=image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE" ;;
+select) grim -g "$(slurp)" "$OUTPUT_PATH" && wl-copy --type=image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE" ;;
 *) exit 1 ;;
 esac
