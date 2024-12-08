@@ -15,6 +15,7 @@ swayidle -w \
     timeout 1800 'sessionctl suspend' \
     before-sleep 'sessionctl lock' &
 wlsunset -l 27.6 -L -81.5 &
+yambar &
 
 riverctl default-layout rivercarro
 rivercarro -per-tag -no-smart-gaps -inner-gaps 8 -outer-gaps 8 &
@@ -23,8 +24,9 @@ riverctl focus-follows-cursor normal
 
 riverctl border-width 1
 riverctl background-color 0x121212
-riverctl border-color-focused 0x83a598
+riverctl border-color-focused 0xebdbb2
 riverctl border-color-unfocused 0x3c3836
+riverctl border-color-urgent 0xfb4934
 
 riverctl hide-cursor timeout 10000
 riverctl hide-cursor when-typing enabled
@@ -66,6 +68,8 @@ riverctl map normal Super+Shift C close
 
 riverctl map normal Alt+Control Delete exit
 riverctl map normal Alt+Control L spawn 'sessionctl lock'
+
+riverctl map normal Super B spawn 'pkill yambar || yambar'
 
 riverctl map normal Super J focus-view next
 riverctl map normal Super K focus-view previous
