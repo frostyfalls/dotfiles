@@ -1,0 +1,126 @@
+#!/bin/sh
+# shellcheck disable=SC2043
+
+set -eu
+
+pipewire &
+pipewire-pulse &
+wireplumber &
+mako &
+wallpaperctl run &
+foot --server &
+swayidle -w \
+    timeout 600 'sessionctl lock' \
+    timeout 900 'wlopm --off \*' resume 'wlopm --on \*' \
+    timeout 1800 'sessionctl suspend' \
+    before-sleep 'sessionctl lock' &
+wlsunset -l 27.6 -L -81.5 &
+
+riverctl default-layout rivercarro
+rivercarro -per-tag -no-smart-gaps -inner-gaps 8 -outer-gaps 8 &
+riverctl default-attach-mode bottom
+riverctl focus-follows-cursor normal
+
+riverctl border-width 1
+riverctl background-color 0x121212
+riverctl border-color-focused 0x83a598
+riverctl border-color-unfocused 0x3c3836
+
+riverctl hide-cursor timeout 10000
+riverctl hide-cursor when-typing enabled
+riverctl xcursor-theme Adwaita
+
+for touchpad in pointer-1739-0-Synaptics_TM3276-022; do
+    riverctl input "$touchpad" natural-scroll enabled
+done
+for pointer in pointer-1739-0-Synaptics_TM3276-022; do
+    riverctl input "$pointer" tap enabled
+    riverctl input "$pointer" middle-emulation enabled
+    riverctl input "$pointer" disable-while-typing enabled
+done
+riverctl set-repeat 50 300
+
+riverctl rule-add ssd
+for id in qutebrowser Firefox; do
+    riverctl rule-add -app-id "$id" tags "$((1 << (2 - 1)))"
+done
+for id in vesktop Signal; do
+    riverctl rule-add -app-id "$id" tags "$((1 << (4 - 1)))"
+done
+
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+riverctl map-pointer normal Super BTN_MIDDLE toggle-float
+
+riverctl map normal Super Return spawn footclient
+riverctl map normal Super W spawn qutebrowser
+riverctl map normal Super P spawn fuzzel
+riverctl map normal Super U spawn passcpy
+riverctl map normal Super F spawn 'footclient lf'
+riverctl map normal Super V spawn 'footclient pulsemixer'
+riverctl map normal Super Q spawn 'footclient ncmpcpp'
+riverctl map normal Super N spawn 'footclient newsraft'
+riverctl map normal Super+Shift W spawn 'wallpaperctl set && wallpaperctl run'
+
+riverctl map normal Super+Shift C close
+
+riverctl map normal Alt+Control Delete exit
+riverctl map normal Alt+Control L spawn 'sessionctl lock'
+
+riverctl map normal Super J focus-view next
+riverctl map normal Super K focus-view previous
+riverctl map normal Super+Shift J swap next
+riverctl map normal Super+Shift K swap previous
+
+riverctl map normal Super Period focus-output next
+riverctl map normal Super Comma focus-output previous
+riverctl map normal Super+Shift Period send-to-output next
+riverctl map normal Super+Shift Comma send-to-output previous
+
+riverctl map normal Super H send-layout-cmd rivercarro 'main-ratio -0.05'
+riverctl map normal Super L send-layout-cmd rivercarro 'main-ratio +0.05'
+
+riverctl map normal Super I send-layout-cmd rivercarro 'main-count +1'
+riverctl map normal Super D send-layout-cmd rivercarro 'main-count -1'
+
+riverctl map normal Super T send-layout-cmd rivercarro 'main-location left'
+riverctl map normal Super+Shift T send-layout-cmd rivercarro 'main-location top'
+riverctl map normal Super+Shift Return zoom
+
+riverctl map normal Super+Shift Space toggle-float
+riverctl map normal Super+Shift F toggle-fullscreen
+
+for i in $(seq 1 9); do
+    tags=$((1 << (i - 1)))
+
+    riverctl map normal Super "$i" set-focused-tags "$tags"
+    riverctl map normal Super+Shift "$i" set-view-tags "$tags"
+    riverctl map normal Super+Control "$i" toggle-focused-tags "$tags"
+    riverctl map normal Super+Shift+Control "$i" toggle-view-tags "$tags"
+done
+
+all_tags=$(((1 << 32) - 1))
+riverctl map normal Super 0 set-focused-tags "$all_tags"
+riverctl map normal Super+Shift 0 set-view-tags "$all_tags"
+
+riverctl map normal Super Tab focus-previous-tags
+riverctl map normal Super+Shift Tab send-to-previous-tags
+
+riverctl declare-mode passthrough
+riverctl map normal Super F11 enter-mode passthrough
+riverctl map passthrough Super F11 enter-mode normal
+
+for mode in normal locked; do
+    riverctl map -repeat "$mode" None XF86AudioRaiseVolume spawn 'audioctl set-volume 5%+'
+    riverctl map -repeat "$mode" None XF86AudioLowerVolume spawn 'audioctl set-volume 5%-'
+    riverctl map "$mode" None XF86AudioMute spawn 'audioctl toggle-mute'
+    riverctl map "$mode" None XF86AudioMicMute spawn 'audioctl toggle-mic'
+
+    riverctl map "$mode" None XF86AudioPlay spawn 'mediactl toggle'
+    riverctl map "$mode" None XF86AudioPrev spawn 'mediactl prev'
+    riverctl map "$mode" None XF86AudioNext spawn 'mediactl next'
+    riverctl map "$mode" None XF86AudioStop spawn 'mediactl stop'
+
+    riverctl map -repeat "$mode" None XF86MonBrightnessUp spawn 'brightctl intel_backlight 10%+'
+    riverctl map -repeat "$mode" None XF86MonBrightnessDown spawn 'brightctl intel_backlight 10%-'
+done
