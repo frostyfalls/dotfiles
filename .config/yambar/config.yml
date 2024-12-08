@@ -1,0 +1,115 @@
+separator: &separator {text: " | ", foreground: "7c6f64ff"}
+spacer: &spacer {text: " "}
+
+battery-status: &battery-status
+  map:
+    default: {string: {text: "?"}}
+    conditions:
+      state == full: {string: {text: "&"}}
+      state == charging: {string: {text: "^"}}
+      state == "not charging": {string: {text: "."}}
+      state == discharging: {string: {text: "-"}}
+
+bar:
+  height: 22
+  location: top
+  font: Terminus:size=16
+  foreground: ebdbb2ff
+  background: 282828ff
+
+  left:
+    - label:
+        content: {string: {text: "[", foreground: "7c6f64ff"}}
+    - river:
+        anchors:
+          - occupied-tag: &occupied-tag {text: "{id}*"}
+          - empty-tag: &empty-tag {text: "{id}."}
+          - urgent-tag: &urgent-tag {text: "{id}!"}
+          - focused-tag: &focused-tag {foreground: "ebdbb2ff"}
+          - other-tag: &other-tag {foreground: "7c6f64ff"}
+        content:
+          list:
+            spacing: 0
+            items:
+              - map:
+                  conditions:
+                    id > 9: {empty: {}}
+                    focused && occupied: {string: {<<: [*focused-tag, *occupied-tag]}}
+                    focused && ~occupied: {string: {<<: [*focused-tag, *empty-tag]}}
+                    urgent: {string: {<<: [*focused-tag, *urgent-tag]}}
+                    occupied: {string: {<<: [*other-tag, *occupied-tag]}}
+                    ~occupied: {string: {<<: [*other-tag, *empty-tag]}}
+              - map:
+                  conditions:
+                    id < 9: {string: {text: " "}}
+        title: 
+          list:
+            spacing: 0
+            items:
+              - string: {text: "]-[", foreground: "7c6f64ff"}
+              - string: {text: "{layout}"}
+              - map:
+                  conditions:
+                    title != "":
+                      list:
+                        spacing: 0
+                        items:
+                          - string: {text: "]-[", foreground: "7c6f64ff"}
+                          - string: {text: "{title}", max: 80}
+              - string: {text: "]", foreground: "7c6f64ff"}
+
+  right:
+    - label:
+        content:
+          string: {text: "[", foreground: "7c6f64ff"}
+    - pipewire:
+        content:
+          map:
+            conditions:
+              type == sink:
+                list:
+                  spacing: 0
+                  items:
+                    - string: {text: "VOL {cubic_volume}%"}
+
+    - label:
+        content:
+          string: {text: "]-[", foreground: "7c6f64ff"}
+    - battery:
+        name: BAT0
+        poll-interval: 60000
+        content:
+          list:
+            spacing: 0
+            items:
+              - string: {text: "BAT "}
+              - *battery-status
+              - string: {text: "{capacity}% "}
+    - battery:
+        name: BAT1
+        poll-interval: 60000
+        content:
+          list:
+            spacing: 0
+            items:
+              - *battery-status
+              - string: {text: "{capacity}%"}
+    - label:
+        content:
+          string: {text: "]-[", foreground: "7c6f64ff"}
+    - script:
+        path: /usr/local/bin/yambar-loadavg
+        args: [-I, 10]
+        content:
+          string: {text: "{one} {five} {fifteen}"}
+    - label:
+        content:
+          string: {text: "]-[", foreground: "7c6f64ff"}
+    - clock:
+        date-format: "%b %d %Y"
+        time-format: "%H:%M"
+        content:
+          string: {text: "{date} {time}"}
+    - label:
+        content:
+          string: {text: "]", foreground: "7c6f64ff"}
