@@ -63,6 +63,9 @@ riverctl map normal Super Q spawn 'footclient ncmpcpp'
 riverctl map normal Super N spawn 'footclient newsraft'
 riverctl map normal Super+Shift W spawn 'wallpaperctl set && wallpaperctl run'
 
+riverctl map normal Super O spawn 'screenshot full'
+riverctl map normal Super+Shift O spawn 'screenshot select'
+
 riverctl map normal Super+Shift C close
 
 riverctl map normal Alt+Control Delete exit
