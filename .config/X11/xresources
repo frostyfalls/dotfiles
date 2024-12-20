@@ -1,9 +1,0 @@
-! nsxiv
-Nsxiv.bar.font: Terminus:size=8
-Nsxiv.window.background: #121212
-Nsxiv.window.foreground: #a89984
-Nsxiv.mark.foreground: #a89984
-Nsxiv.bar.background: #282828
-Nsxiv.bar.foreground: #ebdbb2
-
-! vim:ft=xdefaults
