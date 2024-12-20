@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -eu
+
+read -r one five fifteen _ </proc/loadavg
+
+printf 'one|float|%s
+five|float|%s
+fifteen|float|%s
+\n' "$one" "$five" "$fifteen"

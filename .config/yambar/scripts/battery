@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+for battery in /sys/class/power_supply/BAT?; do
+    read -r capacity <"$battery/capacity"
+    read -r status <"$battery/status"
+    case "$status" in Charging) icon="^" ;; Full) icon="&" ;; Discharging) icon="-" ;; Not\ charging) icon="." ;; *) icon="?" ;; esac
+
+    printf 'bat%s_capacity|int|%s\n' "${battery#*BAT}" "$capacity"
+    printf "bat%s_status|string|%s\n" "${battery#*BAT}" "$status"
+    printf "bat%s_icon|string|%s\n" "${battery#*BAT}" "$icon"
+done
+printf '\n'
