@@ -25,6 +25,7 @@ shopt -s autocd
 
 # alternatives
 cmd bat && alias cat='bat'
+cmd nvim && alias vim='nvim'
 
 # emacs
 alias em='emacs -nw'
@@ -43,6 +44,7 @@ alias py='python'
 alias d='doas '
 alias i='xbps-install'
 alias r='xbps-remove'
+alias v='vim'
 
 # ls
 alias ll='ls -l'
