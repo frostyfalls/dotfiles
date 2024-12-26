@@ -25,6 +25,7 @@ export PATH="$PATH:$GOPATH/bin:$CARGO_HOME/bin:$HOME/.local/bin"
 
 (pgrep -x gpg-agent >/dev/null || gpg-agent --daemon) &>/dev/null
 (pgrep -x mpd >/dev/null || mpd) &>/dev/null
+(pgrep -x mpdscribble >/dev/null || mpdscribble) &>/dev/null
 
 [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep river >/dev/null && exec dbus-run-session river >/dev/null 2>&1
 [[ -f "${HOME}/.bashrc" ]] && . "${HOME}/.bashrc"
