@@ -21,4 +21,6 @@ require('paq')({
   'stevearc/conform.nvim',
 
   'windwp/nvim-autopairs',
+
+  'ibhagwan/fzf-lua',
 })
