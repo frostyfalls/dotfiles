@@ -1,5 +1,3 @@
-font-nerd: &font-nerd {font: "Symbols Nerd Font Mono:size=16"}
-
 bar:
   height: 24
   location: top
@@ -17,6 +15,7 @@ bar:
           - empty-tag: &empty-tag {text: "{id}."}
           - focused-tag: &focused-tag {foreground: "ebdbb2ff"}
           - inactive-tag: &inactive-tag {foreground: "7c6f64ff"}
+          - title: &title {text: "{title}", max: 80, margin: 4}
         content:
           map:
             conditions:
@@ -25,26 +24,23 @@ bar:
               focused && ~occupied: {string: {<<: [*tag-base, *focused-tag, *empty-tag]}}
               occupied: {string: {<<: [*tag-base, *inactive-tag, *occupied-tag]}}
               ~occupied: {string: {<<: [*tag-base, *inactive-tag, *empty-tag]}}
+        title: {string: {<<: *title}}
 
   right:
     - pipewire:
         content:
           map:
             conditions:
-              type == sink:
-                string: {text: "VOL {cubic_volume}%"}
+              type == sink: {string: {text: "VOL {cubic_volume}%"}}
     - script:
         path: ~/.config/yambar/scripts/battery
         poll-interval: 60000
-        content:
-          string: {text: "BAT {bat0_icon}{bat0_capacity}% {bat1_icon}{bat1_capacity}%"}
+        content: {string: {text: "BAT {bat0_icon}{bat0_capacity}% {bat1_icon}{bat1_capacity}%"}}
     - script:
-        path: /usr/local/bin/yambar-loadavg
-        args: [-I, 10]
-        content:
-          string: {text: "{one} {five} {fifteen}"}
+        path: ~/.config/yambar/scripts/loadavg
+        poll-interval: 10000
+        content: {string: {text: "{one} {five} {fifteen}"}}
     - clock:
         date-format: "%b %d"
         time-format: "%H:%M"
-        content:
-          string: {text: "{date} {time}"}
+        content: {string: {text: "{date} {time}"}}
