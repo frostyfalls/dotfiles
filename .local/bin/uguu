@@ -2,6 +2,6 @@
 
 set -eu
 
-API_BASE_URL="https://uguu.se"
+UGUU_BASE_URL="${UGUU_BASE_URL:-https://uguu.se}"
 
-curl --form files[]=@"$1" "$API_BASE_URL/upload?output=text"
+curl -F "files[]=@$1" "$UGUU_BASE_URL/upload?output=text"
