@@ -1,22 +1,32 @@
-config.load_autoconfig()
+config.load_autoconfig(False)
 
 # Behvaior
 c.confirm_quit = ["downloads"]
-c.editor.command = ["foot", "vim", "{file}"]
+c.editor.command = ["footclient", "vim", "{file}"]
 
 # Blocking intrusiveness
 c.content.autoplay = False
 c.content.geolocation = False
-c.content.blocking.method = "both"
 c.content.cookies.accept = "never"
+c.content.javascript.clipboard = "none"
+c.content.blocking.method = "both"
+c.content.blocking.adblock.lists = [
+    "https://easylist.to/easylist/easylist.txt",
+    "https://easylist.to/easylist/easyprivacy.txt",
+    "https://www.i-dont-care-about-cookies.eu/abp/",
+]
 
 # Interface
 c.downloads.position = "bottom"
-c.statusbar.padding = {"bottom": 2, "left": 0, "right": 0, "top": 2}
-c.tabs.padding = {"bottom": 1, "left": 4, "right": 4, "top": 1}
 c.fonts.default_family = "Terminus"
-c.fonts.default_size = "8px"
+c.fonts.default_size = "12px"
 c.colors.webpage.preferred_color_scheme = "dark"
+c.tabs.show = "multiple"
+c.tabs.indicator.width = 0
+c.tabs.favicons.show = "never"
+c.scrolling.bar = "never"
+c.completion.open_categories = ["quickmarks", "bookmarks", "searchengines"]
+c.completion.web_history.max_items = 0
 
 # Default pages and search engines
 c.url.default_page = "https://start.duckduckgo.com"
@@ -24,14 +34,16 @@ c.url.start_pages = "https://start.duckduckgo.com"
 c.url.searchengines = {
     "DEFAULT": "https://google.com/search?q={}",
     "aw": "https://wiki.archlinux.org/?search={}",
+    "ddg": "https://duckduckgo.com/?q={}",
+    "gg": "https://google.com/search?q={}",
     "ud": "https://urbandictionary.com/define.php?term={}",
+    "vd": "https://voidlinux.org/packages/?arch=x86_64&q={}",
     "wk": "https://en.wikipedia.org/wiki/{}",
     "yt": "https://youtube.com/results?search_query={}",
 }
 c.url.open_base_url = True
 c.messages.timeout = 1000
-c.statusbar.widgets = ["history", "url", "progress", "scroll"]
 
 # External configurations
-config.source("colors.py")
 config.source("perdomain.py")
+config.source("colors.py")
