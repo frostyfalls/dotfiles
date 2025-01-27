@@ -4,5 +4,8 @@ XDG_DOWNLOAD_DIR="$HOME/downloads"
 XDG_MUSIC_DIR="$HOME/music"
 XDG_PICTURES_DIR="$HOME/pictures"
 XDG_VIDEOS_DIR="$HOME/videos"
+
+# Custom directories
 XDG_SCREENSHOTS_DIR="$HOME/pictures/screenshots"
 XDG_WALLPAPERS_DIR="$HOME/pictures/wallpapers"
+XDG_RECORDINGS_DIR="$HOME/videos/recordings"
