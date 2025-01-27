@@ -27,8 +27,6 @@ titles_visibility = "no"
 connected_message_on_startup = "no"
 
 ## Etc. ##
-autocenter_mode = "yes"
-centered_cursor = "yes"
 media_library_primary_tag = "album_artist"
-screen_switcher_mode = "playlist, media_library, visualizer"
+screen_switcher_mode = "playlist, media_library"
 lyrics_directory = ""
