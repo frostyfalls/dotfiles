@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set -eu
+
+printf 'version|string|%s\n' "$(river -version)"
+printf '\n'

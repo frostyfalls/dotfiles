@@ -1,46 +1,147 @@
+separator-color: &separator-color "a89984ff"
+title-color: &title-color "d3869bff"
+date-color: &date-color "fe8019ff"
+version-color: &version-color "fabd2fff"
+
+good-color: &good-color "b8bb26ff"
+normal-color: &normal-color "fabd2fff"
+bad-color: &bad-color "fb4934ff"
+
+spacer: &spacer {string: {text: " "}}
+separator: &separator {string: {text: " :: ", foreground: *separator-color}}
+
 bar:
-  height: 24
+  height: 22
   location: top
-  margin: 6
-  spacing: 8
-  font: Hack:size=12
+  font: Terminus:size=12
+  background: 222222ff
   foreground: ebdbb2ff
-  background: 121212ff
 
   left:
     - river:
         anchors:
-          - tag-base: &tag-base {margin: 3}
-          - occupied-tag: &occupied-tag {text: "{id}*"}
-          - empty-tag: &empty-tag {text: "{id}."}
-          - focused-tag: &focused-tag {foreground: "ebdbb2ff"}
-          - inactive-tag: &inactive-tag {foreground: "7c6f64ff"}
-          - title: &title {text: "{title}", max: 80, margin: 4}
+          - focused-tag: &focused-tag
+              list:
+                spacing: 0
+                items:
+                  - string: {text: "<", foreground: *separator-color}
+                  - string: {text: "{id}"}
+                  - string: {text: ">", foreground: *separator-color}
+          - occupied-tag: &occupied-tag {string: {text: "{id}"}}
+          - empty-tag: &empty-tag {string: {text: "{id}", foreground: *separator-color}}
+          - layout: &layout {string: {text: "{layout}"}}
+          - title: &title {string: {text: "{title}", foreground: *title-color}}
         content:
           map:
+            default: {list: {spacing: 0, items: [*spacer, *empty-tag]}}
             conditions:
               id > 9: {empty: {}}
-              focused && occupied: {string: {<<: [*tag-base, *focused-tag, *occupied-tag]}}
-              focused && ~occupied: {string: {<<: [*tag-base, *focused-tag, *empty-tag]}}
-              occupied: {string: {<<: [*tag-base, *inactive-tag, *occupied-tag]}}
-              ~occupied: {string: {<<: [*tag-base, *inactive-tag, *empty-tag]}}
-        title: {string: {<<: *title}}
+              focused: {list: {spacing: 0, items: [*spacer, *focused-tag]}}
+              occupied: {list: {spacing: 0, items: [*spacer, *occupied-tag]}}
+        title:
+          list:
+            spacing: 0
+            items:
+              - map:
+                  conditions:
+                    layout != "": {list: {spacing: 0, items: [*separator, *layout]}}
+              - map:
+                  conditions:
+                    title != "": {list: {spacing: 0, items: [*separator, *title]}}
 
   right:
     - pipewire:
         content:
           map:
             conditions:
-              type == sink: {string: {text: "VOL {cubic_volume}%"}}
+              type != sink: {empty: {}}
+              muted:
+                list:
+                  spacing: 0
+                  items:
+                    - string: {text: "VOL"}
+                    - *spacer
+                    - string: {text: "{cubic_volume}%", foreground: *bad-color}
+              ~muted:
+                list:
+                  spacing: 0
+                  items:
+                    - string: {text: "VOL"}
+                    - *spacer
+                    - string: {text: "{cubic_volume}%"}
+    - label:
+        content: *separator
     - script:
         path: ~/.config/yambar/scripts/battery
         poll-interval: 60000
-        content: {string: {text: "BAT {bat0_icon}{bat0_capacity}% {bat1_icon}{bat1_capacity}%"}}
+        content:
+          list:
+            spacing: 0
+            items:
+              - string: {text: "BAT"}
+              - *spacer
+              - map:
+                  default: {string: {text: "{bat0_icon}{bat0_capacity}%", foreground: *bad-color}}
+                  conditions:
+                    bat0_capacity >= 80: {string: {text: "{bat0_icon}{bat0_capacity}%", foreground: *good-color}}
+                    bat0_capacity >= 40: {string: {text: "{bat0_icon}{bat0_capacity}%", foreground: *normal-color}}
+              - *spacer
+              - map:
+                  default: {string: {text: "{bat1_icon}{bat1_capacity}%", foreground: *bad-color}}
+                  conditions:
+                    bat1_capacity >= 80: {string: {text: "{bat1_icon}{bat1_capacity}%", foreground: *good-color}}
+                    bat1_capacity >= 40: {string: {text: "{bat1_icon}{bat1_capacity}%", foreground: *normal-color}}
+    - label:
+        content: *separator
     - script:
-        path: ~/.config/yambar/scripts/loadavg
+        path: ~/.config/yambar/scripts/load-avg
         poll-interval: 10000
-        content: {string: {text: "{one} {five} {fifteen}"}}
+        anchors:
+          - high-threshold: &high-threshold 4
+          - normal-threshold: &normal-threshold 2
+        content:
+          list:
+            spacing: 0
+            items:
+              - map:
+                  default: {string: {text: "{one}"}}
+                  conditions:
+                    one >= 4: {string: {text: "{one}", foreground: *bad-color}}
+                    one >= 2: {string: {text: "{one}", foreground: *normal-color}}
+              - *spacer
+              - map:
+                  default: {string: {text: "{five}"}}
+                  conditions:
+                    five >= 4: {string: {text: "{five}", foreground: *bad-color}}
+                    five >= 2: {string: {text: "{five}", foreground: *normal-color}}
+              - *spacer
+              - map:
+                  default: {string: {text: "{fifteen}"}}
+                  conditions:
+                    fifteen >= 4: {string: {text: "{fifteen}", foreground: *bad-color}}
+                    fifteen >= 2: {string: {text: "{fifteen}", foreground: *normal-color}}
+    - label:
+        content: *separator
     - clock:
-        date-format: "%b %d"
+        date-format: "%b %d %Y"
         time-format: "%H:%M"
-        content: {string: {text: "{date} {time}"}}
+        content:
+          list:
+            spacing: 0
+            items:
+              - string: {text: "{date}", foreground: *date-color}
+              - *spacer
+              - string: {text: "{time}"}
+    - label:
+        content: *separator
+    - script:
+        path: "~/.config/yambar/scripts/river-version"
+        content:
+          list:
+            spacing: 0
+            items:
+              - string: {text: "river"}
+              - *spacer
+              - string: {text: "{version}", foreground: *version-color}
+    - label:
+        content: *spacer
