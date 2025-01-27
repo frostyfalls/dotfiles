@@ -1,0 +1,13 @@
+[viewer]
+window = #121212
+
+[font]
+name = Hack
+size = 9
+color = #ebdbb2
+shadow = #121212
+
+[info]
+show = no
+
+# vim: ft=dosini
