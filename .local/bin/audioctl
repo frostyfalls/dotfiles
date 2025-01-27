@@ -7,15 +7,9 @@ DEFAULT_SINK="@DEFAULT_AUDIO_SINK@"
 DEFAULT_SOURCE="@DEFAULT_AUDIO_SOURCE@"
 AUDIO_LIMIT=1.0
 
-notify() { notify-send --urgency=low --hint=string:x-dunst-stack-tag:"$0" "$@"; }
-get_id_name() { case "$1" in "$DEFAULT_SINK") echo 'Output' ;; "$DEFAULT_SOURCE") echo 'Microphone' ;; esac }
-is_muted() { wpctl get-volume "$1" | grep 'MUTED' >/dev/null; }
-get_volume() { wpctl get-volume "$1" | awk '{$2 *= 100; print $2}'; }
-notify_volume() { is_muted "$1" && notify "$(get_id_name "$1") Muted" || notify --hint=int:value:"$(get_volume "$1")" "$(get_id_name "$1") Volume"; }
-
 case "${1:-}" in
-set-volume) wpctl set-volume --limit="$AUDIO_LIMIT" "$DEFAULT_SINK" "$2" && notify_volume "$DEFAULT_SINK" ;;
-toggle-mic) wpctl set-mute "$DEFAULT_SOURCE" toggle && notify_volume "$DEFAULT_SOURCE" ;;
-toggle-mute) wpctl set-mute "$DEFAULT_SINK" toggle && notify_volume "$DEFAULT_SINK" ;;
+set-volume) wpctl set-volume --limit="$AUDIO_LIMIT" "$DEFAULT_SINK" "$2" ;;
+toggle-mic) wpctl set-mute "$DEFAULT_SOURCE" toggle ;;
+toggle-mute) wpctl set-mute "$DEFAULT_SINK" toggle ;;
 *) exit 1 ;;
 esac

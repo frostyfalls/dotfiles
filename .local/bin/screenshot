@@ -1,5 +1,4 @@
 #!/bin/sh
-# shellcheck disable=SC1091
 
 set -eu
 
@@ -8,10 +7,29 @@ set -eu
 OUTPUT_PATH="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}/$(date "+%Y-%m-%d_%H-%M-%S").png"
 NOTIFY_MESSAGE="Saved to <b>${OUTPUT_PATH##*/}</b> and copied to the clipboard."
 
-notify() { notify-send --urgency=low 'Screenshot' "$@"; }
+alias notify='notify-send "Screenshot"'
+alias prompt='fuzzel -d -p "screenshot "'
 
-case "${1:-full}" in
-full) grim "$OUTPUT_PATH" && wl-copy --type=image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE" ;;
-select) grim -g "$(slurp)" "$OUTPUT_PATH" && wl-copy --type=image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE" ;;
-*) exit 1 ;;
-esac
+selection="${1:-full}"
+while :; do
+    case "$selection" in
+    full)
+        grim "$OUTPUT_PATH" && wl-copy -t image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE"
+        ;;
+    select)
+        grim -g "$(slurp)" "$OUTPUT_PATH" && wl-copy -t image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE"
+        ;;
+    menu)
+        case "$(printf 'Fullscreen\nSelection' | prompt)" in
+        Fullscreen) selection="full" ;;
+        Selection) selection="select" ;;
+        *) exit 1 ;;
+        esac
+        continue
+        ;;
+    *)
+        exit 1
+        ;;
+    esac
+    exit 0
+done
