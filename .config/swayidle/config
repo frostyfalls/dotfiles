@@ -1,0 +1,4 @@
+timeout 600 'lock-screen'
+timeout 900 'wlopm --off \*' resume 'wlopm --on \*'
+timeout 1800 'loginctl suspend'
+before-sleep 'lock-screen'
