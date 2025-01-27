@@ -1,0 +1,34 @@
+#!/bin/sh
+
+WALLPAPER="$XDG_DATA_HOME/wallpaper"
+
+# Output management
+kanshi &
+
+# Status bar
+yambar &
+
+# Wallpaper
+printf '%s' "$WALLPAPER" | entr -nr \
+    swaybg -m fill -i "$WALLPAPER" &
+
+# Notifications management
+fnott &
+
+# Idle management
+swayidle -w &
+
+# Portals
+/usr/libexec/xdg-desktop-portal &
+/usr/libexec/xdg-desktop-portal-wlr &
+
+# Audio
+pipewire &
+pipewire-pulse &
+wireplumber &
+
+# Terminal server
+foot -s &
+
+# File synchronization
+syncthing &
