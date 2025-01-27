@@ -1,14 +1,36 @@
 directory: ~/music/data
 library: ~/music/library.db
+plugins:
+  - bandcamp
+  - convert
+  - edit
+  - fetchart
+  - importreplace
+  - lastgenre
+  - lyrics
+  - missing
+  - mpdupdate
+  - the
+  - zero
+  - scrub
+
+convert:
+  dest: ~/music/mobile
+  embed: no
+  never_convert_lossy_files: yes
+  copy_album_art: yes
+  format: opus
+  formats:
+    opus:
+      command: opusenc --bitrate 256 $source $dest
+      extension: opus
 
 original_date: yes
-
-plugins: deezer spotify edit missing mpdupdate the lyrics zero lastgenre bandcamp
+per_disc_numbering: yes
 
 import:
   move: yes
   languages: en
-  log: ~/.cache/beets.log
 
 match:
   preferred:
@@ -17,8 +39,22 @@ match:
     original_year: yes
 
 zero:
-  fields: month day comments
+  fields: month day comments images original_month original_day lyrics rg_album_gain rg_album_peak rg_track_gain rg_track_peak albumartists albumartists_credit albumartists_sort artists artists_credit artists_sort comments
   update_database: true
+  auto: true
+
+scrub:
+  auto: true
+
+importreplace:
+  replacements:
+    - item_fields: artist artist_sort
+      album_fields: artist artist_sort
+      replace:
+        'Ye': 'Kanye West'
+        'Windows96': 'Windows 96'
+        'Camping in Alaska': 'camping in alaska'
+        'Cat System Corp.': '猫 シ Corp.'
 
 paths:
   default: %the{$albumartist}/($year) $album/$disc.$track $title
@@ -26,6 +62,24 @@ paths:
 the:
   a: no
 
-lyrics:
-  sources: genius tekstowo lrclib
-  synced: yes
+fetchart:
+  maxwidth: 1200
+  quality: 90
+  sources: cover_art_url
+  cover_format: JPEG
+
+edit:
+  itemfields:
+    - album
+    - albumartist
+    - artist
+    - track
+    - genre
+    - title
+    - year
+  albumfields:
+    - albumartist
+    - album
+    - year
+    - albumtype
+    - genre
