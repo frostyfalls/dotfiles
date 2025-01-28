@@ -1,0 +1,90 @@
+" File: vimrc
+" Maintainer: frosty <passedgoandgot200@disroot.org>
+"
+" vim:sts=2:sw=2:et
+
+" Basics
+if &compatible
+  set nocompatible
+endif
+filetype plugin indent on
+syntax on
+
+" Leader key
+let g:mapleader = ' '
+
+" Other remaps
+nnoremap <Leader>n :source $MYVIMRC<CR>
+nnoremap <Leader>N :edit $MYVIMRC<CR>
+
+" Netrw
+nnoremap <C-e> :20Lex!<CR>
+
+" File finding
+set path+=**
+nnoremap <C-p> :find ./**/*
+
+" Completion
+set completeopt=menu,menuone,popup,preview,fuzzy
+set shortmess+=c
+set pumheight=16
+set pumwidth=20
+set wildmenu
+set wildmode=lastused,longest:full,full
+set wildoptions+=pum
+
+" Options
+set number
+set relativenumber
+set foldenable
+set foldlevel=99
+set foldmethod=expr
+
+set ignorecase
+set smartcase
+set smartindent
+set shiftround
+set splitbelow
+set splitright
+set scrolloff=8
+set title
+
+" File saving
+set undofile
+set undolevels=8192
+set confirm
+set updatetime=200
+
+
+
+" XDG base directories
+if !has('nvim')
+  set runtimepath^=$XDG_CONFIG_HOME/vim                                         
+  set runtimepath+=$XDG_DATA_HOME/vim                                           
+  set runtimepath+=$XDG_CONFIG_HOME/vim/after                                   
+
+  set packpath^=$XDG_DATA_HOME/vim,$XDG_CONFIG_HOME/vim                         
+  set packpath+=$XDG_CONFIG_HOME/vim/after,$XDG_DATA_HOME/vim/after             
+
+  let g:netrw_home = $XDG_DATA_HOME . '/vim'                                      
+  call mkdir($XDG_DATA_HOME . '/vim/spell', 'p')                                  
+
+  set backupdir=$XDG_STATE_HOME/vim/backup | call mkdir(&backupdir, 'p')        
+  set directory=$XDG_STATE_HOME/vim/swap   | call mkdir(&directory, 'p')        
+  set undodir=$XDG_STATE_HOME/vim/undo     | call mkdir(&undodir, 'p')        
+  set viewdir=$XDG_STATE_HOME/vim/view     | call mkdir(&viewdir, 'p')        
+
+  set viminfofile=$XDG_STATE_HOME/vim/viminfo
+endif         
+
+" Autocommands
+augroup Vimrc
+  autocmd!
+
+  " Customize color scheme
+  autocmd ColorScheme * highlight Normal ctermbg=NONE
+augroup END
+
+" Color scheme
+set background=dark
+colorscheme retrobox
