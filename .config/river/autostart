@@ -24,8 +24,6 @@ swayidle -w &
 
 # Audio
 pipewire &
-pipewire-pulse &
-wireplumber &
 
 # Terminal server
 foot -s &
