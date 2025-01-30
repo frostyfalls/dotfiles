@@ -132,16 +132,15 @@ riverctl map-pointer normal Super BTN_MIDDLE toggle-float
 
 riverctl set-repeat 50 300
 
-# pointer="pointer-1739-0-Synaptics_TM3276-022"
-# riverctl input "$pointer" natural-scroll enabled
-# riverctl input "$pointer" tap enabled
-# riverctl input "$pointer" middle-emulation enabled
-# riverctl input "$pointer" disable-while-typing enabled
-# riverctl input "$pointer" disable-while-trackpointing enabled
+pointer="pointer-1739-0-Synaptics_TM3276-022"
+riverctl input "$pointer" natural-scroll enabled
+riverctl input "$pointer" tap enabled
+riverctl input "$pointer" middle-emulation enabled
+riverctl input "$pointer" disable-while-typing enabled
+riverctl input "$pointer" disable-while-trackpointing enabled
 
-riverctl input '*Synaptics_TM*' events disabled
 riverctl input '*IBM_TrackPoint*' pointer-accel 0.5
 
 ## Autostart ##
 
-riverctl spawn "${0%/*}/autostart"
+"${0%/*}/autostart" &
