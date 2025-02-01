@@ -3,21 +3,15 @@
 WALLPAPER="$XDG_DATA_HOME/wallpaper"
 
 kanshi &
-
+yambar &
 printf '%s' "$WALLPAPER" | entr -nr \
     swaybg -m fill -i "$WALLPAPER" &
-
-yambar &
-
 mako &
-
 swayidle -w &
-
-foot -s &
-
+pipewire &
 /usr/libexec/xdg-desktop-portal &
 /usr/libexec/xdg-desktop-portal-wlr &
-
-pipewire &
-
+mpd --no-daemon &
+gpg-agent --no-detach &
+foot -s &
 syncthing &
