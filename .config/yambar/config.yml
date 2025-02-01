@@ -1,14 +1,13 @@
 separator-color: &separator-color "a89984ff"
 title-color: &title-color "d3869bff"
 date-color: &date-color "fe8019ff"
-version-color: &version-color "fabd2fff"
 
 good-color: &good-color "b8bb26ff"
 normal-color: &normal-color "fabd2fff"
 bad-color: &bad-color "fb4934ff"
 
 spacer: &spacer {string: {text: " "}}
-separator: &separator {string: {text: " :: ", foreground: *separator-color}}
+separator: &separator {string: {text: " | ", foreground: *separator-color}}
 
 bar:
   height: 22
@@ -162,16 +161,5 @@ bar:
               - string: {text: "{date}", foreground: *date-color}
               - *spacer
               - string: {text: "{time}"}
-    - label:
-        content: *separator
-    - script:
-        path: "~/.config/yambar/scripts/river-version"
-        content:
-          list:
-            spacing: 0
-            items:
-              - string: {text: "river"}
-              - *spacer
-              - string: {text: "{version}", foreground: *version-color}
     - label:
         content: *spacer
