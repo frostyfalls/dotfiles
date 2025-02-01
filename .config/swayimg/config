@@ -1,13 +1,53 @@
 [viewer]
 window = #121212
 
+[gallery]
+size = 150
+pstore = yes
+fill = no
+window = #121212
+background = #222222
+select = #282828
+border = #83a598
+shadow = #00000000
+
 [font]
-name = Hack
+name = Liberation Mono
 size = 9
 color = #ebdbb2
 shadow = #121212
 
-[info]
-show = no
+[info.viewer]
+bottom_left = status
+bottom_right = none
+
+[info.gallery]
+bottom_left = status
+bottom_right = name,filesize
+
+[keys.viewer]
+g = first_file
+Shift+g = last_file
+p = prev_file
+n = next_file
+space = mode
+Ctrl+space = animation
+F11 = fullscreen
+Shift+colon = status
+Shift+w = exec cp % $XDG_DATA_HOME/wallpaper
+
+[keys.gallery]
+g = first_file
+Shift+g = last_file
+h = step_left
+l = step_right
+k = step_up
+j = step_down
+Ctrl+u = page_up
+Ctrl+d = page_down
+space = mode
+F11 = fullscreen
+Shift+colon = status
+Shift+w = exec cp % $XDG_DATA_HOME/wallpaper
 
 # vim: ft=dosini
