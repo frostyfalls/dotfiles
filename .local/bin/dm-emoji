@@ -1,0 +1,5 @@
+#!/bin/sh
+
+prompt() { fuzzel -d -p 'emoji ' --match-mode=exact; }
+
+prompt <"$XDG_DATA_HOME/wallpaper"
