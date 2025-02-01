@@ -93,6 +93,7 @@ riverctl map normal Super+Shift B spawn "makoctl -a"
 riverctl map normal Super+Shift W spawn "swayimg --gallery ~/pictures/wallpapers"
 riverctl map normal Super+Shift N spawn "dm-output"
 riverctl map normal Super+Shift M spawn "dm-mount"
+riverctl map normal Super+Shift Y spawn "dm-emoji"
 
 for mode in normal locked; do
     riverctl map -repeat "$mode" None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"
