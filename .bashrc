@@ -3,8 +3,18 @@
 
 [[ "$-" != *i* ]] && return
 
+__prompt() {
+    exitc="$?"
+    if [[ "$exitc" -eq 0 ]]; then
+        symbol_color="\[\e[0;92m\]"
+    else
+        symbol_color="\[\e[0;91m\]"
+    fi
+    PS1="\[\e[0;96m\]\u\[\e[0;97m\]@\[\e[0;95m\]\h \[\e[0;94m\]\w $symbol_color❯ \[\e[0;0m\]"
+}
+
 [[ "$EUID" -ne 0 ]] && PROMPT_DIRTRIM=3
-PS1="\[\e[1;32m\]\u\[\e[1;33m\]@\[\e[1;35m\]\h \[\e[1;34m\]\w \[\e[0;0m\]% "
+PROMPT_COMMAND=__prompt
 
 HISTFILE="$XDG_STATE_HOME/bash_history"
 HISTSIZE="$((2 << 15))"
@@ -26,6 +36,7 @@ alias tmux='tmux -2'
 cd() { builtin cd "$@" && ls; }
 lf() { cd "$(command lf -print-last-dir "$@")" || return; }
 
+alias vim='nvim'
 alias t='tmux'
 alias e='$EDITOR'
 alias g='git'
