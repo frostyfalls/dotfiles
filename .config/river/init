@@ -15,6 +15,10 @@ riverctl border-color-focused 0x83a598
 riverctl border-color-unfocused 0x504945
 riverctl border-color-urgent 0xfb4934
 
+export LOCK_INIT_COLOR="222222"
+export LOCK_INPUT_COLOR="83a598"
+export LOCK_FAIL_COLOR="fb4934"
+
 ## Cursor ##
 
 riverctl hide-cursor timeout 10000
@@ -51,10 +55,10 @@ riverctl map normal Super V spawn "$TERMINAL pulsemixer"
 riverctl map normal Super Q spawn "$TERMINAL ncmpcpp"
 riverctl map normal Super N spawn "$TERMINAL newsraft"
 
-riverctl map normal Super O spawn "screenshot full"
-riverctl map normal Super+Shift O spawn "screenshot select"
-riverctl map normal None Print spawn "screenshot full"
-riverctl map normal Shift Print spawn "screenshot select"
+riverctl map normal Super O spawn "screenshot -cm full"
+riverctl map normal Super+Shift O spawn "screenshot -cm select"
+riverctl map normal None Print spawn "screenshot -cm full"
+riverctl map normal Shift Print spawn "screenshot -cm select"
 
 riverctl map -repeat normal Super J focus-view next
 riverctl map -repeat normal Super K focus-view previous
@@ -82,12 +86,13 @@ riverctl map normal Super+Shift Space toggle-float
 riverctl map normal Super+Shift F toggle-fullscreen
 
 riverctl map normal Alt+Control Delete exit
-riverctl map normal Alt+Control L spawn "lockscreen"
+riverctl map normal Alt+Control L spawn "lock-screen"
 
-riverctl map normal Super U spawn "passmenu"
-riverctl map normal Super+Shift M spawn "fnottctl dismiss all"
-riverctl map normal Super+Shift W spawn "setwallpaper"
-riverctl map normal Super+Shift N spawn "kanshimenu"
+riverctl map normal Super U spawn "dm-pass"
+riverctl map normal Super+Shift B spawn "makoctl -a"
+riverctl map normal Super+Shift W spawn "swayimg --gallery ~/pictures/wallpapers"
+riverctl map normal Super+Shift N spawn "dm-output"
+riverctl map normal Super+Shift M spawn "dm-mount"
 
 for mode in normal locked; do
     riverctl map -repeat "$mode" None XF86AudioRaiseVolume spawn "wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"

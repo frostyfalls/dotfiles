@@ -2,31 +2,22 @@
 
 WALLPAPER="$XDG_DATA_HOME/wallpaper"
 
-# Output management
 kanshi &
 
-# Status bar
-yambar &
-
-# Wallpaper
 printf '%s' "$WALLPAPER" | entr -nr \
     swaybg -m fill -i "$WALLPAPER" &
 
-# Notifications management
-fnott &
+yambar &
 
-# Idle management
+mako &
+
 swayidle -w &
 
-# Portals
+foot -s &
+
 /usr/libexec/xdg-desktop-portal &
 /usr/libexec/xdg-desktop-portal-wlr &
 
-# Audio
 pipewire &
 
-# Terminal server
-foot -s &
-
-# File synchronization
 syncthing &
