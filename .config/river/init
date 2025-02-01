@@ -48,7 +48,7 @@ done
 
 riverctl map normal Super Return spawn "$TERMINAL"
 riverctl map normal Super W spawn "$BROWSER"
-riverctl map normal Super P spawn "fuzzel"
+riverctl map normal Super P spawn "dm-run"
 riverctl map normal Super E spawn "$TERMINAL $EDITOR"
 riverctl map normal Super F spawn "$TERMINAL lf"
 riverctl map normal Super V spawn "$TERMINAL pulsemixer"
