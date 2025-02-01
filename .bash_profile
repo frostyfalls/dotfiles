@@ -17,4 +17,5 @@ export NO_AT_BRIDGE=1
 
 export PATH="$PATH:$HOME/.local/bin:$GOPATH/bin:$CARGO_HOME/bin"
 
+[[ -f "$HOME/.bashrc" ]] && . "$HOME/.bashrc"
 [[ "$(tty)" = "/dev/tty2" ]] && ! pgrep river >/dev/null && exec dbus-run-session river >/dev/null 2>&1
