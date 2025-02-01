@@ -4,12 +4,15 @@ set -eu
 
 PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 
-alias notify='notify-send "Password Store"'
-alias prompt='fuzzel -d -p "pass "'
+notify() { notify-send "Password Store" "$@"; }
+prompt() { fuzzel -d -p 'pass '; }
 
 entry="$(find "$PASSWORD_STORE_DIR" -type f -name '*.gpg' | while IFS= read -r line; do
     entry="${line#"$PASSWORD_STORE_DIR"/}"
-    printf '%s\n' "${entry%.gpg}"
+    entry="${entry%.gpg}"
+    echo "$entry"
 done | sort -f | prompt)"
+
 [ -z "$entry" ] && return
+
 pass show -c "$entry" && notify "Copied <b>$entry</b> to the clipboard."

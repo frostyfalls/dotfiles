@@ -4,19 +4,22 @@ set -eu
 
 KANSHI_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/kanshi/config"
 
-alias notify='notify-send "Kanshi"'
-alias prompt='fuzzel -d -p "output "'
+notify() { notify-send "Output" "$@"; }
+prompt() { fuzzel -d -p 'output '; }
 
 profile="$(while IFS= read -r line; do
     case "$line" in
     profile*)
         profile="${line#profile \"}"
-        printf '%s\n' "${profile%\" \{}"
+        profile="${profile%\"*}"
+        echo "$profile"
         ;;
     *) ;;
     esac
-done <"$KANSHI_CONFIG_FILE" | fuzzel -d -p 'output ')"
+done <"$KANSHI_CONFIG_FILE" | prompt)"
+
 [ -z "$profile" ] && return
+
 if kanshictl switch "$profile" 2>/dev/null; then
     notify "Output profile switched to <b>$profile</b>."
 else

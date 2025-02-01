@@ -2,34 +2,48 @@
 
 set -eu
 
+# shellcheck disable=SC1091
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
 
 OUTPUT_PATH="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}/$(date "+%Y-%m-%d_%H-%M-%S").png"
-NOTIFY_MESSAGE="Saved to <b>${OUTPUT_PATH##*/}</b> and copied to the clipboard."
+NOTIFY_MESSAGE="Saved screenshot."
 
-alias notify='notify-send "Screenshot"'
-alias prompt='fuzzel -d -p "screenshot "'
+err() { echo "${0##*/}: $*" >&2; }
+notify() { notify-send "Screenshot" "$@"; }
 
-selection="${1:-full}"
-while :; do
-    case "$selection" in
-    full)
-        grim "$OUTPUT_PATH" && wl-copy -t image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE"
+is_valid_mode() { case "$1" in full|select) return 0 ;; *) return 1 ;; esac }
+
+screenshot_full() { grim "$OUTPUT_PATH"; }
+screenshot_select() { grim -g "$(slurp)" "$OUTPUT_PATH"; }
+
+COPY=1
+MODE="full"
+
+while getopts ':cm:' opt; do
+    case "$opt" in
+    c)
+        COPY=1
+        NOTIFY_MESSAGE="Saved screenshot and copied to the clipboard."
         ;;
-    select)
-        grim -g "$(slurp)" "$OUTPUT_PATH" && wl-copy -t image/png <"$OUTPUT_PATH" && notify "$NOTIFY_MESSAGE"
+    m)
+        if ! is_valid_mode "$OPTARG"; then
+            err "invalid mode: $OPTARG"
+            exit 1
+        fi
+        MODE="$OPTARG"
         ;;
-    menu)
-        case "$(printf 'Fullscreen\nSelection' | prompt)" in
-        Fullscreen) selection="full" ;;
-        Selection) selection="select" ;;
-        *) exit 1 ;;
-        esac
-        continue
-        ;;
-    *)
+    :)
+        err "option -$OPTARG requires an argument"
         exit 1
         ;;
+    ?)
+        err "invalid option: -$OPTARG"
+        exit 1
+        ;;
+    *) ;;
     esac
-    exit 0
 done
+
+screenshot_"$MODE"
+[ "$COPY" -eq 1 ] && wl-copy -t image/png <"$OUTPUT_PATH"
+notify "$NOTIFY_MESSAGE"
