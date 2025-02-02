@@ -5,13 +5,10 @@ set -eu
 PASSWORD_STORE_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 
 notify() { notify-send "Password Store" "$@"; }
-prompt() { fuzzel -d -p 'pass '; }
 
-entry="$(find "$PASSWORD_STORE_DIR" -type f -name '*.gpg' | while IFS= read -r line; do
-    entry="${line#"$PASSWORD_STORE_DIR"/}"
-    entry="${entry%.gpg}"
-    echo "$entry"
-done | sort -f | prompt)"
+entry="$(find "$PASSWORD_STORE_DIR" -type f -name '*.gpg' -printf '%P\n' | while IFS= read -r line; do
+    echo "${line%.gpg}"
+done | sort -f | fuzzel --dmenu --prompt='pass ')"
 
 [ -z "$entry" ] && return
 

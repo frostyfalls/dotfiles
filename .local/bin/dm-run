@@ -4,8 +4,6 @@ set -eu
 
 FUNCTIONS_FILE="$XDG_CONFIG_HOME/dm-run/config"
 
-prompt() { fuzzel -d -p 'run '; }
-
 selected=$(while IFS='=' read -r display _; do
     [ "$display" = "" ] && continue
     display=$(echo "$display" | sed 's/^[ \t]*//;s/[ \t]*$//')
@@ -13,7 +11,7 @@ selected=$(while IFS='=' read -r display _; do
         continue
     fi
     echo "$display"
-done <"$FUNCTIONS_FILE" | prompt)
+done <"$FUNCTIONS_FILE" | fuzzel --dmenu --prompt='run ')
 
 [ -z "$selected" ] && return
 

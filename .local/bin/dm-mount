@@ -2,8 +2,6 @@
 
 set -eu
 
-prompt() { fuzzel -d "$@"; }
-
 DISK_BY_LABEL="/dev/disk/by-label"
 UDEVIL_CMD="mount"
 
@@ -15,7 +13,7 @@ while getopts ':u' opt; do
 done
 
 disks=$(find "$DISK_BY_LABEL"/* | cut -d'/' -f5)
-selection=$(printf '%s' "$disks" | prompt -p "$UDEVIL_CMD ")
+selection=$(printf '%s' "$disks" | fuzzel --dmenu --prompt="$UDEVIL_CMD ")
 [ -z "$selection" ] && return
 path="$DISK_BY_LABEL/$selection"
 

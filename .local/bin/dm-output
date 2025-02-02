@@ -5,7 +5,6 @@ set -eu
 KANSHI_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/kanshi/config"
 
 notify() { notify-send "Output" "$@"; }
-prompt() { fuzzel -d -p 'output '; }
 
 profile="$(while IFS= read -r line; do
     case "$line" in
@@ -16,7 +15,7 @@ profile="$(while IFS= read -r line; do
         ;;
     *) ;;
     esac
-done <"$KANSHI_CONFIG_FILE" | prompt)"
+done <"$KANSHI_CONFIG_FILE" | fuzzel --dmenu --prompt='output ')"
 
 [ -z "$profile" ] && return
 

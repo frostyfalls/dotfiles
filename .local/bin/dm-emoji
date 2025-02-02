@@ -1,5 +1,3 @@
 #!/bin/sh
 
-prompt() { fuzzel -d -p 'emoji ' --match-mode=exact; }
-
-prompt <"$XDG_DATA_HOME/emoji"
+fuzzel --dmenu --prompt='emoji ' --match-mode=exact <"$XDG_DATA_HOME/emoji"
