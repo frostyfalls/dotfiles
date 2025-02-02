@@ -1,7 +1,0 @@
-# dotfiles
-
-## Installation
-
-```
-stow -Rt ~ .
-```
