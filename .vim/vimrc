@@ -1,0 +1,54 @@
+" vim:sts=2:sw=2:et
+
+if &compatible
+  set nocompatible
+endif
+syntax on
+filetype plugin indent on
+
+let g:mapleader = ' '
+
+function! PackInit() abort
+  packadd minpac
+
+  call minpac#init()
+  call minpac#add('k-takata/minpac', {'type': 'opt'})
+  call minpac#add('lifepillar/vim-mucomplete')
+endfunction
+
+command! PackClone  execute '!git clone https://github.com/k-takata/minpac.git ~/.vim/pack/minpac/opt/minpac'
+command! PackUpdate call PackInit() | call minpac#update()
+command! PackClean  call PackInit() | call minpac#clean()
+command! PackStatus packadd minpac  | call minpac#status()
+
+set path+=**
+
+set wildmenu
+set wildoptions=pum
+
+set spelllang=en_us
+nnoremap <Leader>s :set spell!<CR>
+
+set number
+set relativenumber
+
+set background=dark
+highlight Normal ctermbg=NONE guibg=NONE
+
+set splitbelow
+set splitright
+
+set shortmess+=c
+set completeopt-=preview
+set completeopt+=menuone
+set completeopt+=noselect
+
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#no_mappings = 1
+let g:mucomplete#chains = {
+      \ 'default':  ['path', 'omni', 'keyn', 'dict', 'uspl'],
+      \ 'vim':      ['path', 'cmd', 'keyn'],
+      \ 'markdown': ['keyn', 'dict', 'uspl']
+      \ }
+
+nnoremap <expr> <CR> pumvisible() ? '<C-y><CR>' : '<CR>'
