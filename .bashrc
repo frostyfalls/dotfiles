@@ -36,7 +36,6 @@ alias tmux='tmux -2'
 cd() { builtin cd "$@" && ls; }
 lf() { cd "$(command lf -print-last-dir "$@")" || return; }
 
-alias vim='nvim'
 alias t='tmux'
 alias e='$EDITOR'
 alias g='git'
