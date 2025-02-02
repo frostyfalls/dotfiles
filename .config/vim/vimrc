@@ -1,0 +1,156 @@
+" vimrc
+" Maintainer: frosty <passedgoandgot200@disroot.org>
+"
+" vim:sts=2:sw=2:et
+
+if &compatible
+  set nocompatible
+endif
+syntax on
+filetype plugin indent on
+
+let g:mapleader = ' '
+
+set runtimepath^=$XDG_CONFIG_HOME/vim
+set runtimepath+=$XDG_DATA_HOME/vim
+set runtimepath+=$XDG_CONFIG_HOME/vim/after
+
+set packpath^=$XDG_DATA_HOME/vim,$XDG_CONFIG_HOME/vim
+set packpath+=$XDG_CONFIG_HOME/vim/after,$XDG_DATA_HOME/vim/after
+
+let g:netrw_home = $XDG_DATA_HOME . '/vim'
+call mkdir($XDG_DATA_HOME . '/vim/spell', 'p')
+
+set backupdir=$XDG_STATE_HOME/vim/backup | call mkdir(&backupdir, 'p')
+set directory=$XDG_STATE_HOME/vim/swap   | call mkdir(&directory, 'p')
+set undodir=$XDG_STATE_HOME/vim/undo     | call mkdir(&undodir, 'p')
+set viewdir=$XDG_STATE_HOME/vim/view     | call mkdir(&viewdir, 'p')
+
+set viminfofile=$XDG_STATE_HOME/vim/viminfo
+
+function! PackClone() abort
+  let l:minpac_path = has('nvim') ? stdpath('data') . '/pack/minpac/opt/minpac' : $XDG_DATA_HOME . '/vim/pack/minpac/opt/minpac'
+  execute '!git clone https://github.com/k-takata/minpac.git ' . l:minpac_path
+endfunction
+
+function! PackInit() abort
+  packadd minpac
+
+  call minpac#init()
+  call minpac#add('k-takata/minpac', {'type': 'opt'})
+
+  call minpac#add('lifepillar/vim-gruvbox8')
+  call minpac#add('fcpg/vim-waikiki')
+  call minpac#add('junegunn/goyo.vim')
+  call minpac#add('junegunn/limelight.vim')
+  call minpac#add('tpope/vim-fugitive')
+  call minpac#add('tpope/vim-endwise')
+  call minpac#add('lifepillar/vim-mucomplete')
+  call minpac#add('hrsh7th/vim-vsnip')
+  call minpac#add('hrsh7th/vim-vsnip-integ')
+  call minpac#add('jasonccox/vim-wayland-clipboard')
+endfunction
+
+command! -nargs=0 PackClone  call PackClone()
+command! -nargs=0 PackUpdate call PackInit() | call minpac#update()
+command! -nargs=0 PackClean  call PackInit() | call minpac#clean()
+command! -nargs=0 PackStatus packadd minpac  | call minpac#status()
+
+set background=dark
+augroup customize_colors
+  autocmd!
+  autocmd VimEnter,ColorScheme *
+        \ highlight Normal ctermbg=NONE
+  autocmd ColorScheme gruvbox8
+        \ highlight PmenuMatch ctermfg=214 ctermbg=239
+        \| highlight PmenuMatchSel ctermfg=214 ctermbg=109
+augroup END
+silent! colorscheme gruvbox8
+
+let g:waikiki_roots = ['~/documents/wiki/']
+augroup waikiki_maps
+  autocmd!
+  autocmd FileType markdown
+        \ nnoremap <buffer> <Return> <Plug>(waikikiFollowLink)
+        \| nnoremap <buffer> - <Plug>(waikikiGoUp)
+        \| nnoremap <buffer> zj <Plug>(waikikiNextLink)
+        \| nnoremap <buffer> zk <Plug>(waikikiPrevLink)
+        \| nnoremap <buffer> zi <Plug>(waikikiToggleListItem)
+augroup END
+nnoremap <Leader>w :e ~/documents/wiki/index.md<CR>
+
+set number
+set relativenumber
+set nowrap
+
+set foldenable
+set foldlevel=99
+
+set splitbelow
+set splitright
+set hidden
+
+set undolevels=8192
+
+set autoindent
+set smartindent
+set smarttab
+set shiftwidth=4
+set softtabstop=4
+
+set hlsearch
+set incsearch
+set smartcase
+set ignorecase
+
+set path+=**
+
+set wildmenu
+set wildoptions=pum
+
+set spelllang=en_us
+nnoremap <Leader>s :set spell!<CR>
+
+augroup insert_center
+  autocmd!
+  autocmd InsertEnter * normal zz
+augroup END
+
+nnoremap Y y$
+
+set shortmess+=c
+set completeopt-=preview
+set completeopt+=menuone
+set completeopt+=noselect
+inoremap <expr> <CR> pumvisible() ? '<C-y><CR>' : '<CR>'
+
+let g:mucomplete#worldlist = ['frosty']
+let g:mucomplete#enable_auto_at_startup = 1
+let g:mucomplete#no_mappings = 1
+let g:mucomplete#chains = {
+      \ 'default':  ['path', 'vsnip', 'keyn', 'dict', 'uspl'],
+      \ 'vim':      ['path', 'vsnip', 'cmd', 'keyn'],
+      \ 'markdown': ['vsnip', 'list', 'keyn', 'dict', 'uspl'],
+      \ }
+
+inoremap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+snoremap <expr> <C-l> vsnip#available(1) ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+inoremap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
+snoremap <expr> <C-h> vsnip#jumpable(-1) ? '<Plug>(vsnip-jump-prev)'      : '<C-h>'
+
+let g:goyo_height = '100%'
+let g:goyo_width = 100
+nnoremap <Leader>g :Goyo<CR>
+augroup limelight_goyo
+  autocmd!
+  autocmd User GoyoEnter Limelight
+  autocmd User GoyoLeave Limelight!
+augroup END
+let g:limelight_conceal_ctermfg = 'black'
+
+nnoremap <Leader>G :Git<Space>
+
+if executable('rg')
+  set grepprg=rg\ -H\ --no-heading\ --vimgrep
+  set grepformat=%f:%l:%c:%m
+endif
