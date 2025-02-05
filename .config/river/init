@@ -15,6 +15,8 @@ riverctl border-color-focused 0x83a598
 riverctl border-color-unfocused 0x504945
 riverctl border-color-urgent 0xfb4934
 
+export QT_QPA_PLATFORMTHEME="qt6ct"
+
 export LOCK_INIT_COLOR="222222"
 export LOCK_INPUT_COLOR="83a598"
 export LOCK_FAIL_COLOR="fb4934"
@@ -23,7 +25,7 @@ export LOCK_FAIL_COLOR="fb4934"
 
 riverctl hide-cursor timeout 10000
 riverctl hide-cursor when-typing enabled
-riverctl xcursor-theme Adwaita
+riverctl xcursor-theme Breeze_Obsidian
 
 ## Rules ##
 
@@ -49,6 +51,7 @@ done
 riverctl map normal Super Return spawn "$TERMINAL"
 riverctl map normal Super W spawn "$BROWSER"
 riverctl map normal Super P spawn "dm-run"
+riverctl map normal None XF86Favorites spawn "dm-run"
 riverctl map normal Super E spawn "$TERMINAL $EDITOR"
 riverctl map normal Super F spawn "$TERMINAL lf"
 riverctl map normal Super V spawn "$TERMINAL pulsemixer"
@@ -92,6 +95,7 @@ riverctl map normal Super U spawn "dm-pass"
 riverctl map normal Super+Shift B spawn "makoctl -a"
 riverctl map normal Super+Shift W spawn "swayimg --gallery ~/pictures/wallpapers"
 riverctl map normal Super+Shift N spawn "dm-output"
+riverctl map normal None XF86Display spawn "dm-output"
 riverctl map normal Super+Shift M spawn "dm-mount"
 riverctl map normal Super+Shift Y spawn "dm-emoji"
 
