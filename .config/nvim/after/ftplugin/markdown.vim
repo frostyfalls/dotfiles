@@ -1,0 +1,5 @@
+nnoremap <buffer> <Return> <Plug>(waikikiFollowLink)
+nnoremap <buffer> - <Plug>(waikikiGoUp)
+nnoremap <buffer> zj <Plug>(waikikiNextLink)
+nnoremap <buffer> zk <Plug>(waikikiPrevLink)
+nnoremap <buffer> zi <Plug>(waikikiToggleListItem)
