@@ -3,9 +3,6 @@
 is_text_file() { grep -qIF '' "$1"; }
 
 case "$(file -bL --mime-type -- "$1")" in
-image/* | video/*)
-    mediainfo "$1"
-    ;;
 text/*)
     cat "$1"
     ;;
