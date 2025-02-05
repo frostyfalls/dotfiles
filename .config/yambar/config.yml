@@ -29,7 +29,7 @@ bar:
           - occupied-tag: &occupied-tag {string: {text: "{id}"}}
           - empty-tag: &empty-tag {string: {text: "{id}", foreground: *separator-color}}
           - layout: &layout {string: {text: "{layout}"}}
-          - title: &title {string: {text: "{title}", foreground: *title-color}}
+          - title: &title {string: {text: "{title}", max: 80, foreground: *title-color}}
         content:
           map:
             default:
