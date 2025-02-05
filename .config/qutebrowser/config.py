@@ -27,6 +27,8 @@ c.tabs.favicons.show = "never"
 c.scrolling.bar = "never"
 c.completion.open_categories = ["quickmarks", "bookmarks", "searchengines"]
 c.completion.web_history.max_items = 0
+c.statusbar.padding = {"bottom": 2, "left": 0, "right": 0, "top": 2}
+c.tabs.padding = {"bottom": 1, "left": 4, "right": 4, "top": 1}
 
 # Default pages and search engines
 c.url.default_page = "https://start.duckduckgo.com"

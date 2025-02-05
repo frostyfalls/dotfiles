@@ -59,14 +59,14 @@ c.colors.completion.scrollbar.bg = c.colors.completion.category.bg
 
 ### Context menu
 
-c.colors.contextmenu.disabled.fg = fg3
-c.colors.contextmenu.disabled.bg = bg3
-
-c.colors.contextmenu.menu.fg = fg2
-c.colors.contextmenu.menu.bg = bg0
-
-c.colors.contextmenu.selected.fg = c.colors.contextmenu.menu.fg
-c.colors.contextmenu.selected.bg = bg2
+# c.colors.contextmenu.disabled.fg = fg3
+# c.colors.contextmenu.disabled.bg = bg3
+#
+# c.colors.contextmenu.menu.fg = fg2
+# c.colors.contextmenu.menu.bg = bg0
+#
+# c.colors.contextmenu.selected.fg = c.colors.contextmenu.menu.fg
+# c.colors.contextmenu.selected.bg = bg2
 
 ### Tooltip
 
