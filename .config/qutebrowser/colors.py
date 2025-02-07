@@ -1,6 +1,6 @@
-bg0_hard = "#1d2021"
 bg0_soft = "#32302f"
 bg0_normal = "#282828"
+bg0_hard = "#1d2021"
 
 bg0 = bg0_normal
 bg1 = "#3c3836"
@@ -89,7 +89,8 @@ c.colors.downloads.error.fg = bright_red
 
 c.colors.hints.fg = fg4
 c.colors.hints.bg = bg1
-c.colors.hints.match.fg = bright_red
+c.colors.hints.match.fg = bright_yellow
+c.hints.border = f"1px solid {bg4}"
 
 ### Keyhint widget
 
@@ -177,17 +178,19 @@ c.colors.tabs.odd.bg = bg2
 c.colors.tabs.even.fg = c.colors.tabs.odd.fg
 c.colors.tabs.even.bg = c.colors.tabs.odd.bg
 
-c.colors.tabs.selected.odd.fg = fg1
-c.colors.tabs.selected.odd.bg = bg0
+c.colors.tabs.selected.odd.fg = bg0
+c.colors.tabs.selected.odd.bg = bright_blue
 c.colors.tabs.selected.even.fg = c.colors.tabs.selected.odd.fg
 c.colors.tabs.selected.even.bg = c.colors.tabs.selected.odd.bg
 
-c.colors.tabs.pinned.odd.fg = bg1
-c.colors.tabs.pinned.odd.bg = bright_blue
-c.colors.tabs.pinned.even.fg = c.colors.tabs.pinned.odd.fg
-c.colors.tabs.pinned.even.bg = c.colors.tabs.pinned.odd.bg
+c.colors.tabs.pinned.odd.fg = c.colors.tabs.odd.fg
+c.colors.tabs.pinned.odd.bg = c.colors.tabs.odd.bg
+c.colors.tabs.pinned.even.fg = c.colors.tabs.even.fg
+c.colors.tabs.pinned.even.bg = c.colors.tabs.even.bg
 
 c.colors.tabs.pinned.selected.odd.fg = c.colors.tabs.selected.odd.fg
 c.colors.tabs.pinned.selected.odd.bg = c.colors.tabs.selected.odd.bg
 c.colors.tabs.pinned.selected.even.fg = c.colors.tabs.selected.even.fg
 c.colors.tabs.pinned.selected.even.bg = c.colors.tabs.selected.even.bg
+
+c.colors.webpage.bg = "#121212"

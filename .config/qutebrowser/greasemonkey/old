@@ -1,0 +1,7 @@
+// ==UserScript==
+// @name        White background
+// @include     *
+// ==/UserScript==
+
+// var sheet = window.document.styleSheets[0];
+// sheet.insertRule('body { background-color: white; }', sheet.cssRules.length);
