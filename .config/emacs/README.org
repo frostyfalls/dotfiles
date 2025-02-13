@@ -114,7 +114,11 @@ Useful key binding display for chains.
     :config (which-key-mode 1))
 #+END_SRC
 
-** TODO
+** Custom Keymaps
+
+*** Function Definitions
+
+First off, before making any keymaps, we should define the functions we want to map.
 
 #+BEGIN_SRC emacs-lisp
   (defun edit-init-file ()
@@ -124,15 +128,18 @@ Useful key binding display for chains.
   (defun load-init-file ()
     (interactive)
     (load user-init-file))
+#+END_SRC
 
+*** Keymap Definitions
+
+The first two are pretty self-explanatory.
+
+The next two are for changing the text scale easier, as the default interactive mode for it is a bit jarring.
+
+#+BEGIN_SRC emacs-lisp
   (keymap-global-set "<f7>" 'edit-init-file)
   (keymap-global-set "<f8>" 'load-init-file)
 
-  (keymap-global-set "C-v" 'View-scroll-half-page-forward)
-  (keymap-global-set "M-v" 'View-scroll-half-page-backward)
-
   (keymap-global-set "C-=" 'text-scale-increase)
   (keymap-global-set "C--" 'text-scale-decrease)
-
-  (require 'org-tempo)
 #+END_SRC
