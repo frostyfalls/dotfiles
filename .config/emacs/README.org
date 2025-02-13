@@ -1,0 +1,138 @@
+#+TITLE: Emacs Configuration
+#+AUTHOR: frosty <passedgoandgot200@disroot.org>
+
+** Package Management
+
+MELPA is a much better package archive than ELPA, so we're adding it here. We refresh the package contents and finally install =use-package= if necessary.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+
+  (when (not package-archive-contents)
+    (package-refresh-contents))
+
+  (when (not (package-installed-p 'use-package))
+    (package-install 'use-package))
+#+END_SRC
+
+** Interface
+
+You like pretty colors, right? Great, so we're using the [[https://github.com/morhetz/gruvbox][gruvbox]] color scheme (which may be blasphemy as it's a Vim color scheme), as well as disabling some of the GUI junk. We also enable visual line mode and line numbers.
+
+Fonts are very opinionated, but Hack is pretty nice to look at. Italic fonts for comments are also nice.
+
+Finally, we disable the startup screen.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package gruvbox-theme
+    :ensure t
+    :config (load-theme 'gruvbox-dark-medium t))
+
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+
+  (global-visual-line-mode 1)
+  (global-display-line-numbers-mode 1)
+
+  (set-face-attribute 'default nil
+		      :font "Hack"
+		      :height 100)
+  (set-face-attribute 'font-lock-comment-face nil
+		      :slant 'italic)
+
+  (setq inhibit-startup-screen t)
+#+END_SRC
+
+** Editor Enhancements
+
+=electric-pair-mode= is hard to live without, so that's getting enabled. =company-mode= is also extremely useful; completion options and sources can be further customized, but for now it's fairly stock. Both of these are only enabled for programming modes.
+
+Backup files being created in the same directory as the original file is quite annoying, so they're getting moved to a specific directory. Another annoyance is the save dialog when exiting, so it's disabled.
+
+By default, completions are case-sensitive, which can be hard to work with; We've disabled that as well.
+
+We can save the place we were last in a file with the appropriately named =save-place-mode=, and it's quite useful, so we've enabled it here.
+
+One small option that we've enabled is having =kill-line= always kill the whole line if you're at the beginning of a line.
+
+When saving a file, the editor can delete trailing whitespace, which is quite useful, so we've added that to the =before-save-hook= hook.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook 'electric-pair-local-mode)
+  (add-hook 'emacs-lisp-mode-hook 'electric-pair-local-mode)
+
+  (use-package company
+    :ensure t
+    :hook (prog-mode emacs-lisp-mode))
+
+  (setq backup-directory-alist '(("." . (expand-file-name "backup" user-emacs-directory))))
+
+  (custom-set-variables '(confirm-kill-processes nil))
+
+  (setq completion-ignore-case t)
+  (custom-set-variables
+   '(read-buffer-completion-ignore-case t)
+   '(read-file-name-completion-ignore-case t))
+
+  (save-place-mode 1)
+
+  (custom-set-variables '(kill-whole-line t))
+
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+** Major Modes
+
+=go-mode= for Go programming.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :ensure t)
+#+END_SRC
+
+** Other Modes
+
+*** Magit
+
+It's the Magit you all know and love; no explanation needed.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t)
+#+END_SRC
+
+*** =which-key=
+
+Useful key binding display for chains.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode 1))
+#+END_SRC
+
+** TODO
+
+#+BEGIN_SRC emacs-lisp
+  (defun edit-init-file ()
+    (interactive)
+    (find-file user-init-file))
+
+  (defun load-init-file ()
+    (interactive)
+    (load user-init-file))
+
+  (keymap-global-set "<f7>" 'edit-init-file)
+  (keymap-global-set "<f8>" 'load-init-file)
+
+  (keymap-global-set "C-v" 'View-scroll-half-page-forward)
+  (keymap-global-set "M-v" 'View-scroll-half-page-backward)
+
+  (keymap-global-set "C-=" 'text-scale-increase)
+  (keymap-global-set "C--" 'text-scale-decrease)
+
+  (require 'org-tempo)
+#+END_SRC
