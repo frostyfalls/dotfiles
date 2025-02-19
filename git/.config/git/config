@@ -1,5 +1,19 @@
-[user]
-    name = frosty
-	email = passedgoandgot200@disroot.org
+[alias]
+	a = add
+	aa = add --all
+	b = branch
+	d = diff
+	p = push -u
+	pf = push --force-with-lease
+	s = status -sb
+[core]
+	excludesFile = $XDG_CONFIG_HOME/git/gitignore
 [init]
-    defaultBranch = master
+	defaultBranch = master
+[merge]
+	ff = only
+[pull]
+	rebase = true
+[user]
+	name = frosty
+	email = passedgoandgot200@disroot.org
