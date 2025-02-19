@@ -1,0 +1,175 @@
+exec dbus-update-activation-environment DISPLAY I3SOCK SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec foot -s
+exec mako
+exec pgrep -x mpd || mpd --no-daemon
+exec pgrep -x pipewire || pipewire
+exec swayidle -w
+
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+
+set $term footclient
+set $lockscreen waylock
+
+output DP-3 mode 1280x1024@75Hz pos 0 0
+output eDP-1 pos 1280 0
+
+workspace $ws1 output eDP-1
+workspace $ws2 output eDP-1
+workspace $ws3 output eDP-1
+workspace $ws4 output eDP-1
+workspace $ws5 output DP-3
+workspace $ws6 output DP-3
+workspace $ws7 output DP-3
+workspace $ws8 output DP-3
+
+workspace_layout tabbed
+
+input type:keyboard {
+    repeat_delay 300
+    repeat_rate 50
+}
+
+input type:touchpad {
+    dwt enabled
+    dwtp enabled
+    tap enabled
+    natural_scroll enabled
+    middle_emulation enabled
+}
+
+assign [app_id="org.qutebrowser.qutebrowser"] number 2
+assign [app_id="Firefox"] number 2
+assign [title="vesktop"] number 3
+assign [title="Signal"] number 3
+assign [app_id="Thunderbird"] number 4
+
+for_window [app_id="qalculate-gtk"] floating enable
+
+for_window [shell="xwayland"] title_format "[XWayland] %title"
+
+default_border normal 1
+default_floating_border normal 1
+smart_borders on
+font pango:Terminus 8
+
+output * bg #181818 solid_color
+seat * {
+    hide_cursor 10000
+    hide_cursor when-typing enabled
+    xcursor_theme Adwaita
+}
+
+bar {
+    status_command i3status-rs
+    separator_symbol |
+
+    colors {
+        statusline #eeeeee
+        background #181818
+        separator #666666
+    }
+}
+
+bindsym Mod4+Return exec $term
+bindsym Mod4+p exec fuzzel
+
+bindsym Mod4+Shift+c kill
+
+bindsym Mod1+Ctrl+l exec $lockscreen
+bindsym Mod4+Shift+r reload
+bindsym Mod4+Shift+e exit
+
+bindsym Mod4+s layout stacking
+bindsym Mod4+w layout tabbed
+bindsym Mod4+e layout toggle split
+bindsym Mod4+b split horizontal
+bindsym Mod4+v split vertical
+bindsym Mod4+a focus parent
+
+bindsym Mod4+Shift+f fullscreen
+bindsym Mod4+Shift+space floating toggle
+bindsym Mod4+space focus mode_toggle
+floating_modifier Mod4 normal
+
+bindsym Mod4+h focus left
+bindsym Mod4+j focus down
+bindsym Mod4+k focus up
+bindsym Mod4+l focus right
+bindsym Mod4+Shift+h move left
+bindsym Mod4+Shift+j move down
+bindsym Mod4+Shift+k move up
+bindsym Mod4+Shift+l move right
+
+bindsym Mod4+1 workspace $ws1
+bindsym Mod4+2 workspace $ws2
+bindsym Mod4+3 workspace $ws3
+bindsym Mod4+4 workspace $ws4
+bindsym Mod4+5 workspace $ws5
+bindsym Mod4+6 workspace $ws6
+bindsym Mod4+7 workspace $ws7
+bindsym Mod4+8 workspace $ws8
+bindsym Mod4+Tab workspace back_and_forth
+bindsym Mod4+Shift+1 move container to workspace $ws1
+bindsym Mod4+Shift+2 move container to workspace $ws2
+bindsym Mod4+Shift+3 move container to workspace $ws3
+bindsym Mod4+Shift+4 move container to workspace $ws4
+bindsym Mod4+Shift+5 move container to workspace $ws5
+bindsym Mod4+Shift+6 move container to workspace $ws6
+bindsym Mod4+Shift+7 move container to workspace $ws7
+bindsym Mod4+Shift+8 move container to workspace $ws8
+bindsym Mod4+Shift+Tab move container to workspace back_and_forth
+
+bindsym Mod4+comma focus output left
+bindsym Mod4+period focus output right
+bindsym Mod4+Shift+comma move container to output left; focus output left
+bindsym Mod4+Shift+period move container to output right; focus output right
+
+bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+
+bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%-
+bindsym --locked XF86MonBrightnessUp exec brightnessctl set 10%+
+
+set $screenshot_mode "1: full | 2: select | 3: output"
+mode $screenshot_mode bindsym {
+    1 exec screenshot, mode default
+    2 exec screenshot -s, mode default
+    3 exec screenshot -o, mode default
+    Print exec screenshot, mode default
+
+    Return mode default
+    Escape mode default
+}
+bindsym Print mode $screenshot_mode
+bindsym Shift+Print exec screenshot -s
+
+set {
+    $sp_term_id sp-term
+    $sp_term_cmd foot -a $sp_term_id
+    $sp_mixer_id sp-pulsemixer
+    $sp_mixer_cmd foot -a $sp_mixer_id pulsemixer
+}
+
+for_window [app_id=$sp_term_id] {
+    floating enable
+    move to scratchpad
+    [app_id=$sp_term_id] scratchpad show
+}
+
+for_window [app_id=$sp_mixer_id] {
+    floating enable
+    move to scratchpad
+    [app_id=$sp_mixer_id] scratchpad show
+}
+
+bindsym Mod4+minus exec swaymsg [app_id=$sp_term_id] scratchpad show || exec $sp_term_cmd
+bindsym Mod4+equal exec swaymsg [app_id=$sp_mixer_id] scratchpad show || exec $sp_mixer_cmd
