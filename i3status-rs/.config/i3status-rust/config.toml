@@ -16,7 +16,7 @@ idle_fg = "#00ff00"
 
 [[block]]
 block = "sound"
-format = "VOL{ $volume.eng(w:2)|}"
+format = "VOL $volume.eng(w:2)|"
 
 [[block]]
 block = "battery"
@@ -25,6 +25,8 @@ format = "BAT0 $percentage{ ($time_remaining.dur(hms:true))|}"
 full_format = ""
 missing_format = ""
 interval = 60
+[block.theme_overrides]
+good_fg = "#eeeeee"
 
 [[block]]
 block = "battery"
@@ -33,6 +35,8 @@ format = "BAT1 $percentage{ ($time_remaining.dur(hms:true))|}"
 full_format = ""
 missing_format = ""
 interval = 60
+[block.theme_overrides]
+good_fg = "#eeeeee"
 
 [[block]]
 block = "temperature"
