@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -eu
+
+# shellcheck disable=SC1091
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
+
+OUTPUT_PATH="${XDG_RECORDINGS_DIR:-${XDG_VIDEOS_DIR:-$HOME}}/$(date "+%Y-%m-%d_%H-%M-%S").mp4"
+LOCK_PATH="/tmp/record-lock"
+
+err() { echo "${0##*/}: $*" >&2; }
+die() { err "$*" && exit 1; }
+notify() { notify-send "Record" "$@"; }
+
+on_exit() {
+    kill -TERM "$recorder_pid"
+    [ -f "$LOCK_PATH" ] && rm "$LOCK_PATH"
+    echo "file://$OUTPUT_PATH" | wl-copy -t text/uri-list
+    notify "Saved recording to <b>${OUTPUT_PATH##*/}</b>"
+}
+
+if [ -f "$LOCK_PATH" ]; then
+    read -r pid <"$LOCK_PATH"
+    ! kill "$pid" 2>/dev/null && rm "$LOCK_PATH"
+    exit 0
+fi
+echo "$$" >"$LOCK_PATH"
+
+SELECT=0
+AUDIO=0
+while [ "$#" -ne 0 ]; do
+    case "$1" in
+        -s) SELECT=1 ;;
+        -a) AUDIO=1 ;;
+        *) die "unknown argument: $1" ;;
+    esac
+    shift
+done
+
+trap 'on_exit' INT TERM
+
+set -- wf-recorder -f "$OUTPUT_PATH"
+if [ "$SELECT" -eq 1 ]; then
+    geometry=$(slurp 2>/dev/null) || die "selection cancelled"
+    set -- "$@" -g "$geometry"
+fi
+if [ "$AUDIO" -eq 1 ]; then
+    set -- "$@" -a
+fi
+"$@" &
+
+notify "Recording started"
+
+recorder_pid="$!"
+wait "$recorder_pid"

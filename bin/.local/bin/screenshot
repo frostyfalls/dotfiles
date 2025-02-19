@@ -1,0 +1,37 @@
+#!/bin/sh
+
+set -eu
+
+# shellcheck disable=SC1091
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs" ] && . "${XDG_CONFIG_HOME:-$HOME/.config}/user-dirs.dirs"
+
+OUTPUT_PATH="${XDG_SCREENSHOTS_DIR:-${XDG_PICTURES_DIR:-$HOME}}/$(date "+%Y-%m-%d_%H-%M-%S").png"
+
+err() { echo "${0##*/}: $*" >&2; }
+die() { err "$*" && exit 1; }
+notify() { notify-send "Screenshot" "$@"; }
+
+SELECT=0
+OUTPUT=0
+while [ "$#" -ne 0 ]; do
+    case "$1" in
+        -s) SELECT=1 ;;
+        -o) OUTPUT=1 ;;
+        *) die "unknown argument: $1" ;;
+    esac
+    shift
+done
+
+set -- grim
+if [ "$SELECT" -eq 1 ]; then
+    geometry=$(slurp 2>/dev/null) || die "selection cancelled"
+    set -- "$@" -g "$geometry"
+elif [ "$OUTPUT" -eq 1 ]; then
+    geometry=$(slurp -o 2>/dev/null) || die "selection cancelled"
+    set -- "$@" -g "$geometry"
+fi
+set -- "$@" "$OUTPUT_PATH"
+"$@"
+
+wl-copy -t image/png <"$OUTPUT_PATH"
+notify "Saved screenshot to <b>${OUTPUT_PATH##*/}</b>"

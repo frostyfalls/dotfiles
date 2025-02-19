@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -eu
+
+REMOTE="${WP_REMOTE:-bpaste}"
+
+err() { echo "${0##*/}: $*" >&2; }
+die() { err "$*" && exit 1; }
+
+UPLOAD="$1"
+
+set -- curl
+case "$REMOTE" in
+    0x0) set -- "$@" -F"file=@$UPLOAD" 'https://0x0.st' ;;
+    bpaste) set -- "$@" -X'POST' -F'raw=<-' 'https://bpa.st/curl' ;;
+    uguu) set -- "$@" -F"files[]=@$UPLOAD" 'https://uguu.se/upload?output=text' ;;
+    *) die "unknown remote" ;;
+esac
+case "$REMOTE" in
+    bpaste) "$@" <"$UPLOAD" 2>/dev/null | awk 'NR==1 {print $3}' ;;
+    *) "$@" ;; # Unknown remotes are already caught
+esac

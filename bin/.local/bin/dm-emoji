@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+fuzzel --dmenu --prompt='emoji ' --match-mode=exact <"$XDG_DATA_HOME/emoji"

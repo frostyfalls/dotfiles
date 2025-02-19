@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -eu
+
+PASS_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
+
+notify() { notify-send "Password Store" "$@"; }
+
+selected_pass=$(find "$PASS_DIR" -type f -name '*.gpg' -printf '%P\n' | while IFS= read -r file; do
+    printf '%s\n' "${file%.gpg}"
+done | fuzzel --dmenu --prompt='pass ')
+[ -z "$selected_pass" ] && exit 0
+
+pass show -c "$selected_pass" && notify "Copied <b>$selected_pass</b> to the clipboard"
