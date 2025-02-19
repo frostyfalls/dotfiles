@@ -1,7 +1,0 @@
-#!/bin/sh
-
-LOCK_INIT_COLOR="${LOCK_INIT_COLOR:-222222}"
-LOCK_INPUT_COLOR="${LOCK_INPUT_COLOR:-83a598}"
-LOCK_FAIL_COLOR="${LOCK_FAIL_COLOR:-fb4934}"
-
-waylock -fork-on-lock -ignore-empty-password -init-color "0x$LOCK_INIT_COLOR" -input-color "0x$LOCK_INPUT_COLOR" -fail-color "0x$LOCK_FAIL_COLOR"
