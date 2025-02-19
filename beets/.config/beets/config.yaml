@@ -1,7 +1,6 @@
 directory: ~/music/newdata
 library: ~/music/library.db
 plugins: bandcamp edit fetchart lastgenre mpdupdate scrub the zero
-# convert importreplace
 
 import:
   languages: en
@@ -18,15 +17,6 @@ paths:
 
 per_disc_numbering: yes
 
-# convert:
-#   auto: yes
-#   format: opus
-#   formats:
-#     opus:
-#       command: opusenc --bitrate 256 $source $dest
-#       extension: opus
-#   never_convert_lossy_files: yes
-
 edit:
   albumfields: album albumartist albumtype genre year
   itemfields: album albumartist artist genre title track year
@@ -36,16 +26,6 @@ fetchart:
   maxwidth: 1200
   quality: 90
   sources: cover_art_url
-
-# importreplace:
-#   replacements:
-#     - album_fields: albumartist albumartist_sort artist artist_sort
-#       item_fields: albumartist albumartist_sort artist artist_sort
-#       replace:
-#         "Camping in Alaska": "camping in alaska"
-#         "Cat System Corp.": "猫 シ Corp."
-#         "Windows96": "Windows 96"
-#         "Ye": "Kanye West"
 
 scrub:
   auto: yes
