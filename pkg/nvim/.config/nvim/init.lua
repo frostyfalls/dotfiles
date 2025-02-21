@@ -51,9 +51,10 @@ require('nvim-treesitter.configs').setup({
 require('nvim-autopairs').setup({})
 require('conform').setup({
   formatters_by_ft = {
+    c = { 'clang-format', lsp_format = 'fallback' },
+    go = { 'gofmt', lsp_format = 'fallback' },
     lua = { 'stylua' },
     sh = { 'shfmt' },
-    rust = { 'rustfmt', lsp_format = 'fallback' },
   },
 })
 
