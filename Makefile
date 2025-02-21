@@ -1,13 +1,14 @@
+PKGDIR = pkg
 TARGET ?= $(HOME)
-PACKAGES = */
+PKG = $(notdir $(patsubst %/,%,$(wildcard $(PKGDIR)/*/)))
+STOWFLAGS = --verbose --dir=$(PKGDIR) --target=$(TARGET)
 
-.PHONY: all install uninstall
-
-all:
-	@echo "usage: make [install|uninstall]"
+all: install
 
 install:
-	@stow --verbose --target=$(HOME) --restow $(PACKAGES)
+	@stow $(STOWFLAGS) --restow $(PKG)
 
 uninstall:
-	@stow --verbose --target=$(HOME) --delete $(PACKAGES)
+	@stow $(STOWFLAGS) --delete $(PKG)
+
+.PHONY: all install uninstall

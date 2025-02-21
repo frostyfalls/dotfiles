@@ -1,0 +1,56 @@
+#!/bin/sh
+# shellcheck disable=SC2249
+
+PASSWORD_CHAR=""
+PROMPT_WIDTH=50
+
+FLAVOR="fuzzel"
+VERSION=0.1
+
+DESC=""
+ERROR=""
+
+format_description() {
+    desc="${DESC#"Please enter the passphrase to unlock the OpenPGP secret key:%0A%22"}"
+    desc="${desc%\%22*}"
+    case "$ERROR" in
+        Bad\ Passphrase*)
+            error="${ERROR#Bad\ Passphrase\ (try }"
+            error="${error%)}"
+            current="${error%\ of*}"
+            total="${error#*of }"
+            desc="(${error}) ${desc}"
+            notify-send "GnuPG" "Bad passphrase: ${current} of ${total} tries left"
+            ;;
+    esac
+    echo "$desc"
+}
+
+echo "OK Pleased to meet you"
+while IFS=' ' read -r cmd args; do
+    case "$cmd" in
+        GETINFO)
+            case "$args" in flavor) echo "D $FLAVOR" ;; version) echo "D $VERSION" ;; ttyinfo) echo "D - - -" ;; pid) echo "D $$" ;; esac
+            echo "OK"
+            ;;
+        SETDESC)
+            DESC="$args"
+            echo "OK"
+            ;;
+        SETERROR)
+            ERROR="$args"
+            echo "OK"
+            ;;
+        GETPIN)
+            echo "D $(fuzzel --prompt-only="" --placeholder="$(format_description)" --width="$PROMPT_WIDTH" --cache=/dev/null --password="$PASSWORD_CHAR" --dmenu)"
+            echo "OK"
+            ;;
+        BYE)
+            echo "OK closing connection"
+            exit 0
+            ;;
+        *)
+            echo "OK"
+            ;;
+    esac
+done

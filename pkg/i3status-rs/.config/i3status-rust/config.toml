@@ -1,3 +1,6 @@
+error_format = "$short_error_message|X"
+error_fullscreen_format = "$full_error_message"
+
 [theme]
 theme = "semi-native"
 [theme.overrides]
@@ -23,6 +26,7 @@ block = "battery"
 device = "BAT0"
 format = "BAT0 $percentage{ ($time_remaining.dur(hms:true))|}"
 full_format = ""
+empty_format = ""
 missing_format = ""
 interval = 60
 [block.theme_overrides]

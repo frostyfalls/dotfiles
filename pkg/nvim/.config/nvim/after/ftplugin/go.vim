@@ -3,8 +3,8 @@
 "
 " vim:sts=2:sw=2:et
 
-set tabstop=4 noexpandtab
+set tabstop=8 noexpandtab
 
-if executable('gofmt')
-  setlocal formatprg=gofmt
-endif
+"if executable('gofmt')
+"  setlocal formatprg=gofmt
+"endif

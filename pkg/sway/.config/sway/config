@@ -1,21 +1,35 @@
-exec dbus-update-activation-environment DISPLAY I3SOCK SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
-exec foot -s
-exec mako
-exec pgrep -x mpd || mpd --no-daemon
-exec pgrep -x pipewire || pipewire
-exec swayidle -w
+set $term "footclient"
+set $lockscreen "waylock -fork-on-lock"
 
-set $ws1 1
-set $ws2 2
-set $ws3 3
-set $ws4 4
-set $ws5 5
-set $ws6 6
-set $ws7 7
-set $ws8 8
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
 
-set $term footclient
-set $lockscreen waylock
+bindsym Mod4+1 workspace $ws1
+bindsym Mod4+2 workspace $ws2
+bindsym Mod4+3 workspace $ws3
+bindsym Mod4+4 workspace $ws4
+bindsym Mod4+5 workspace $ws5
+bindsym Mod4+6 workspace $ws6
+bindsym Mod4+7 workspace $ws7
+bindsym Mod4+8 workspace $ws8
+
+bindsym Mod4+Shift+1 move container to workspace $ws1
+bindsym Mod4+Shift+2 move container to workspace $ws2
+bindsym Mod4+Shift+3 move container to workspace $ws3
+bindsym Mod4+Shift+4 move container to workspace $ws4
+bindsym Mod4+Shift+5 move container to workspace $ws5
+bindsym Mod4+Shift+6 move container to workspace $ws6
+bindsym Mod4+Shift+7 move container to workspace $ws7
+bindsym Mod4+Shift+8 move container to workspace $ws8
+
+bindsym Mod4+Tab workspace back_and_forth
+bindsym Mod4+Shift+Tab move container to workspace back_and_forth
 
 output DP-3 mode 1280x1024@75Hz pos 0 0
 output eDP-1 pos 1280 0
@@ -28,8 +42,6 @@ workspace $ws5 output DP-3
 workspace $ws6 output DP-3
 workspace $ws7 output DP-3
 workspace $ws8 output DP-3
-
-workspace_layout tabbed
 
 input type:keyboard {
     repeat_delay 300
@@ -54,12 +66,14 @@ for_window [app_id="qalculate-gtk"] floating enable
 
 for_window [shell="xwayland"] title_format "[XWayland] %title"
 
-default_border normal 1
-default_floating_border normal 1
-smart_borders on
 font pango:Terminus 8
 
 output * bg #181818 solid_color
+
+default_border normal 1
+default_floating_border normal 1
+smart_borders on
+
 seat * {
     hide_cursor 10000
     hide_cursor when-typing enabled
@@ -96,38 +110,21 @@ bindsym Mod4+a focus parent
 bindsym Mod4+Shift+f fullscreen
 bindsym Mod4+Shift+space floating toggle
 bindsym Mod4+space focus mode_toggle
-floating_modifier Mod4 normal
+floating_modifier Mod4
 
 bindsym Mod4+h focus left
 bindsym Mod4+j focus down
 bindsym Mod4+k focus up
 bindsym Mod4+l focus right
+
 bindsym Mod4+Shift+h move left
 bindsym Mod4+Shift+j move down
 bindsym Mod4+Shift+k move up
 bindsym Mod4+Shift+l move right
 
-bindsym Mod4+1 workspace $ws1
-bindsym Mod4+2 workspace $ws2
-bindsym Mod4+3 workspace $ws3
-bindsym Mod4+4 workspace $ws4
-bindsym Mod4+5 workspace $ws5
-bindsym Mod4+6 workspace $ws6
-bindsym Mod4+7 workspace $ws7
-bindsym Mod4+8 workspace $ws8
-bindsym Mod4+Tab workspace back_and_forth
-bindsym Mod4+Shift+1 move container to workspace $ws1
-bindsym Mod4+Shift+2 move container to workspace $ws2
-bindsym Mod4+Shift+3 move container to workspace $ws3
-bindsym Mod4+Shift+4 move container to workspace $ws4
-bindsym Mod4+Shift+5 move container to workspace $ws5
-bindsym Mod4+Shift+6 move container to workspace $ws6
-bindsym Mod4+Shift+7 move container to workspace $ws7
-bindsym Mod4+Shift+8 move container to workspace $ws8
-bindsym Mod4+Shift+Tab move container to workspace back_and_forth
-
 bindsym Mod4+comma focus output left
 bindsym Mod4+period focus output right
+
 bindsym Mod4+Shift+comma move container to output left; focus output left
 bindsym Mod4+Shift+period move container to output right; focus output right
 
@@ -149,6 +146,7 @@ mode $screenshot_mode bindsym {
     Return mode default
     Escape mode default
 }
+
 bindsym Print mode $screenshot_mode
 bindsym Shift+Print exec screenshot -s
 
@@ -173,3 +171,11 @@ for_window [app_id=$sp_mixer_id] {
 
 bindsym Mod4+minus exec swaymsg [app_id=$sp_term_id] scratchpad show || exec $sp_term_cmd
 bindsym Mod4+equal exec swaymsg [app_id=$sp_mixer_id] scratchpad show || exec $sp_mixer_cmd
+
+exec dbus-update-activation-environment DISPLAY I3SOCK SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+exec foot -s
+exec mako
+exec pgrep -x mpd || mpd --no-daemon
+exec pgrep -x pipewire || pipewire
+exec swayidle -w
+exec autotiling
