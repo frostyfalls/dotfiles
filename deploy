@@ -5,7 +5,7 @@ set -eu
 TARGET="$HOME"
 PKG_DIR="pkg"
 PROFILE_DIR="profile"
-HOSTNAME="$(hostname)"
+read -r HOSTNAME </etc/hostname
 MODE="${1:-install}"
 PROFILE_FILE="$PROFILE_DIR/$HOSTNAME"
 
