@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -eu
+
+TARGET="$HOME"
+PKG_DIR="pkg"
+PROFILE_DIR="profile"
+HOSTNAME="$(hostname)"
+MODE="${1:-install}"
+PROFILE_FILE="$PROFILE_DIR/$HOSTNAME"
+
+err() { echo "${0##*/}: $*" >&2; }
+die() { err "$*" && exit 1; }
+
+case "$MODE" in
+install | uninstall) ;;
+*) die "invalid mode" ;;
+esac
+[ ! -f "$PROFILE_FILE" ] && die "no profile file found for this machine"
+
+set -- stow --verbose --dir="$PKG_DIR" --target="$TARGET"
+case "$MODE" in
+install) set -- "$@" --restow ;;
+uninstall) set -- "$@" --delete ;;
+*) ;; # Unreachable
+esac
+while IFS= read -r line; do
+    set -- "$@" "$line"
+done <"$PROFILE_FILE"
+"$@"
