@@ -9,6 +9,8 @@ set $ws5 "5"
 set $ws6 "6"
 set $ws7 "7"
 set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
 
 bindsym Mod4+1 workspace $ws1
 bindsym Mod4+2 workspace $ws2
@@ -18,6 +20,8 @@ bindsym Mod4+5 workspace $ws5
 bindsym Mod4+6 workspace $ws6
 bindsym Mod4+7 workspace $ws7
 bindsym Mod4+8 workspace $ws8
+bindsym Mod4+9 workspace $ws9
+bindsym Mod4+0 workspace $ws10
 
 bindsym Mod4+Shift+1 move container to workspace $ws1
 bindsym Mod4+Shift+2 move container to workspace $ws2
@@ -27,6 +31,8 @@ bindsym Mod4+Shift+5 move container to workspace $ws5
 bindsym Mod4+Shift+6 move container to workspace $ws6
 bindsym Mod4+Shift+7 move container to workspace $ws7
 bindsym Mod4+Shift+8 move container to workspace $ws8
+bindsym Mod4+Shift+9 move container to workspace $ws9
+bindsym Mod4+Shift+0 move container to workspace $ws10
 
 bindsym Mod4+Tab workspace back_and_forth
 bindsym Mod4+Shift+Tab move container to workspace back_and_forth
@@ -56,11 +62,8 @@ input type:touchpad {
     middle_emulation enabled
 }
 
-assign [app_id="org.qutebrowser.qutebrowser"] number 2
-assign [app_id="Firefox"] number 2
-assign [title="vesktop"] number 3
-assign [title="Signal"] number 3
-assign [app_id="Thunderbird"] number 4
+workspace_layout tabbed
+default_orientation auto
 
 for_window [app_id="qalculate-gtk"] floating enable
 
@@ -83,7 +86,6 @@ seat * {
 bar {
     status_command i3status-rs
     separator_symbol |
-
     colors {
         statusline #eeeeee
         background #181818
@@ -141,6 +143,7 @@ mode $screenshot_mode bindsym {
     1 exec screenshot, mode default
     2 exec screenshot -s, mode default
     3 exec screenshot -o, mode default
+
     Print exec screenshot, mode default
 
     Return mode default
@@ -178,4 +181,3 @@ exec mako
 exec pgrep -x mpd || mpd --no-daemon
 exec pgrep -x pipewire || pipewire
 exec swayidle -w
-exec autotiling
