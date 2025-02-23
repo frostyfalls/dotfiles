@@ -41,8 +41,7 @@ vim.api.nvim_create_autocmd({ 'VimEnter', 'ColorScheme' }, {
 })
 
 require('nvim-treesitter.configs').setup({
-  ensure_installed = { 'lua', 'rust', 'toml' },
-  auto_install = true,
+  ensure_installed = { 'c', 'go', 'lua' },
   highlight = { enable = true },
   indent = { enable = true },
   endwise = { enable = true },
