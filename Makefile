@@ -3,7 +3,8 @@ TARGET ?= $(HOME)
 PKG = $(notdir $(patsubst %/,%,$(wildcard $(PKGDIR)/*/)))
 STOWFLAGS = --verbose --dir=$(PKGDIR) --target=$(TARGET)
 
-all: install
+all:
+	@echo "usage: make install|uninstall"
 
 install:
 	@stow $(STOWFLAGS) --restow $(PKG)
