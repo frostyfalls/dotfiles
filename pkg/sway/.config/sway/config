@@ -1,6 +1,10 @@
+# TODO(frosty): Make better comments
+
+# Program variables
 set $term "footclient"
 set $lockscreen "waylock -fork-on-lock"
 
+# Workspace names
 set $ws1 "1"
 set $ws2 "2"
 set $ws3 "3"
@@ -12,6 +16,7 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
+# Shift focus to workspace [1-10] with Mod4+[1-9+0]
 bindsym Mod4+1 workspace $ws1
 bindsym Mod4+2 workspace $ws2
 bindsym Mod4+3 workspace $ws3
@@ -23,6 +28,7 @@ bindsym Mod4+8 workspace $ws8
 bindsym Mod4+9 workspace $ws9
 bindsym Mod4+0 workspace $ws10
 
+# Move window to workspace [1-10] with Mod4+[1-9+0]
 bindsym Mod4+Shift+1 move container to workspace $ws1
 bindsym Mod4+Shift+2 move container to workspace $ws2
 bindsym Mod4+Shift+3 move container to workspace $ws3
@@ -34,26 +40,37 @@ bindsym Mod4+Shift+8 move container to workspace $ws8
 bindsym Mod4+Shift+9 move container to workspace $ws9
 bindsym Mod4+Shift+0 move container to workspace $ws10
 
+# {Switch focus,move window} back and forth with Mod4+{Shift+,}Tab
 bindsym Mod4+Tab workspace back_and_forth
 bindsym Mod4+Shift+Tab move container to workspace back_and_forth
 
+# Output management
 output DP-3 mode 1280x1024@75Hz pos 0 0
 output eDP-1 pos 1280 0
 
+# Workspace output assignment
 workspace $ws1 output eDP-1
 workspace $ws2 output eDP-1
 workspace $ws3 output eDP-1
 workspace $ws4 output eDP-1
-workspace $ws5 output DP-3
+workspace $ws5 output eDP-1
 workspace $ws6 output DP-3
 workspace $ws7 output DP-3
 workspace $ws8 output DP-3
+workspace $ws9 output DP-3
+workspace $ws10 output DP-3
 
+# Default layout
+workspace_layout tabbed
+default_orientation auto
+
+# Keyboard options
 input type:keyboard {
     repeat_delay 300
     repeat_rate 50
 }
 
+# Touchpad options
 input type:touchpad {
     dwt enabled
     dwtp enabled
@@ -62,46 +79,49 @@ input type:touchpad {
     middle_emulation enabled
 }
 
-workspace_layout tabbed
-default_orientation auto
-
+# Window rules
 for_window [app_id="qalculate-gtk"] floating enable
-
 for_window [shell="xwayland"] title_format "[XWayland] %title"
 
+# Title bar and bar font
 font pango:Terminus 8
 
+# Background
 output * bg #181818 solid_color
 
+# Window borders
 default_border normal 1
 default_floating_border normal 1
 smart_borders on
 
+# Cursor options
 seat * {
     hide_cursor 10000
     hide_cursor when-typing enabled
     xcursor_theme Adwaita
 }
 
+# Bar options
 bar {
     status_command i3status-rs
     separator_symbol |
     colors {
-        statusline #eeeeee
         background #181818
+        statusline #eeeeee
         separator #666666
     }
 }
 
+# Execute programs
 bindsym Mod4+Return exec $term
 bindsym Mod4+p exec fuzzel
 
-bindsym Mod4+Shift+c kill
-
+# Session commands
 bindsym Mod1+Ctrl+l exec $lockscreen
 bindsym Mod4+Shift+r reload
 bindsym Mod4+Shift+e exit
 
+# Layout
 bindsym Mod4+s layout stacking
 bindsym Mod4+w layout tabbed
 bindsym Mod4+e layout toggle split
@@ -109,35 +129,44 @@ bindsym Mod4+b split horizontal
 bindsym Mod4+v split vertical
 bindsym Mod4+a focus parent
 
+# Window actions
 bindsym Mod4+Shift+f fullscreen
 bindsym Mod4+Shift+space floating toggle
 bindsym Mod4+space focus mode_toggle
 floating_modifier Mod4
+bindsym Mod4+Shift+c kill
 
+# Focus
 bindsym Mod4+h focus left
 bindsym Mod4+j focus down
 bindsym Mod4+k focus up
 bindsym Mod4+l focus right
 
+# Move window
 bindsym Mod4+Shift+h move left
 bindsym Mod4+Shift+j move down
 bindsym Mod4+Shift+k move up
 bindsym Mod4+Shift+l move right
 
+# Focus output
 bindsym Mod4+comma focus output left
 bindsym Mod4+period focus output right
 
+# Move window to output
 bindsym Mod4+Shift+comma move container to output left; focus output left
 bindsym Mod4+Shift+period move container to output right; focus output right
 
+# Volume
 bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
 bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
 bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
 
+# Brightness
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 10%+
 
+# Screenshot mode
 set $screenshot_mode "1: full | 2: select | 3: output"
 mode $screenshot_mode bindsym {
     1 exec screenshot, mode default
@@ -150,9 +179,11 @@ mode $screenshot_mode bindsym {
     Escape mode default
 }
 
+# Screenshot binds
 bindsym Print mode $screenshot_mode
 bindsym Shift+Print exec screenshot -s
 
+# Scratchpad programs and window IDs
 set {
     $sp_term_id sp-term
     $sp_term_cmd foot -a $sp_term_id
@@ -160,21 +191,25 @@ set {
     $sp_mixer_cmd foot -a $sp_mixer_id pulsemixer
 }
 
+# Terminal scratchpad
 for_window [app_id=$sp_term_id] {
     floating enable
     move to scratchpad
     [app_id=$sp_term_id] scratchpad show
 }
 
+# Volume mixer scratchpad
 for_window [app_id=$sp_mixer_id] {
     floating enable
     move to scratchpad
     [app_id=$sp_mixer_id] scratchpad show
 }
 
+# Scratchpad binds
 bindsym Mod4+minus exec swaymsg [app_id=$sp_term_id] scratchpad show || exec $sp_term_cmd
 bindsym Mod4+equal exec swaymsg [app_id=$sp_mixer_id] scratchpad show || exec $sp_mixer_cmd
 
+# Autostart
 exec dbus-update-activation-environment DISPLAY I3SOCK SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
 exec foot -s
 exec mako
