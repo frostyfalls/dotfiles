@@ -1,7 +1,7 @@
 #!/bin/sh
 # shellcheck disable=SC2249
 
-PASSWORD_CHAR=""
+PASSWORD_CHAR="*"
 PROMPT_WIDTH=50
 
 FLAVOR="fuzzel"

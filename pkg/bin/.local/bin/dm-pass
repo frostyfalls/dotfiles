@@ -4,11 +4,53 @@ set -eu
 
 PASS_DIR="${PASSWORD_STORE_DIR:-$HOME/.password-store}"
 
+HAS_OTP=0
+HAS_USERNAME=0
+HAS_EMAIL=0
+
 notify() { notify-send "Password Store" "$@"; }
+prompt() { fuzzel --dmenu --prompt='pass '; }
 
 selected_pass=$(find "$PASS_DIR" -type f -name '*.gpg' -printf '%P\n' | while IFS= read -r file; do
     printf '%s\n' "${file%.gpg}"
-done | fuzzel --dmenu --prompt='pass ')
+done | prompt)
 [ -z "$selected_pass" ] && exit 0
 
-pass show -c "$selected_pass" && notify "Copied <b>$selected_pass</b> to the clipboard"
+while IFS= read -r line; do
+    case "$line" in
+        otpauth:*) HAS_OTP=1 ;;
+        Username:*) HAS_USERNAME=1 ;;
+        Email:*) HAS_EMAIL=1 ;;
+        *) ;;
+    esac
+done <<EOF
+$(pass show "$selected_pass")
+EOF
+
+available_fields="Password"
+[ "$HAS_OTP" -eq 1 ] && available_fields="$available_fields
+OTP"
+[ "$HAS_USERNAME" -eq 1 ] && available_fields="$available_fields
+Username"
+[ "$HAS_EMAIL" -eq 1 ] && available_fields="$available_fields
+Email"
+
+if [ "$available_fields" = "Password" ]; then
+    selected_field="Password"
+else
+    selected_field=$(echo "$available_fields" | prompt)
+fi
+[ -z "$selected_field" ] && exit 0
+
+if {
+    case "$selected_field" in
+        Password) pass show -c "$selected_pass" >/dev/null 2>&1 ;;
+        OTP) pass otp -c "$selected_pass" >/dev/null 2>&1 ;;
+        Username | Email) pass show "$selected_pass" | grep "^$selected_field:" | sed 's/^.*: //' | wl-copy -n >/dev/null 2>&1 ;;
+        *) ;; # Unreachable
+    esac
+} then
+    notify "Copied <b>$selected_pass</b> to the clipboard"
+else
+    notify "Failed to copy pass entry"
+fi
