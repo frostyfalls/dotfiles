@@ -1,4 +1,4 @@
-" File: .vimrc
+" File: vimrc
 " Maintainer: frosty <passedgoandgot200@disroot.org>
 "
 " vim:sts=2:sw=2:et
@@ -42,7 +42,7 @@ augroup CustomizeColorScheme
   autocmd!
   autocmd VimEnter,ColorScheme * highlight Normal ctermbg=NONE guibg=NONE
 augroup END
-colorscheme habamax
+silent! colorscheme habamax
 
 set number
 set relativenumber
