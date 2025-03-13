@@ -1,51 +1,54 @@
+# TODO(frosty): Format the multiple batteries better, possibly check the hostname
+
 error_format = "$short_error_message|X"
 error_fullscreen_format = "$full_error_message"
 
 [theme]
-theme = "semi-native"
-[theme.overrides]
-idle_fg = "#eeeeee"
-good_fg = "#00ff00"
-warning_fg = "#ffff00"
-critical_fg = "#ff0000"
-info_fg = "#eeeeee"
+theme = "native"
 
-[[block]]
-block = "net"
-format = "$ip"
-interval = 60
-[block.theme_overrides]
-idle_fg = "#00ff00"
+[theme.overrides]
+idle_fg = "#dddddd"
+good_fg = "#00ff00"
+warning_fg = "#ffa500"
+critical_fg = "#ff0000"
+info_fg = { link = "idle_fg" }
+
+# [[block]]
+# block = "net"
+# format = "$ip"
+# inactive_format = ""
+# interval = 10
+# [block.theme_overrides]
+# idle_fg = { link = "good_fg" }
 
 [[block]]
 block = "sound"
-format = "VOL $volume.eng(w:2)|"
+device_kind = "sink"
+format = "{$icon $volume.eng(width:0)|}"
 
 [[block]]
 block = "battery"
 device = "BAT0"
-format = "BAT0 $percentage{ ($time_remaining.dur(hms:true))|}"
-full_format = ""
+format = "$icon $percentage{ ($time_remaining.dur(hms:true))|}"
+full_format = "$icon $percentage"
 empty_format = ""
+not_charging_format = ""
 missing_format = ""
 interval = 60
 [block.theme_overrides]
-good_fg = "#eeeeee"
+idle_fg = { link = "good_fg" }
 
 [[block]]
 block = "battery"
 device = "BAT1"
-format = "BAT1 $percentage{ ($time_remaining.dur(hms:true))|}"
-full_format = ""
+format = "$icon $percentage{ ($time_remaining.dur(hms:true))|}"
+full_format = "$icon $percentage"
+empty_format = ""
+not_charging_format = ""
 missing_format = ""
 interval = 60
 [block.theme_overrides]
-good_fg = "#eeeeee"
-
-[[block]]
-block = "temperature"
-format = "{$average}C"
-interval = 10
+idle_fg = { link = "good_fg" }
 
 [[block]]
 block = "load"
@@ -57,4 +60,4 @@ block = "time"
 format = "$timestamp.datetime(f:'%b %d %Y %H:%M:%S')"
 interval = 1
 [block.theme_overrides]
-idle_fg = "#ffa500"
+idle_fg = { link = "warning_fg" }
