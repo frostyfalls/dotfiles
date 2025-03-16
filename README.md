@@ -7,11 +7,11 @@ These are my personal configuration files; things may change without notice. Sho
 Installation:
 
 ```
-./deploy install
+make install
 ```
 
 Uninstallation:
 
 ```
-./deploy uninstall
+make uninstall
 ```
