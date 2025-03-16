@@ -2,21 +2,22 @@
 
 set -eu
 
-TARGET="$HOME"
 PKG_DIR="pkg"
 PROFILE_DIR="profile"
-read -r HOSTNAME </etc/hostname
-MODE="${1:-install}"
-PROFILE_FILE="$PROFILE_DIR/$HOSTNAME"
+
+[ -z "$TARGET" ] && TARGET="$HOME"
+[ -z "$PROFILE" ] && PROFILE="$(hostname)"
 
 err() { echo "${0##*/}: $*" >&2; }
 die() { err "$*" && exit 1; }
+
+MODE="${1:-install}"
 
 case "$MODE" in
 install | uninstall) ;;
 *) die "invalid mode" ;;
 esac
-[ ! -f "$PROFILE_FILE" ] && die "no profile file found for this machine"
+[ ! -f "$PROFILE_DIR/$PROFILE" ] && die "no profile file found for this machine"
 
 set -- stow --verbose --dir="$PKG_DIR" --target="$TARGET"
 case "$MODE" in
@@ -26,5 +27,6 @@ uninstall) set -- "$@" --delete ;;
 esac
 while IFS= read -r line; do
     set -- "$@" "$line"
-done <"$PROFILE_FILE"
+done <"$PROFILE_DIR/$PROFILE"
+
 "$@"
