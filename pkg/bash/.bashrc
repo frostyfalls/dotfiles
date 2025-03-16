@@ -13,7 +13,7 @@ HISTFILE="$XDG_STATE_HOME/bash_history"
 
 alias cp='cp -iv'
 alias mv='mv -iv'
-alias rm='rm -vI'
+alias rm='rm -iv'
 alias mkdir='mkdir -pv'
 alias ls='ls -hAF --color=auto'
 alias grep='grep --color=auto'
