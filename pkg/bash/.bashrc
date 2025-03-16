@@ -31,6 +31,9 @@ cd() { builtin cd "$@" && ls; }
 command -v doas >/dev/null &&
     complete -cf doas
 
+[ -d "$XDG_DATA_HOME/venv" ] &&
+    VIRTUAL_ENV_DISABLE_PROMPT=1 . "$XDG_DATA_HOME/venv/bin/activate"
+
 ext() {
     [[ -z $1 ]] && echo "ext: no files" >&2 && return 1
     for f in "$@"; do
