@@ -55,7 +55,7 @@ bindsym Mod4+Tab workspace back_and_forth
 bindsym Mod4+Shift+Tab move container to workspace back_and_forth
 
 set $output_laptop "eDP-1"
-set $output_docked "DP-4"
+set $output_docked "DP-3"
 
 output $output_docked mode 1280x1024@75Hz pos 0 0
 output $output_laptop pos 1280 0
