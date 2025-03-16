@@ -1,4 +1,6 @@
 bash
+docker
+fastfetch
 git
 shellcheck
 tmux
