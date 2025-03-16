@@ -5,8 +5,8 @@ set -eu
 PKG_DIR="pkg"
 PROFILE_DIR="profile"
 
-[ -z "$TARGET" ] && TARGET="$HOME"
-[ -z "$PROFILE" ] && PROFILE="$(hostname)"
+[ -z "${TARGET:-}" ] && TARGET="$HOME"
+[ -z "${PROFILE:-}" ] && PROFILE="$(hostname)"
 
 err() { echo "${0##*/}: $*" >&2; }
 die() { err "$*" && exit 1; }
