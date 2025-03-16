@@ -4,7 +4,7 @@
 [[ $- != *i* ]] && return
 
 if [ -n "$SSH_TTY" ]; then
-    PS1='\[\e[0;32m\]\h '
+    PS1='\[\e[0;31m\]\h '
 else
     PS1='\[\e[0;35m\]\h '
 fi
