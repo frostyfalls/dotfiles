@@ -3,7 +3,12 @@
 
 [[ $- != *i* ]] && return
 
-PS1='\[\e[0;35m\]\h \[\e[0;34m\]\w \[$([[ $? -eq 0 ]] && echo "\e[0;32m" || echo "\e[0;31m")\]\$ \[\e[0m\]'
+if [ -n "$SSH_TTY" ]; then
+    PS1='\[\e[0;32m\]\h '
+else
+    PS1='\[\e[0;35m\]\h '
+fi
+PS1="$PS1"'\[\e[0;34m\]\w \[$([[ $? -eq 0 ]] && echo "\e[0;32m" || echo "\e[0;31m")\]\$ \[\e[0m\]'
 
 shopt -s histappend
 HISTSIZE="$((2 << 24))"
