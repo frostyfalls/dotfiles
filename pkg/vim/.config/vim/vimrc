@@ -3,9 +3,6 @@
 "
 " vim:sts=2:sw=2:et
 
-if &compatible
-  set nocompatible
-endif
 filetype plugin indent on
 syntax enable
 
@@ -26,18 +23,6 @@ set viewdir=$XDG_STATE_HOME/vim/view     | call mkdir(&viewdir, 'p')
 
 set viminfofile=$XDG_STATE_HOME/vim/viminfo
 
-packadd minpac
-if exists('g:loaded_minpac')
-  call minpac#init()
-  call minpac#add('k-takata/minpac', {'type': 'opt'})
-  call minpac#add('tpope/vim-commentary')
-  call minpac#add('lifepillar/vim-mucomplete')
-
-  command! PackUpdate call minpac#update()
-  command! PackClean  call minpac#clean()
-  command! PackStatus call minpac#status()
-endif
-
 augroup CustomizeColorScheme
   autocmd!
   autocmd VimEnter,ColorScheme * highlight Normal ctermbg=NONE guibg=NONE
@@ -53,6 +38,3 @@ set splitright
 set completeopt=menu,menuone,noselect
 set shortmess+=c
 inoremap <expr> <CR> pumvisible() ? '<C-y><CR>' : '<CR>'
-
-let g:mucomplete#enable_auto_at_startup = v:true
-let g:mucomplete#no_mappings = v:true
