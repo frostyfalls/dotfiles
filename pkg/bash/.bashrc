@@ -33,7 +33,9 @@ alias wget='wget --no-hsts'
 alias tree='tree --noreport --gitignore'
 alias e='$EDITOR'
 alias g='git'
+alias doas='doas '
 alias ll='ls -l'
+[[ $EDITOR == "nvim" ]] && alias vim='nvim'
 cd() { builtin cd "$@" && ls; }
 
 command -v doas >/dev/null &&
