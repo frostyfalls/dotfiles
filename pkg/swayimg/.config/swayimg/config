@@ -36,7 +36,7 @@ space = mode
 Ctrl+space = animation
 F11 = fullscreen
 Shift+colon = status
-Shift+w = exec cp "%" "$XDG_DATA_HOME/wallpaper"
+Shift+w = exec cp '%' "$XDG_DATA_HOME/wallpaper"
 
 [keys.gallery]
 g = first_file
@@ -50,4 +50,4 @@ Ctrl+d = page_down
 space = mode
 F11 = fullscreen
 Shift+colon = status
-Shift+w = exec cp "%" "$XDG_DATA_HOME/wallpaper"
+Shift+w = exec cp '%' "$XDG_DATA_HOME/wallpaper"
