@@ -2,7 +2,11 @@ PKG_DIR     = pkg
 PROFILE_DIR = profile
 
 TARGET  ?= $(HOME)
-PROFILE ?= `hostname`
+PROFILE ?= $(shell hostname)
+
+ifeq (,$(wildcard $(PROFILE_DIR)/$(PROFILE)))
+$(error no profile found for $(PROFILE))
+endif
 
 STOW_FLAGS = -verbose -dir=$(PKG_DIR) -target=$(TARGET)
 PKG_LIST   = $(subst $(newline), ,$(shell cat $(PROFILE_DIR)/$(PROFILE)))
