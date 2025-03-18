@@ -14,6 +14,7 @@ mpd
 ncmpcpp
 nvim
 nwg-look
+runit
 shellcheck
 sway
 swayimg

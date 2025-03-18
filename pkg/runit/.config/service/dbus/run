@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ -r ./conf ] && . ./conf
+
+: "${DBUS_SESSION_BUS_ADDRESS:=unix:path=/run/user/$(id -u)/bus}"
+
+[ -d "$TURNSTILE_ENV_DIR" ] && echo "$DBUS_SESSION_BUS_ADDRESS" >"$TURNSTILE_ENV_DIR"/DBUS_SESSION_BUS_ADDRESS
+
+exec chpst -e "$TURNSTILE_ENV_DIR" dbus-daemon --session --nofork --nopidfile --address="$DBUS_SESSION_BUS_ADDRESS" $OPTS
