@@ -154,8 +154,8 @@ bindsym Mod4+Shift+Tab move container to workspace back_and_forth
 set $screenshot_mode "1: full | 2: select | 3: output"
 mode $screenshot_mode bindsym {
     1 exec screenshot, mode default
-    2 exec screenshot -s, mode default
-    3 exec screenshot -o, mode default
+    2 exec wayfreeze --after-freeze-cmd 'screenshot -s; pkill wayfreeze', mode default
+    3 exec wayfreeze --after-freeze-cmd 'screenshot -o; pkill wayfreeze', mode default
     Escape mode default
 }
 bindsym Print mode $screenshot_mode
@@ -164,8 +164,8 @@ set $power_mode "1: lock | 2: exit | 3: poweroff | 4: reboot"
 mode $power_mode bindsym {
     1 exec $lockscreen, mode default
     2 exit
-    3 exec loginctl poweroff
-    4 exec loginctl reboot
+    3 exec doas poweroff
+    4 exec doas reboot
     Escape mode default
 }
 bindsym $mod+Shift+e mode $power_mode
