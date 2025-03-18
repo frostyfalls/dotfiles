@@ -1,7 +1,6 @@
 #!/bin/sh
 
 # TODO(frosty): Make the whole script more efficient
-# TODO(frosty): Get the proper name of the device based on controlling the sink or source
 # TODO(frosty): Make the arguments of the script more uniform (up sink; down source)
 
 set -eu
@@ -14,7 +13,9 @@ AUDIO_SOURCE="@DEFAULT_AUDIO_SOURCE@"
 notify() { notify-send --hint=string:x-dunst-stack-tag:"$APP_ID" --app-name="$APP_ID" "$@"; }
 
 get_volume() {
-    VOLUME=$(wpctl get-volume "$AUDIO_SINK")
+    ID="$1"
+
+    VOLUME=$(wpctl get-volume "$ID")
     case $VOLUME in
         *\[MUTED\])
             VOLUME=${VOLUME% \[MUTED\]}
@@ -31,30 +32,34 @@ get_volume() {
 }
 
 get_device_name() {
+    ID="$1"
+
     while IFS= read -r line; do
         case "$line" in
             *node.description*)
                 DEVICE_NAME=${line#*node.description = \"}
                 DEVICE_NAME=${DEVICE_NAME%\"}
                 ;;
-            *)
-                ;;
         esac
     done <<EOF
-$(wpctl inspect "$AUDIO_SINK")
+$(wpctl inspect "$ID")
 EOF
 }
 
 check_unmute() {
-    get_volume
+    ID="$1"
+
+    get_volume "$ID"
     if [ "$MUTED" -eq 1 ]; then
         wpctl set-mute "$AUDIO_SINK" 0
     fi
 }
 
 volume_notify() {
-    get_volume
-    get_device_name
+    ID="$1"
+
+    get_volume "$ID"
+    get_device_name "$ID"
     if [ "$MUTED" -eq 0 ]; then
         notify --hint=int:value:"$VOLUME" "$DEVICE_NAME" "$VOLUME"%
     else
@@ -65,16 +70,16 @@ volume_notify() {
 set_volume() {
     ID="$1" SET_TYPE="$2"
 
-    check_unmute
+    check_unmute "$ID"
     wpctl set-volume "$ID" "$SET_AMOUNT"%"$SET_TYPE"
-    volume_notify
+    volume_notify "$ID"
 }
 
 toggle_mute() {
     ID="$1"
 
-    wpctl set-mute "$1" toggle
-    volume_notify
+    wpctl set-mute "$ID" toggle
+    volume_notify "$ID"
 }
 
 case "${1:-}" in
@@ -84,4 +89,3 @@ case "${1:-}" in
     toggle-mic) toggle_mute "$AUDIO_SOURCE" ;;
     *) exit 1 ;;
 esac
-
