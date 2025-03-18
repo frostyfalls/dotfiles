@@ -1,0 +1,7 @@
+# vim:ft=swayconfig
+
+set $output_laptop "eDP-1"
+set $output_docked "HDMI-A-1"
+
+output $output_laptop disable
+output $output_docked mode 1920x1080

@@ -1,79 +1,53 @@
-set $font Terminus 8
-set $bg_color #181818
-set $status_color #eeeeee
-set $separator_color #666666
+### Variables
 
-set $term "footclient"
-set $lockscreen "waylock -fork-on-lock -init-color 0x181818 -input-color 0x285577 -fail-color 0x900000"
-set $idle "swayidle -w \
-timeout 600 'pgrep -x waylock || $lockscreen' \
-timeout 900 'swaymsg \"output * dpms off\"' resume 'swaymsg \"output * dpms on\"' \
-timeout 1800 'loginctl suspend' \
-before-sleep 'pgrep -x waylock || $lockscreen'"
+set $mod Mod4
 
-exec dbus-update-activation-environment DISPLAY I3SOCK SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=sway
+set $term footclient
+set $lockscreen waylock -fork-on-lock -init-color 0x181818 -input-color 0x285577 -fail-color 0x900000
+
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+set $ws10 10
+
+### Autostart
+
 exec foot -s
 exec mako
-exec pgrep -x mpd || mpd --no-daemon
-exec pgrep -x pipewire || pipewire
-exec $idle
+exec swayidle -w \
+        timeout 600 '$lockscreen' \
+        timeout 900 'swaymsg "output * dpms off"' \
+        resume 'swaymsg "output * dpms on"' \
+        before-sleep '$lockscreen'
+exec wlsunset -l 27.9 -L -82.4
 
-set $ws1 "1"
-set $ws2 "2"
-set $ws3 "3"
-set $ws4 "4"
-set $ws5 "5"
-set $ws6 "6"
-set $ws7 "7"
-set $ws8 "8"
-set $ws9 "9"
-set $ws10 "10"
+### Other options
 
-bindsym Mod4+1 workspace $ws1
-bindsym Mod4+2 workspace $ws2
-bindsym Mod4+3 workspace $ws3
-bindsym Mod4+4 workspace $ws4
-bindsym Mod4+5 workspace $ws5
-bindsym Mod4+6 workspace $ws6
-bindsym Mod4+7 workspace $ws7
-bindsym Mod4+8 workspace $ws8
-bindsym Mod4+9 workspace $ws9
-bindsym Mod4+0 workspace $ws10
+font pango:Terminus 8
+output * bg #181818 solid_color
 
-bindsym Mod4+Shift+1 move container to workspace $ws1
-bindsym Mod4+Shift+2 move container to workspace $ws2
-bindsym Mod4+Shift+3 move container to workspace $ws3
-bindsym Mod4+Shift+4 move container to workspace $ws4
-bindsym Mod4+Shift+5 move container to workspace $ws5
-bindsym Mod4+Shift+6 move container to workspace $ws6
-bindsym Mod4+Shift+7 move container to workspace $ws7
-bindsym Mod4+Shift+8 move container to workspace $ws8
-bindsym Mod4+Shift+9 move container to workspace $ws9
-bindsym Mod4+Shift+0 move container to workspace $ws10
+default_border normal 1
+default_floating_border normal 1
+smart_borders on
 
-bindsym Mod4+Tab workspace back_and_forth
-bindsym Mod4+Shift+Tab move container to workspace back_and_forth
-
-set $output_laptop "eDP-1"
-set $output_docked "DP-3"
-
-output $output_docked mode 1280x1024@75Hz pos 0 0
-output $output_laptop pos 1280 0
-output * bg $bg_color solid_color
-
-workspace $ws1 output $output_laptop
-workspace $ws2 output $output_laptop
-workspace $ws3 output $output_laptop
-workspace $ws4 output $output_laptop
-workspace $ws5 output $output_laptop
-workspace $ws6 output $output_docked
-workspace $ws7 output $output_docked
-workspace $ws8 output $output_docked
-workspace $ws9 output $output_docked
-workspace $ws10 output $output_docked
+floating_modifier $mod
 
 workspace_layout tabbed
 default_orientation auto
+
+seat * {
+    hide_cursor 10000
+    hide_cursor when-typing enabled
+    xcursor_theme Adwaita
+}
+
+### Input
 
 input type:keyboard {
     repeat_delay 300
@@ -88,65 +62,59 @@ input type:touchpad {
     middle_emulation enabled
 }
 
+### Window rules
+
 for_window [app_id="qalculate-gtk"] floating enable
+for_window [app_id="swayimg"] floating disable, border normal 1
 for_window [shell="xwayland"] title_format "[XWayland] %title"
 
-font pango:$font
-
-default_border normal 1
-default_floating_border normal 1
-smart_borders on
-
-seat * {
-    hide_cursor 10000
-    hide_cursor when-typing enabled
-    xcursor_theme Adwaita
-}
+### Bar
 
 bar {
+    position top
     status_command i3status-rs
     separator_symbol |
     colors {
-        background $bg_color
-        statusline $status_color
-        separator $separator_color
+        background #181818
+        statusline #eeeeee
+        separator #666666
     }
 }
 
-floating_modifier Mod4
+### Keybinds
 
-bindsym Mod4+Return exec $term
-bindsym Mod4+p exec fuzzel
-bindsym Mod4+u exec dm-pass
+bindsym $mod+Return exec $term
+bindsym $mod+p exec fuzzel
+bindsym $mod+u exec dm-pass
 
 bindsym Mod1+Ctrl+l exec $lockscreen
-bindsym Mod4+Shift+r reload
+bindsym $mod+Shift+r reload
 
-bindsym Mod4+s layout stacking
-bindsym Mod4+w layout tabbed
-bindsym Mod4+e layout toggle split
-bindsym Mod4+b split horizontal
-bindsym Mod4+v split vertical
-bindsym Mod4+a focus parent
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
+bindsym $mod+b split horizontal
+bindsym $mod+v split vertical
+bindsym $mod+a focus parent
 
-bindsym Mod4+Shift+f fullscreen
-bindsym Mod4+Shift+space floating toggle
-bindsym Mod4+space focus mode_toggle
-bindsym Mod4+Shift+c kill
+bindsym $mod+Shift+f fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+Shift+c kill
 
-bindsym Mod4+h focus left
-bindsym Mod4+j focus down
-bindsym Mod4+k focus up
-bindsym Mod4+l focus right
-bindsym Mod4+Shift+h move left
-bindsym Mod4+Shift+j move down
-bindsym Mod4+Shift+k move up
-bindsym Mod4+Shift+l move right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
 
-bindsym Mod4+comma focus output left
-bindsym Mod4+period focus output right
-bindsym Mod4+Shift+comma move container to output left; focus output left
-bindsym Mod4+Shift+period move container to output right; focus output right
+bindsym $mod+comma focus output left
+bindsym $mod+period focus output right
+bindsym $mod+Shift+comma move container to output left; focus output left
+bindsym $mod+Shift+period move container to output right; focus output right
 
 bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
@@ -155,51 +123,55 @@ bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ tog
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 10%+
 
+bindsym Mod4+1 workspace $ws1
+bindsym Mod4+2 workspace $ws2
+bindsym Mod4+3 workspace $ws3
+bindsym Mod4+4 workspace $ws4
+bindsym Mod4+5 workspace $ws5
+bindsym Mod4+6 workspace $ws6
+bindsym Mod4+7 workspace $ws7
+bindsym Mod4+8 workspace $ws8
+bindsym Mod4+9 workspace $ws9
+bindsym Mod4+0 workspace $ws10
+bindsym Mod4+Shift+1 move container to workspace $ws1
+bindsym Mod4+Shift+2 move container to workspace $ws2
+bindsym Mod4+Shift+3 move container to workspace $ws3
+bindsym Mod4+Shift+4 move container to workspace $ws4
+bindsym Mod4+Shift+5 move container to workspace $ws5
+bindsym Mod4+Shift+6 move container to workspace $ws6
+bindsym Mod4+Shift+7 move container to workspace $ws7
+bindsym Mod4+Shift+8 move container to workspace $ws8
+bindsym Mod4+Shift+9 move container to workspace $ws9
+bindsym Mod4+Shift+0 move container to workspace $ws10
+
+bindsym Mod4+Tab workspace back_and_forth
+bindsym Mod4+Shift+Tab move container to workspace back_and_forth
+
 set $screenshot_mode "1: full | 2: select | 3: output"
 mode $screenshot_mode bindsym {
     1 exec screenshot, mode default
     2 exec screenshot -s, mode default
     3 exec screenshot -o, mode default
-
-    Print exec screenshot, mode default
-
-    Return mode default
     Escape mode default
 }
 bindsym Print mode $screenshot_mode
-bindsym Shift+Print exec screenshot -s
 
 set $power_mode "1: lock | 2: exit | 3: poweroff | 4: reboot"
 mode $power_mode bindsym {
     1 exec $lockscreen, mode default
     2 exit
-    3 mode $confirm_poweroff_mode
-    4 mode $confirm_reboot_mode
-
-    Return mode default
+    3 exec loginctl poweroff
+    4 exec loginctl reboot
     Escape mode default
 }
-bindsym Mod4+Shift+e mode $power_mode
+bindsym $mod+Shift+e mode $power_mode
 
 set $passthrough_mode "passthrough"
 mode $passthrough_mode bindsym {
-    Mod4+F11 mode default
+    $mod+F11 mode default
 }
-bindsym Mod4+F11 mode $passthrough_mode
+bindsym $mod+F11 mode $passthrough_mode
 
-set $sp_window_actions move position center, move to scratchpad, scratchpad show
+### Includes
 
-set $sp_term_id "sp_term"
-set $sp_term_cmd $term -a $sp_term_id
-for_window [app_id=$sp_term_id] $sp_window_actions
-bindsym Mod4+minus exec swaymsg [app_id=$sp_term_id] scratchpad show || exec $sp_term_cmd
-
-set $sp_music_id "sp_music"
-set $sp_music_cmd $term -a $sp_music_id ncmpcpp
-for_window [app_id=$sp_music_id] $sp_window_actions
-bindsym Mod4+equal exec swaymsg [app_id=$sp_music_id] scratchpad show || exec $sp_music_cmd
-
-set $sp_mixer_id "sp_mixer"
-set $sp_mixer_cmd $term -a $sp_mixer_id pulsemixer
-for_window [app_id=$sp_mixer_id] $sp_window_actions
-bindsym Mod4+Shift+equal exec swaymsg [app_id=$sp_mixer_id] scratchpad show || exec $sp_mixer_cmd
+include hostname.d/`hostname`

@@ -1,0 +1,18 @@
+# vim:ft=swayconfig
+
+set $output_laptop "eDP-1"
+set $output_docked "DP-3"
+
+output $output_laptop pos 1280 0
+output $output_docked mode 1280x1024@75Hz pos 0 0
+
+workspace $ws1 output $output_laptop
+workspace $ws2 output $output_laptop
+workspace $ws3 output $output_laptop
+workspace $ws4 output $output_laptop
+workspace $ws5 output $output_laptop
+workspace $ws6 output $output_docked
+workspace $ws7 output $output_docked
+workspace $ws8 output $output_docked
+workspace $ws9 output $output_docked
+workspace $ws10 output $output_docked
