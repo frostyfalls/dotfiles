@@ -2,6 +2,7 @@ bash
 beets
 bin
 emacs
+fastfetch
 foot
 fuzzel
 git
@@ -12,7 +13,7 @@ mako
 mpd
 ncmpcpp
 nvim
-pipewire
+nwg-look
 shellcheck
 sway
 swayidle
