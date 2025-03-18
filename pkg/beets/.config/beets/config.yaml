@@ -1,5 +1,5 @@
-directory: ~/music/newdata
-library: ~/music/library.db
+directory: $MUSIC_DIR
+library: $MUSIC_DIR/library.db
 plugins: bandcamp edit fetchart lastgenre mpdupdate scrub the zero
 
 import:
