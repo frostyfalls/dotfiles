@@ -10,17 +10,6 @@ for dir in "$XDG_DATA_HOME" "$XDG_CONFIG_HOME" "$XDG_STATE_HOME" "$XDG_CACHE_HOM
     [[ ! -d $dir ]] && mkdir -p "$dir"
 done
 
-case "$(hostname)" in
-    telesto | styx)
-        export EDITOR="nvim"
-        export TERMINAL="footclient"
-        export BROWSER="firefox"
-        ;;
-    glacier)
-        export EDITOR="vim"
-        ;;
-esac
-
 export GOPATH="$XDG_DATA_HOME/go"
 export CARGO_HOME="$XDG_DATA_HOME/cargo"
 export GNUPGHOME="$XDG_DATA_HOME/gnupg"
@@ -37,12 +26,35 @@ done
 unset dir
 export PATH
 
+case "$(hostname)" in
+    telesto)
+        export EDITOR="nvim"
+        export TERMINAL="footclient"
+        export BROWSER="firefox"
+        ;;
+    styx)
+        export EDITOR="nvim"
+        export TERMINAL="foot"
+        export BROWSER="qutebrowser"
+        ;;
+    *)
+        export EDITOR="vim"
+        ;;
+esac
+
 [[ -f "$HOME/.bashrc" ]] && . "$HOME/.bashrc"
 
-if [[ "$(hostname)" == "telesto" ]] && [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep sway >/dev/null; then
-    export XDG_CURRENT_DESKTOP="sway"
-    eval "$(ssh-agent -D -a "$SSH_AUTH_SOCK")" &
-    exec dbus-run-session sway >/dev/null 2>&1
-fi
-
-fastfetch
+case "$(hostname)" in
+    telesto)
+        [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep sway >/dev/null && exec sway >/dev/null 2>&1
+        :
+        ;;
+    styx)
+        [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep labwc >/dev/null && exec labwc >/dev/null 2>&1
+        :
+        ;;
+    *)
+        command -v fastfetch >/dev/null && fastfetch
+        :
+        ;;
+esac

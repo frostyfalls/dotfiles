@@ -4,23 +4,26 @@
 [[ $- != *i* ]] && return
 
 if [ -n "$SSH_TTY" ]; then
-    PS1='\[\e[0;31m\]\h '
+    PS1='\[\e[0;31m\]\h \[\e[0;34m\]\w \[$([[ $? -eq 0 ]] && echo "\e[0;32m" || echo "\e[0;31m")\]\$ \[\e[0m\]'
 else
-    PS1='\[\e[0;35m\]\h '
+    PS1='\[\e[0;35m\]\h \[\e[0;34m\]\w \[$([[ $? -eq 0 ]] && echo "\e[0;32m" || echo "\e[0;31m")\]\$ \[\e[0m\]'
 fi
-PS1="$PS1"'\[\e[0;34m\]\w \[$([[ $? -eq 0 ]] && echo "\e[0;32m" || echo "\e[0;31m")\]\$ \[\e[0m\]'
 
 shopt -s histappend
 HISTSIZE="$((2 << 24))"
 HISTCONTROL="erasedups:ignoreboth"
-HISTFILE="$XDG_STATE_HOME/bash/history"
 [[ ! -d "$XDG_STATE_HOME/bash" ]] && mkdir -p "$XDG_STATE_HOME/bash"
+HISTFILE="$XDG_STATE_HOME/bash/history"
 
 alias cp='cp -iv'
 alias mv='mv -iv'
 case "$(hostname)" in
-    glacier) alias rm='rm -iv' ;;
-    *) alias rm='rm -vI' ;;
+    glacier)
+        alias rm='rm -iv'
+        ;;
+    *)
+        alias rm='rm -vI'
+        ;;
 esac
 alias mkdir='mkdir -pv'
 alias ls='ls -hAF --color=auto'
