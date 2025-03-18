@@ -46,11 +46,11 @@ esac
 
 case "$(hostname)" in
     telesto)
-        [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep sway >/dev/null && exec sway >/dev/null 2>&1
+        [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep sway >/dev/null && exec sway >/tmp/sway.log 2>&1
         :
         ;;
     styx)
-        [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep labwc >/dev/null && exec labwc >/dev/null 2>&1
+        [[ "$(tty)" == "/dev/tty2" ]] && ! pgrep labwc >/dev/null && exec labwc >/tmp/labwc.log 2>&1
         :
         ;;
     *)
