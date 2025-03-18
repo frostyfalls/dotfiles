@@ -20,3 +20,7 @@ Uninstallation:
 ```
 make uninstall
 ```
+
+## Todo
+
+- [ ] Make Neovim and Vim configurations uniform and compatible
