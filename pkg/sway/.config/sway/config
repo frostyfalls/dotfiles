@@ -1,3 +1,6 @@
+# TODO(frosty): Create a brightness control script
+# TODO(frosty): Create binds for more special keys
+
 ### Variables
 
 set $mod Mod4
@@ -74,6 +77,7 @@ bar {
     position top
     status_command i3status-rs
     separator_symbol |
+    tray_output none
     colors {
         background #181818
         statusline #eeeeee
@@ -116,10 +120,10 @@ bindsym $mod+period focus output right
 bindsym $mod+Shift+comma move container to output left; focus output left
 bindsym $mod+Shift+period move container to output right; focus output right
 
-bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
-bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
-bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
-bindsym --locked XF86AudioMicMute exec wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle
+bindsym --locked XF86AudioMute exec volume toggle-mute
+bindsym --locked XF86AudioLowerVolume exec volume down
+bindsym --locked XF86AudioRaiseVolume exec volume up
+bindsym --locked XF86AudioMicMute exec volume toggle-mic
 bindsym --locked XF86MonBrightnessDown exec brightnessctl set 10%-
 bindsym --locked XF86MonBrightnessUp exec brightnessctl set 10%+
 
