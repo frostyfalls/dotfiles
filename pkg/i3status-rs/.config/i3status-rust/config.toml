@@ -1,27 +1,35 @@
 [theme]
 theme = "native"
 
-[theme.overrides]
-idle_fg = "#dddddd"
-good_fg = "#00ff00"
-warning_fg = "#ffa500"
-critical_fg = "#ff0000"
-info_fg = { link = "idle_fg" }
+[[block]]
+block = "focused_window"
+[block.format]
+full = " $title.str(max_w:40) |"
+short = " $title.str(max_w:10) |"
 
 [[block]]
 block = "net"
-format = "$ip"
+format = " $ip |"
 inactive_format = ""
 interval = 10
-[block.theme_overrides]
-normal_fg = { link = "good_fg" }
+
+[[block]]
+block = "sound"
+format = " $icon $volume |"
+
+[[block]]
+block = "memory"
+format = " $icon $mem_used.eng(w:0) ($mem_used_percents.eng(w:0)) "
+interval = 30
 
 [[block]]
 block = "load"
-format = "$1m.eng(w:4)"
-interval = 3
+format = " $1m.eng(w:4) "
+interval = 2
 
 [[block]]
 block = "time"
-format = "$timestamp.datetime(f:'%b %d %Y %H:%M:%S')"
 interval = 1
+[block.format]
+full = " $timestamp.datetime(f:'%b %d %Y %H:%M:%S') "
+short = " $timestamp.datetime(f:'%H:%M:%S') "
