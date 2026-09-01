@@ -1,0 +1,7 @@
+[user]
+	name = frosty
+	email = f@rvl.onl
+[init]
+	defaultBranch = master
+[color]
+	ui = false

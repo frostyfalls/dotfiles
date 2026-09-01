@@ -1,0 +1,98 @@
+set $font monospace 9
+set $border normal 1
+
+set $term footclient
+set $menu wmenu-run
+set $lock swaylock -f  # must fork
+
+set $ws1 1
+set $ws2 2
+set $ws3 3
+set $ws4 4
+set $ws5 5
+set $ws6 6
+set $ws7 7
+set $ws8 8
+set $ws9 9
+set $ws10 10
+
+exec dbus-update-activation-environment DISPLAY SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+exec foot -s
+exec mako
+exec wl-paste -t text/plain -w cliphist store
+exec wlsunset -l 27.9 -L -82.4
+
+font pango:$font
+default_border $border
+default_floating_border $border
+titlebar_padding 3
+seat * xcursor_theme Adwaita 24
+focus_follows_mouse no
+
+input type:keyboard {
+	repeat_rate 50
+	repeat_delay 300
+	xkb_options caps:escape
+}
+
+input type:pointer {
+	accel_profile flat
+	pointer_accel 0.85
+}
+
+bar {
+	position top
+	status_command i3status
+	tray_output none
+}
+
+set $mod Mod4
+set $alt Mod1
+floating_modifier $mod
+
+bindsym $mod+Return exec $term
+bindsym $mod+d exec $menu
+bindsym $mod+Shift+q kill
+
+bindsym $mod+f fullscreen
+bindsym $mod+Shift+space floating toggle
+bindsym $mod+space focus mode_toggle
+bindsym $mod+a focus parent
+
+bindsym $mod+Shift+backslash exec '$lock; loginctl suspend'
+bindsym $mod+Shift+c reload
+bindsym $mod+Shift+e exit
+
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Shift+h move left
+bindsym $mod+Shift+j move down
+bindsym $mod+Shift+k move up
+bindsym $mod+Shift+l move right
+
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
+bindsym $mod+0 workspace $ws10
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
+bindsym $mod+Shift+0 move container to workspace $ws10
+bindsym $mod+Tab workspace back_and_forth
+bindsym $mod+Shift+Tab move container to workspace back_and_forth
+
+output eDP-1 disable
