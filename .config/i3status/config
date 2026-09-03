@@ -2,13 +2,25 @@ general {
 	interval = 10
 }
 
+order += "volume master"
+order += "read_file weather"
 order += "disk /home"
 order += "load"
 order += "memory"
 order += "time"
 
+read_file "weather" {
+	path = "/home/user/.cache/weather"
+	color_good = ""
+}
+
+volume "master" {
+	format = "vol:%volume"
+	format_muted = "vol:mute"
+}
+
 disk "/home" {
-	format = "/home %avail"
+	format = "home:%avail"
 }
 
 load {
@@ -16,7 +28,7 @@ load {
 }
 
 memory {
-	format = "RAM %used"
+	format = "mem:%used"
 }
 
 time {

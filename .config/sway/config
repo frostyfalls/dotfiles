@@ -5,7 +5,7 @@ set $borderType normal
 set $borderWidth 1
 set $border $borderType $borderWidth
 
-set $term footclient
+set $term sensible-terminal
 set $menu mew-run -f '$fontFace:size=$fontSize'
 set $lock swaylock -f -c 000000
 

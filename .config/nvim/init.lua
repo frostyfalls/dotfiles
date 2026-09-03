@@ -25,6 +25,10 @@ vim.g.undotree_HelpLine = false
 vim.g.mapleader = vim.keycode("<Space>")
 vim.g.maplocalleader = "\\"
 
+vim.g.vimwiki_path = "~/notes"
+vim.g.vimwiki_syntax = "markdown"
+vim.g.vimwiki_ext = "md"
+
 vim.api.nvim_create_autocmd("ColorScheme", {
 	callback = function()
 		vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
@@ -44,6 +48,7 @@ vim.pack.add({
 	"https://github.com/stevearc/oil.nvim",
 	"https://github.com/vague-theme/vague.nvim",
 	"https://github.com/mbbill/undotree",
+	"https://github.com/vimwiki/vimwiki",
 })
 
 require("mini.pick").setup({
