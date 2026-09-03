@@ -8,11 +8,11 @@ while IFS='|' read -r src dst; do
 		/*) ;;
 		*) dst="$HOME/$dst" ;;
 	esac
-	if [ -f "$dst" ]; then
+	if [ -r "$dst" ]; then
 		echo "[warn] $dst exists" >&2
 		continue
 	fi
 	mkdir -p "$(dirname "$dst")"
 	echo "$src -> $dst"
-	ln -sr "$src" "$dst"
+	ln -srT "$src" "$dst"
 done <"$file"
