@@ -2,37 +2,57 @@ set $font monospace 9
 set $border normal 1
 
 set $term footclient
-set $menu wmenu-run
-set $lock swaylock -f  # must fork
+set $menu wmenu-run -f "$font"
+set $lock swaylock -f -c 000000
 
-set $ws1 1
-set $ws2 2
-set $ws3 3
-set $ws4 4
-set $ws5 5
-set $ws6 6
-set $ws7 7
-set $ws8 8
-set $ws9 9
-set $ws10 10
+set $ws1 1:I
+set $ws2 2:II
+set $ws3 3:III
+set $ws4 4:IV
+set $ws5 5:V
+set $ws6 6:VI
+set $ws7 7:VII
+set $ws8 8:VIII
+set $ws9 9:IX
+set $ws10 10:X
 
-exec dbus-update-activation-environment DISPLAY SWAYSOCK WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+set $side "Dell Inc. DEL 1908FPBLK D307J962683S"
+set $main "Dell Inc. DELL SE2416H 9DRWM77C00EI"
+set $laptop "LG Display 0x0521 Unknown" 
+
+exec dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 exec foot -s
 exec mako
-exec wl-paste -t text/plain -w cliphist store
+exec swayidle -w before-sleep "playerctl pause; $lock"
 exec wlsunset -l 27.9 -L -82.4
 
 font pango:$font
 default_border $border
 default_floating_border $border
 titlebar_padding 3
+
+for_window [app_id="^imv$"] border $border, floating enable
+for_window [app_id="^Firefox$" title="^Picture-in-Picture$"] border $border, floating enable
+for_window [shell="xwayland"] title_format "[XWayland] %title"
+
+bar {
+	position top
+	status_command i3status
+	strip_workspace_numbers yes
+}
+
+output * bg "${XDG_CACHE_HOME:-$HOME/.cache}/background" fill #000000
 seat * xcursor_theme Adwaita 24
 focus_follows_mouse no
 
+output $main mode 1920x1080 pos 0 0
+output $side mode 1280x1024@75Hz pos 1920 0
+output $laptop disable
+
 input type:keyboard {
-	repeat_rate 50
-	repeat_delay 300
 	xkb_options caps:escape
+	repeat_delay 300
+	repeat_rate 50
 }
 
 input type:pointer {
@@ -40,28 +60,54 @@ input type:pointer {
 	pointer_accel 0.85
 }
 
-bar {
-	position top
-	status_command i3status
-	tray_output none
-}
+workspace $ws1 output $main
+workspace $ws2 output $main
+workspace $ws3 output $main
+workspace $ws4 output $main
+workspace $ws5 output $main
+workspace $ws6 output $main
+workspace $ws7 output $main
+workspace $ws8 output $main
+workspace $ws9 output $side
+workspace $ws10 output $side
 
 set $mod Mod4
 set $alt Mod1
 floating_modifier $mod
 
 bindsym $mod+Return exec $term
-bindsym $mod+d exec $menu
 bindsym $mod+Shift+q kill
+bindsym $mod+d exec $menu
+bindsym $mod+Shift+b exec imv-background
 
+bindsym $mod+Shift+backspace exec $lock
+bindsym $mod+Shift+backslash exec loginctl suspend
+
+bindsym --locked XF86AudioPrev exec playerctl previous
+bindsym --locked XF86AudioNext exec playerctl next
+bindsym --locked XF86AudioPlay exec playerctl play-pause
+bindsym --locked XF86AudioStop exec playerctl stop
+
+bindsym --locked XF86AudioMute exec wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+bindsym --locked XF86AudioLowerVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+bindsym --locked XF86AudioRaiseVolume exec wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+
+bindsym Print exec screenshot
+bindsym Shift+Print exec screenshot -s
+bindsym $mod+n exec makoctl dismiss
+
+bindsym $mod+b splith
+bindsym $mod+v splitv
+bindsym $mod+s layout stacking
+bindsym $mod+w layout tabbed
+bindsym $mod+e layout toggle split
 bindsym $mod+f fullscreen
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
-bindsym $mod+Shift+backslash exec '$lock; loginctl suspend'
 bindsym $mod+Shift+c reload
-bindsym $mod+Shift+e exit
+bindsym $mod+Shift+e exec swaynag -t warning -m 'You pressed the exit shortcut. Do you really want to exit sway? This will end your Wayland session.' -B 'Yes, exit sway' 'swaymsg exit'
 
 bindsym $mod+h focus left
 bindsym $mod+j focus down
@@ -95,4 +141,7 @@ bindsym $mod+Shift+0 move container to workspace $ws10
 bindsym $mod+Tab workspace back_and_forth
 bindsym $mod+Shift+Tab move container to workspace back_and_forth
 
-output eDP-1 disable
+bindsym $mod+comma focus output left
+bindsym $mod+period focus output right
+bindsym $mod+Shift+comma move container to output left, focus output left
+bindsym $mod+Shift+period move container to output right, focus output right

@@ -1,5 +1,5 @@
 general {
-	interval = 5
+	interval = 10
 }
 
 order += "disk /home"
@@ -20,5 +20,5 @@ memory {
 }
 
 time {
-	format = "%Y-%m-%d %H:%M:%S"
+	format = "%Y-%m-%d %H:%M"
 }

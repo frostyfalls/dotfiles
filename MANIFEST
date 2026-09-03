@@ -1,0 +1,12 @@
+.bashrc
+.config/foot/foot.ini
+.config/git/config
+.config/gtk-3.0/settings.ini
+.config/i3status/config
+.config/imv/config
+.config/mako/config
+.config/mpv/mpv.conf
+.config/nvim
+.config/sway/config
+.config/tmux/tmux.conf
+.profile

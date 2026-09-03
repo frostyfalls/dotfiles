@@ -1,0 +1,40 @@
+[options]
+overlay_font = monospace:10
+suppress_default_binds = true
+
+[binds]
+q = quit
+x = close
+f = fullscreen
+d = overlay
+<Shift+P> = exec echo $imv_current_file
+
+p = prev
+n = next
+gg = goto 1
+<Shift+G> = goto -1
+
+j = pan 0 -50
+k = pan 0 50
+h = pan 50 0
+l = pan -50 0
+<Shift+J> = pan 0 -200
+<Shift+K> = pan 0 200
+<Shift+H> = pan 200 0
+<Shift+L> = pan -200 0
+
+i = zoom 1
+o = zoom -1
+<Shift+plus> = zoom 1
+<minus> = zoom -1
+a = zoom actual
+
+r = reset
+<Ctrl+r> = rotate by 90
+
+c = center
+s = scaling next
+<Shift+S> = upscaling next
+
+<Shift+bar> = flip horizontal
+<Shift+underscore> = flip vertical
