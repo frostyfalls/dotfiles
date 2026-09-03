@@ -2,7 +2,7 @@ set $font monospace 9
 set $border normal 1
 
 set $term footclient
-set $menu wmenu-run -f "$font"
+set $menu wmenu-run -f '$font'
 set $lock swaylock -f -c 000000
 
 set $ws1 1:I
@@ -23,7 +23,7 @@ set $laptop "LG Display 0x0521 Unknown"
 exec dbus-update-activation-environment DISPLAY WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 exec foot -s
 exec mako
-exec swayidle -w before-sleep "playerctl pause; $lock"
+exec swayidle -w before-sleep 'playerctl pause; $lock'
 exec wlsunset -l 27.9 -L -82.4
 
 font pango:$font
